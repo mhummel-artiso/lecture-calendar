@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  calendar-api:
+    image: ${DOCKER_REGISTRY-}calendarapi
+    build:
+      context: .
+      dockerfile: calendar-api/Dockerfile
