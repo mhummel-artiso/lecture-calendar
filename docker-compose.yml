@@ -37,7 +37,7 @@ services:
   calendarapi:
     build:
       context: src/calendar-backend
-      dockerfile: calender-api/Dockerfile
+      dockerfile: calendar-api/Dockerfile
     depends_on:
       mongodb:
         condition: service_started
