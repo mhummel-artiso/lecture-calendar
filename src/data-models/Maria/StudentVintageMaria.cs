@@ -1,6 +1,6 @@
 ﻿namespace data_models.Maria
 {
-    public class StudentVintage
+    public class StudentVintageMaria
     {
         public int Id { get; set; }
         public string? Name { get; set; }
