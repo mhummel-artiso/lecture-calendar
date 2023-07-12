@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calendar-api", "calendar-api\calendar-api.csproj", "{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D35EC83F-2412-4B67-9E6C-2503EC0714C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data-models", "..\data-models\data-models.csproj", "{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9765746-6A85-4451-9CE7-A9B820D0CC9E}
+	EndGlobalSection
+EndGlobal
