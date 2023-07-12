@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calendar-api", "calendar-ap
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D35EC83F-2412-4B67-9E6C-2503EC0714C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data-models", "..\data-models\data-models.csproj", "{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +23,15 @@ Global
 		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D35EC83F-2412-4B67-9E6C-2503EC0714C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9765746-6A85-4451-9CE7-A9B820D0CC9E}
 	EndGlobalSection
 EndGlobal
