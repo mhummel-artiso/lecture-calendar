@@ -1,4 +1,10 @@
+using calendar_api;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
+builder.Services.Configure<EnvironmentConfiguration>(configuration);
+var environmentConfig = configuration.Get<EnvironmentConfiguration>();
 
 // Add services to the container.
 
