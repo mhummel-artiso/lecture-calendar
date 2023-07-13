@@ -2,7 +2,7 @@
 {
     public class Lecture
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string? Title { get; set; }
         public string? Comment { get; set; }
         public string? Professor { get; set; }
