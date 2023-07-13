@@ -1,4 +1,4 @@
-﻿namespace data_models.Mongo
+﻿namespace Calendar.Mongo.Db.Models
 {
     public class Lecture
     {

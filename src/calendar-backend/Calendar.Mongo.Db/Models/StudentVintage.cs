@@ -1,6 +1,6 @@
-﻿namespace data_models.Mongo
+﻿namespace Calendar.Mongo.Db.Models
 {
-    public class StudentVintageMongo
+    public class StudentVintage
     {
         public int Id { get; set; }
         public string? Name { get; set; }

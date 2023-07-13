@@ -1,4 +1,4 @@
-using calendar_api;
+using Calendar.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
