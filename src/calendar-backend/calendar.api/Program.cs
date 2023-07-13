@@ -1,4 +1,7 @@
 using calendar_api;
+using calendar_api.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,21 @@ var environmentConfig = configuration.Get<EnvironmentConfiguration>();
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.Audience="";
+        options.Authority="";
+    })
+    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = "";
+        options.ClientId = "api-test";
+        options.ClientSecret = "";
+        options.ResponseType = "code";
+        options.SaveTokens = true;
+        options.Scope.Add("api");
+        options.Scope.Add("openid");
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

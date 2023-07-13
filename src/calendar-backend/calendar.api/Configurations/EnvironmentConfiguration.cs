@@ -1,4 +1,4 @@
-﻿namespace calendar_api
+﻿namespace calendar_api.Configurations
 {
     public class EnvironmentConfiguration
     {
