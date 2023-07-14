@@ -2,12 +2,21 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { AuthProvider } from 'oidc-react';
 
 function App() {
   const [count, setCount] = useState(0)
-
+  const oidcConfig = {
+    onSignIn: () => {
+      // Redirect?
+    },
+    authority: 'https://localhost:8080/oauth',
+    clientId: 'this-is-a-client-id',
+    redirectUri: 'https://my-app.com/',
+  };
+  
   return (
-    <>
+    <AuthProvider {...oidcConfig}>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -28,7 +37,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
+    </ AuthProvider>
   )
 }
 

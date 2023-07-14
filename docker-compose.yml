@@ -3,6 +3,9 @@
 version: "3.9"
 
 services:
+  calendarapi:
+    build:
+      dockerfile:
   client:
     build: ./src/calendar-client
     restart: always
