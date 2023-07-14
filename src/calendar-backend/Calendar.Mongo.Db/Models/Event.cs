@@ -3,10 +3,12 @@
     public class Event
     {
         public Guid Id { get; set; }
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
-        public DateTime StartSeries { get; set; }
-        public DateTime EndSeries { get; set; }
+        public string? Location { get; set; }
+        public DateTimeOffset Start { get; set; }
+        public DateTimeOffset End { get; set; }
+        public DateTimeOffset StartSeries { get; set; }
+        public DateTimeOffset EndSeries { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset LastUpdateDate { get; set; }
     }
 }

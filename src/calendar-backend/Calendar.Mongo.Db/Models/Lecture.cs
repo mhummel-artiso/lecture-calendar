@@ -8,5 +8,6 @@
         public string? Professor { get; set; }
         public List<Event>? Events { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset LastUpdateDate { get; set; }
     }
 }

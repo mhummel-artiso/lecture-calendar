@@ -3,5 +3,6 @@
     public class EnvironmentConfiguration
     {
         public string? MONGODB_CONNECTIONSTRING { get; set; }
+        public string? MARIADB_CONNECTIONSTRING { get; set; }
     }
 }
