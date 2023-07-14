@@ -7,7 +7,7 @@
         public string? Name { get; set; }
         public string? Password { get; set; }
         public Role? Role { get; set; }
-        public List<StudentVintage>? Vintages { get; set; }
+        public List<StudentClass>? Vintages { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
     }
 }
