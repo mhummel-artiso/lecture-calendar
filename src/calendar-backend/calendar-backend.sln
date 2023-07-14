@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calendar.api", "calendar.api\calendar.api.csproj", "{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calendar.api", "Calendar.Api\Calendar.Api.csproj", "{8451DF87-5FF0-4FFF-A223-1F44FBB613B7}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D35EC83F-2412-4B67-9E6C-2503EC0714C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data-models", "..\data-models\data-models.csproj", "{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calendar.mariadb", "Calendar.Maria.Db\Calendar.Maria.Db.csproj", "{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calendar.mongo", "Calendar.Mongo.Db\Calendar.Mongo.Db.csproj", "{32C2F737-C867-4422-B980-EECC73A541DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC6E8AAD-75EB-4785-9BA2-B25BA4503A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C2F737-C867-4422-B980-EECC73A541DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C2F737-C867-4422-B980-EECC73A541DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C2F737-C867-4422-B980-EECC73A541DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C2F737-C867-4422-B980-EECC73A541DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
