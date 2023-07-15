@@ -11,17 +11,20 @@ services:
     ports:
       - 3005:80
   mongodb:
-    image: mongo
+    image: mongo:latest
     restart: always
-    networks:
-      - backend
+    # networks:
+    #   - backend
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT:-mongodb}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-mongodb}
+      CALENDAR_PASSWORD: ${CALENDAR_PASSWORD:-calendar}
     volumes:
-      - noSqlData:/data/db
+      - ./database/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+      - mongodb-data:/data/db
+      - mongodb-log:/var/log/mongodb
   mariadb:
     image: mariadb
     restart: always
@@ -51,7 +54,10 @@ services:
       MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
 
 volumes:
-  noSqlData:
+  mongodb-data:
+    driver: local
+  mongodb-log:
+    driver: local
   sqlData:
 
 networks:
