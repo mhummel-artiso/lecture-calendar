@@ -1,8 +1,12 @@
-﻿namespace Calendar.Mongo.Db.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace Calendar.Mongo.Db.Models
 {
     public class Event
     {
-        public Guid Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string? Id { get; set; }
         public string? Location { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
