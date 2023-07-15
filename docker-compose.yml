@@ -36,7 +36,7 @@ services:
       # user name: root
       MARIADB_ROOT_PASSWORD: example
     volumes:
-      - sqlData:/var/lib/mysql
+      - mariadb-data:/var/lib/mysql
   calendarapi:
     build:
       context: src/calendar-backend
@@ -58,7 +58,7 @@ volumes:
     driver: local
   mongodb-log:
     driver: local
-  sqlData:
+  mariadb-data:
 
 networks:
   backend:
