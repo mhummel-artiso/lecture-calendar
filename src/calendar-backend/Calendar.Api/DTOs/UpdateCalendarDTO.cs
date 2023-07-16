@@ -1,4 +1,4 @@
-﻿namespace Calendar.Mongo.Db.DTOs
+﻿namespace Calendar.Api.DTOs
 {
     public class UpdateCalendarDTO : CreateCalendarDTO
     {

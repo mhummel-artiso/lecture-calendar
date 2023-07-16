@@ -23,4 +23,8 @@
       <ProjectReference Include="..\Calendar.Mongo.Db\Calendar.Mongo.Db.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>

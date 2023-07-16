@@ -1,4 +1,4 @@
-using Calendar.Api;
+using Calendar.Api.Configurations;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
 using MongoDB.Driver;

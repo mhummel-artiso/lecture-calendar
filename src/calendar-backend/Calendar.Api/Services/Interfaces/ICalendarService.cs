@@ -1,13 +1,14 @@
-﻿namespace Calendar.Api.Services.Interfaces;
+﻿using Calendar.Mongo.Db.Models;
+namespace Calendar.Api.Services.Interfaces;
 
 public interface ICalendarService
 {
-    Task<Mongo.Db.Models.Calendar> GetCalendarByIdAsync(string id);
-    Task<Mongo.Db.Models.Calendar> GetCalendarByNameAsync(string name);
+    Task<UserCalendar> GetCalendarByIdAsync(string id);
+    Task<UserCalendar> GetCalendarByNameAsync(string name);
 
-    Task AddCalendarAsync(Mongo.Db.Models.Calendar calendar);
+    Task AddCalendarAsync(UserCalendar calendar);
 
-    Task UpdateClassCalendarAsync(Mongo.Db.Models.Calendar calendar);
+    Task UpdateClassCalendarAsync(UserCalendar calendar);
 
     Task DeleteCalendarByNameAsync(string calendarName);
     Task DeleteCalendarByIdAsync(string id);

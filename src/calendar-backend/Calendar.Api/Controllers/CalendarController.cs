@@ -1,5 +1,4 @@
-﻿using Calendar.Api.Models;
-using Calendar.Api.Services.Interfaces;
+﻿using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,8 +27,13 @@ public class CalendarController : ControllerBase
 
 
     [HttpPost]
-    public async Task<ActionResult<Mongo.Db.Models.Calendar>> Calendar([FromBody] Mongo.Db.Models.Calendar calendar)
+    public async Task<ActionResult<UserCalendar>> AddCalendar([FromBody] UserCalendar calendar)
     {
+        if (calendar == null)
+        {
+            return BadRequest();
+        }
+
         await service.AddCalendarAsync(calendar);
         return Ok(calendar);
     }

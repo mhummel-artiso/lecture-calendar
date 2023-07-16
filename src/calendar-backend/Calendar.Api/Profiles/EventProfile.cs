@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Calendar.Mongo.Db.DTOs;
+using Calendar.Api.DTOs;
 using Calendar.Mongo.Db.Models;
 
 namespace Calendar.Api.Profiles

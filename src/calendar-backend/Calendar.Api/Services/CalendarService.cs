@@ -1,14 +1,16 @@
 ﻿using Calendar.Api.Services.Interfaces;
+using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace Calendar.Api.Services;
 
 public class CalendarService : ICalendarService
 {
-    private readonly IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection;
+    private readonly IMongoCollection<Mongo.Db.Models.UserCalendar> calendarCollection;
     private readonly ILogger<ICalendarService> logger;
 
-    public CalendarService(ILogger<ICalendarService> logger, IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection)
+    public CalendarService(ILogger<ICalendarService> logger, IMongoCollection<UserCalendar> calendarCollection)
     {
         if (logger == null) throw new ArgumentNullException(nameof(logger));
         if (calendarCollection == null) throw new ArgumentNullException(nameof(calendarCollection));
@@ -17,7 +19,7 @@ public class CalendarService : ICalendarService
         this.calendarCollection = calendarCollection;
     }
 
-    public Task AddCalendarAsync(Mongo.Db.Models.Calendar calendar)
+    public Task AddCalendarAsync(UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
@@ -32,23 +34,23 @@ public class CalendarService : ICalendarService
         throw new NotImplementedException();
     }
 
-    public Task<Mongo.Db.Models.Calendar> GetCalendarByIdAsync(string id)
+    public Task<UserCalendar> GetCalendarByIdAsync(string id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Mongo.Db.Models.Calendar> GetCalendarByNameAsync(string name)
+    public Task<UserCalendar> GetCalendarByNameAsync(string name)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateClassCalendarAsync(Mongo.Db.Models.Calendar calendar)
+    public Task UpdateClassCalendarAsync(UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
 
 
-    public async Task<List<Mongo.Db.Models.Calendar>> GetAsync() =>
+    public async Task <IEnumerable<UserCalendar>> GetAsync() =>
         await calendarCollection.Find(_ => true).ToListAsync();
 
     //public async Task<Book?> GetAsync(string id) =>

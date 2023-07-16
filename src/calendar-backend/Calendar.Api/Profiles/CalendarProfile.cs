@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Calendar.Mongo.Db.DTOs;
+using Calendar.Api.DTOs;
+using Calendar.Mongo.Db.Models;
 
 namespace Calendar.Api.Profiles
 {
@@ -7,7 +8,7 @@ namespace Calendar.Api.Profiles
     {
         public CalendarProfile()
         {
-            CreateMap<CreateCalendarDTO, Mongo.Db.Models.Calendar>()
+            CreateMap<CreateCalendarDTO, UserCalendar>()
             .ForMember(
                 dest => dest.Name,
                 opt => opt.MapFrom(src => src.Name)
@@ -17,7 +18,7 @@ namespace Calendar.Api.Profiles
                 opt => opt.MapFrom(src => src.StartDate)
             );
 
-            CreateMap<UpdateCalendarDTO, Mongo.Db.Models.Calendar>()
+            CreateMap<UpdateCalendarDTO, UserCalendar>()
             .ForMember(
                 dest => dest.Id,
                 opt => opt.MapFrom(src => src.Id)
