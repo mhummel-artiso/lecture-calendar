@@ -8,29 +8,10 @@ namespace Calendar.Api.Profiles
     {
         public CalendarProfile()
         {
-            CreateMap<CreateCalendarDTO, UserCalendar>()
-            .ForMember(
-                dest => dest.Name,
-                opt => opt.MapFrom(src => src.Name)
-            )
-            .ForMember(
-                dest => dest.StartDate,
-                opt => opt.MapFrom(src => src.StartDate)
-            );
 
-            CreateMap<UpdateCalendarDTO, UserCalendar>()
-            .ForMember(
-                dest => dest.Id,
-                opt => opt.MapFrom(src => src.Id)
-            )
-            .ForMember(
-                dest => dest.Name,
-                opt => opt.MapFrom(src => src.Name)
-            )
-            .ForMember(
-                dest => dest.StartDate,
-                opt => opt.MapFrom(src => src.StartDate)
-            );
+            CreateMap<CreateCalendarDTO, UserCalendar>().ReverseMap();
+
+            CreateMap<UpdateCalendarDTO, UserCalendar>().ReverseMap();
         }
     }
 }
