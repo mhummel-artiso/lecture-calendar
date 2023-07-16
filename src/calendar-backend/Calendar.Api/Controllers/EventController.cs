@@ -14,24 +14,26 @@ public class EventController : ControllerBase
 {
     private readonly IEventService service;
     private readonly IMapper mapper;
+    private readonly ILogger<EventController> logger;
 
     public EventController(IEventService service, IMapper mapper, ILogger<EventController> logger)
     {
         this.service = service;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
-
-    [HttpPost("{calendarId}/{lectureId}")]
+    // TODO: lectureId in Servicemethode diskutieren
+    [HttpPost("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateEventDTO calendarEvent, string calendarId, string lectureId)
+    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateEventDTO calendarEvent, string calendarId)
     {
         if (calendarEvent == null)
         {
             return BadRequest();
         }
 
-        var result = await service.AddEventAsync(mapper.Map<CalendarEvent>(calendarEvent), calendarId, lectureId);
+        var result = await service.AddEventAsync(mapper.Map<CalendarEvent>(calendarEvent), calendarId);
         return Ok(result);
     }
 
@@ -108,7 +110,4 @@ public class EventController : ControllerBase
 
         return Ok(success);
     }
-
-
-
 }

@@ -28,6 +28,12 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<Lecture>> GetAllLecturesFromCalendarAsync(string calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public Task<IEnumerable<Lecture>> GetLecturesByCalendarIdAsync(string calendarId)
         {
             throw new NotImplementedException();

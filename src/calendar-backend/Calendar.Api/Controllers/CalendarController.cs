@@ -16,11 +16,13 @@ public class CalendarController : ControllerBase
 {
     private readonly ICalendarService service;
     private readonly IMapper mapper;
+    private readonly ILogger<CalendarController> logger;
 
     public CalendarController(ICalendarService service, IMapper mapper, ILogger<CalendarController> logger)
     {
         this.service = service;
         this.mapper = mapper;
+        this.logger = logger;
     }
 
 
@@ -54,6 +56,7 @@ public class CalendarController : ControllerBase
         }
         catch(Exception ex)
         {
+            logger.LogError(ex, $"Failed to parse {nameof(viewType)}");
             return BadRequest(ex.Message);
         }
     }

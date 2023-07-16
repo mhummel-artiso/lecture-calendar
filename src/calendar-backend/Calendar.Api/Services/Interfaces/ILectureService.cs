@@ -4,7 +4,7 @@ namespace Calendar.Api.Services.Interfaces
 {
     public interface ILectureService
     {
-        Task<IEnumerable<Lecture>> GetLecturesByCalendarIdAsync(string calendarId);
+        Task<IEnumerable<Lecture>> GetAllLecturesFromCalendarAsync(string calendarId);
         Task<IEnumerable<Lecture>> GetLecturesByCalendarNameAsync(string calendarName);
         Task<IEnumerable<Lecture>> GetLecturesWeekSectionAsync(string calendarName, int weekNumber, int year);
         Task<IEnumerable<Lecture>> GetLecturesDaySectionAsync(string calendarName, DateTime date);
@@ -13,6 +13,6 @@ namespace Calendar.Api.Services.Interfaces
 
         Task UpdateLectureAsync(Lecture lecture, string calendarName);
 
-        Task DeleteLectureByIdAsync(string id);
+        Task<bool> DeleteLectureByIdAsync(string id);
     }
 }

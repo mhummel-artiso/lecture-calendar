@@ -14,5 +14,6 @@ namespace Calendar.Mongo.Db.Models
         public DateTimeOffset EndSeries { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset LastUpdateDate { get; set; }
+        public Lecture Lecture { get; set; }
     }
 }
