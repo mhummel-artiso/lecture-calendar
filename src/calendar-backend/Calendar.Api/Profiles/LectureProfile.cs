@@ -8,37 +8,9 @@ namespace Calendar.Api.Profiles
     {
         public LectureProfile()
         {
-            CreateMap<CreateLectureDTO, Lecture>()
-            .ForMember(
-                dest => dest.Professor,
-                opt => opt.MapFrom(src => src.Professor)
-            )
-            .ForMember(
-                dest => dest.Comment,
-                opt => opt.MapFrom(src => src.Comment)
-            )
-            .ForMember(
-                dest => dest.Title,
-                opt => opt.MapFrom(src => src.Title)
-            );
+            CreateMap<CreateLectureDTO, Lecture>().ReverseMap();
 
-            CreateMap<UpdateLectureDTO, Lecture>()
-            .ForMember(
-                dest => dest.Id,
-                opt => opt.MapFrom(src => src.Id)
-            )
-            .ForMember(
-                dest => dest.Professor,
-                opt => opt.MapFrom(src => src.Professor)
-            )
-            .ForMember(
-                dest => dest.Comment,
-                opt => opt.MapFrom(src => src.Comment)
-            )
-            .ForMember(
-                dest => dest.Title,
-                opt => opt.MapFrom(src => src.Title)
-            );
+            CreateMap<UpdateLectureDTO, Lecture>().ReverseMap();
         }
     }
 }
