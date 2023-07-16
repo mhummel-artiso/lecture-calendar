@@ -4,12 +4,14 @@ namespace Calendar.Api.Services.Interfaces
 {
     public interface IEventService
     {
-        Task<Event> GetEventAsync(string calendarName, string lectureId, string id);
+        Task<CalendarEvent> GetEventAsync(string calendarName, string lectureId, string id);
 
-        Task AddEventAsync(Event lectureEvent, string calendarId, string lectureId);
+        Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId);
 
-        Task UpdateEventAsync(Event lectureEvent, string calendarId, string lectureId);
+        Task<CalendarEvent> AddEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId);
 
-        Task DeleteEventByIdAsync(string id);
+        Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId);
+
+        Task<bool> DeleteEventByIdAsync(string id);
     }
 }

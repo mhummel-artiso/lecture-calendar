@@ -6,10 +6,10 @@ namespace Calendar.Api.Services
 {
     public class LectureService : ILectureService
     {
-        private readonly IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection;
+        private readonly IMongoCollection<UserCalendar> calendarCollection;
         private readonly ILogger<ICalendarService> logger;
 
-        public LectureService(ILogger<ICalendarService> logger, IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection)
+        public LectureService(ILogger<ICalendarService> logger, IMongoCollection<UserCalendar> calendarCollection)
         {
             if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (calendarCollection == null) throw new ArgumentNullException(nameof(calendarCollection));

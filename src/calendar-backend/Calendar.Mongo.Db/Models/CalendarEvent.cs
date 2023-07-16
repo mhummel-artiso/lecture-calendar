@@ -2,7 +2,7 @@
 
 namespace Calendar.Mongo.Db.Models
 {
-    public class Event
+    public class CalendarEvent
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]

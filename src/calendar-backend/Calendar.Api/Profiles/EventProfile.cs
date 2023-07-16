@@ -8,7 +8,7 @@ namespace Calendar.Api.Profiles
     {
         public EventProfile()
         {
-            CreateMap<CreateEventDTO, Event>()
+            CreateMap<CreateEventDTO, CalendarEvent>()
             .ForMember(
                 dest => dest.Location,
                 opt => opt.MapFrom(src => src.Location)
@@ -30,7 +30,7 @@ namespace Calendar.Api.Profiles
                 opt => opt.MapFrom(src => src.EndSeries)
             );
 
-            CreateMap<UpdateEventDTO, Event>()
+            CreateMap<UpdateEventDTO, CalendarEvent>()
             .ForMember(
                 dest => dest.Id,
                 opt => opt.MapFrom(src => src.Id)

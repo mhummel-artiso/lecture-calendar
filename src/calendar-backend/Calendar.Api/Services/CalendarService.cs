@@ -1,4 +1,5 @@
-﻿using Calendar.Api.Services.Interfaces;
+﻿using Calendar.Api.Models;
+using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
@@ -19,22 +20,17 @@ public class CalendarService : ICalendarService
         this.calendarCollection = calendarCollection;
     }
 
-    public Task AddCalendarAsync(UserCalendar calendar)
+    public Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteCalendarByIdAsync(string id)
+    public Task<bool> DeleteCalendarByIdAsync(string id)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteCalendarByNameAsync(string calendarName)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserCalendar> GetCalendarByIdAsync(string id)
+    public Task<UserCalendar> GetCalendarByIdAsync(string id, ViewType view)
     {
         throw new NotImplementedException();
     }
@@ -44,14 +40,13 @@ public class CalendarService : ICalendarService
         throw new NotImplementedException();
     }
 
-    public Task UpdateClassCalendarAsync(UserCalendar calendar)
+    public Task<UserCalendar> UpdateCalendarAsync(string id, UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
 
-
     public async Task <IEnumerable<UserCalendar>> GetAsync() =>
-        await calendarCollection.Find(_ => true).ToListAsync();
+       await calendarCollection.Find(_ => true).ToListAsync();
 
     //public async Task<Book?> GetAsync(string id) =>
     //    await calendarCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

@@ -6,10 +6,10 @@ namespace Calendar.Api.Services
 {
     public class EventService : IEventService
     {
-        private readonly IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection;
+        private readonly IMongoCollection<UserCalendar> calendarCollection;
         private readonly ILogger<ICalendarService> logger;
 
-        public EventService(ILogger<ICalendarService> logger, IMongoCollection<Mongo.Db.Models.Calendar> calendarCollection)
+        public EventService(ILogger<ICalendarService> logger, IMongoCollection<UserCalendar> calendarCollection)
         {
             if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (calendarCollection == null) throw new ArgumentNullException(nameof(calendarCollection));
@@ -18,7 +18,7 @@ namespace Calendar.Api.Services
             this.calendarCollection = calendarCollection;
         }
 
-        public async Task AddEventAsync(Event lectureEvent, string calendarId, string lectureId)
+        public async Task AddEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId)
         {
             throw new NotImplementedException();
         }
@@ -28,12 +28,17 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Event> GetEventAsync(string calendarName, string lectureId, string id)
+        public async Task<CalendarEvent> GetEventAsync(string calendarName, string lectureId, string id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateEventAsync(Event lectureEvent, string calendarId, string lectureId)
+        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId)
         {
             throw new NotImplementedException();
         }
