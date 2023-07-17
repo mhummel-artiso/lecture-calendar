@@ -1,6 +1,8 @@
-﻿using Calendar.Api.Models;
+﻿using Calendar.Api.Configurations;
+using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
 
@@ -8,16 +10,14 @@ namespace Calendar.Api.Services;
 
 public class CalendarService : ICalendarService
 {
-    private readonly IMongoCollection<Mongo.Db.Models.UserCalendar> calendarCollection;
+    private readonly IMongoCollection<UserCalendar> dbCollection;
     private readonly ILogger<ICalendarService> logger;
 
-    public CalendarService(ILogger<ICalendarService> logger, IMongoCollection<UserCalendar> calendarCollection)
+    public CalendarService(ILogger<ICalendarService> logger, IMongoDatabase db)
     {
-        if (logger == null) throw new ArgumentNullException(nameof(logger));
-        if (calendarCollection == null) throw new ArgumentNullException(nameof(calendarCollection));
-
         this.logger = logger;
-        this.calendarCollection = calendarCollection;
+        dbCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
+        ArgumentNullException.ThrowIfNull(dbCollection);
     }
 
     public Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
@@ -45,8 +45,8 @@ public class CalendarService : ICalendarService
         throw new NotImplementedException();
     }
 
-    public async Task <IEnumerable<UserCalendar>> GetAsync() =>
-       await calendarCollection.Find(_ => true).ToListAsync();
+    public async Task<IEnumerable<UserCalendar>> GetAsync() =>
+        await dbCollection.Find(_ => true).ToListAsync();
 
     //public async Task<Book?> GetAsync(string id) =>
     //    await calendarCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

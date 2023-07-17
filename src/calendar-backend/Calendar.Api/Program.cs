@@ -1,25 +1,26 @@
 using Calendar.Api.Configurations;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
+using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
-builder.Services.Configure<EnvironmentConfiguration>(configuration);
-var environmentConfig = configuration.Get<EnvironmentConfiguration>();
+builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
+var environmentConfig = configuration.Get<MongoDbEnvironmentConfiguration>();
 
 // Env validation
 if (environmentConfig == null) throw new ArgumentNullException(nameof(environmentConfig));
 if (environmentConfig.MONGODB_CONNECTIONSTRING == null) throw new ArgumentNullException(nameof(environmentConfig.MONGODB_CONNECTIONSTRING));
 
 // Mongo configuration
-var mongoClient = new MongoClient(environmentConfig.MONGODB_CONNECTIONSTRING);
-var mongoDatabase = mongoClient.GetDatabase(environmentConfig.MONGODB_DB_NAME);
-var mongoCalendarsCollection = mongoDatabase.GetCollection<Calendar.Mongo.Db.Models.Calendar>(environmentConfig.MONGODB_CALENDARS_COLLECTION_NAME);
-
-// Add mongo
-builder.Services.AddSingleton<IMongoCollection<Calendar.Mongo.Db.Models.Calendar>>(mongoCalendarsCollection);
+builder.Services.AddScoped<IMongoClient>(x => new MongoClient(environmentConfig.MONGODB_CONNECTIONSTRING));
+builder.Services.AddScoped<IMongoDatabase>(x =>
+{
+    var client = x.GetRequiredService<IMongoClient>();
+    return client.GetDatabase(environmentConfig.MONGODB_DB_NAME);
+});
 
 // Add services to the container.
 builder.Services.AddScoped<ICalendarService, CalendarService>();
