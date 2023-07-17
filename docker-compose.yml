@@ -28,7 +28,7 @@ services:
       - frontend
     ports:
       - 3005:80
-  
+  # Mongo DB
   mongodb:
     image: mongo
     restart: always
@@ -38,7 +38,7 @@ services:
       - 27017:27017
     volumes:
       - noSqlData:/data/db
-  
+  # Maria DB
   mariadb:
     image: mariadb
     restart: always
@@ -48,7 +48,6 @@ services:
       - 3306:3306
     volumes:
       - sqlData:/var/lib/mysql
-
   # Authelia
   authelia:
     image: authelia/authelia
@@ -78,22 +77,12 @@ services:
     image: redis:alpine
     container_name: redis
     volumes:
-      - ./redis:/data
+      - ./config/redis:/data
     networks:
       - backend
     expose:
       - 6379
     restart: unless-stopped
-
-  # for auhteni
-  # posgress:
-  #   image: "postgres:alpine3.18"
-  #   container_name: authelia-posgress
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - POSTGRES_PASSWORD=74RuqICjDPQEFREmhIFaqRf6H
-  #     - POSTGRES_USER=authelia
 
 volumes:
   noSqlData:
@@ -103,4 +92,4 @@ networks:
   backend:
   frontend:
     driver: bridge
-
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx

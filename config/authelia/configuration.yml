@@ -27,35 +27,38 @@ authentication_backend:
   file:
     path: /config/users_database.yml
     watch: true
-  password:
-      algorithm: argon2
-      argon2:
-        variant: argon2id
-        iterations: 3
-        memory: 65536
-        parallelism: 4
-        key_length: 32
-        salt_length: 16
-      scrypt:
-        iterations: 16
-        block_size: 8
-        parallelism: 1
-        key_length: 32
-        salt_length: 16
-      pbkdf2:
-        variant: sha512
-        iterations: 310000
-        salt_length: 16
-      sha2crypt:
-        variant: sha512
-        iterations: 50000
-        salt_length: 16
-      bcrypt:
-        variant: standard
-        cost: 12
+    search:
+      email: true
+      username: true
+    # password:
+    #     algorithm: argon2
+    #     argon2:
+    #       variant: argon2id
+    #       iterations: 3
+    #       memory: 65536
+    #       parallelism: 4
+    #       key_length: 32
+    #       salt_length: 16
+    #     scrypt:
+    #       iterations: 16
+    #       block_size: 8
+    #       parallelism: 1
+    #       key_length: 32
+    #       salt_length: 16
+    #     pbkdf2:
+    #       variant: sha512
+    #       iterations: 310000
+    #       salt_length: 16
+    #     sha2crypt:
+    #       variant: sha512
+    #       iterations: 50000
+    #       salt_length: 16
+    #     bcrypt:
+    #       variant: standard
+    #       cost: 12
 
 access_control:
-  default_policy: deny
+  default_policy: one_factor
   rules:
     # Rules applied to everyone
     - domain: public.localhost.local
@@ -67,7 +70,7 @@ access_control:
 
 session:
   # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
-  domain: authelia.localhost.local
+  domain: 'authelia.localhost.local'
   # cookies:
   #   - name: authelia_session
   #     domain: localhost.local  # Should match whatever your root protected domain is
