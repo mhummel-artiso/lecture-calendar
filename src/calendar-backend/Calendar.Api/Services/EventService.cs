@@ -16,11 +16,29 @@ namespace Calendar.Api.Services
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
 
+        public async Task<CalendarEvent> AddEventAsync(CalendarEvent lectureEvent, string calendarId)
+        {
+            throw new NotImplementedException();
+        }
 
-        public async Task<CalendarEvent> GetEventAsync(string calendarName, string lectureId, string id) => throw new NotImplementedException();
-        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId) => throw new NotImplementedException();
-        public async Task<CalendarEvent> AddEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId) => throw new NotImplementedException();
-        public async Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId, string lectureId) => throw new NotImplementedException();
-        public async Task<bool> DeleteEventByIdAsync(string id) => throw new NotImplementedException();
+        public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<CalendarEvent> GetEventAsync(string calendarId, string eventId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
