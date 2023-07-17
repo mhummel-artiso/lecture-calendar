@@ -4,13 +4,17 @@ namespace Calendar.Api.Services.Interfaces;
 
 public interface ICalendarService
 {
+    // ViewType better in EventService?
     Task<UserCalendar> GetCalendarByIdAsync(string id, ViewType viewType);
+
+    // Maybe: Get only Meta Information?
     Task<UserCalendar> GetCalendarByNameAsync(string name);
 
     Task<UserCalendar> AddCalendarAsync(UserCalendar calendar);
 
-    Task<UserCalendar> UpdateCalendarAsync(string id, UserCalendar calendar);
+    // Warning: Be careful not to delete events.
+    Task<UserCalendar> UpdateCalendarAsync(string calendarId, UserCalendar calendar);
 
-    Task <bool>DeleteCalendarByIdAsync(string id);
+    Task <bool>DeleteCalendarByIdAsync(string calendarId);
 
 }

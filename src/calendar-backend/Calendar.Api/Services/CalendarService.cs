@@ -1,10 +1,7 @@
-﻿using Calendar.Api.Configurations;
-using Calendar.Api.Models;
+﻿using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Collections.Generic;
 
 namespace Calendar.Api.Services;
 
@@ -20,27 +17,27 @@ public class CalendarService : ICalendarService
         ArgumentNullException.ThrowIfNull(dbCollection);
     }
 
-    public Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
+    public async Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteCalendarByIdAsync(string id)
+    public async Task<bool> DeleteCalendarByIdAsync(string calendarId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserCalendar> GetCalendarByIdAsync(string id, ViewType view)
+    public async Task<UserCalendar> GetCalendarByIdAsync(string id, ViewType viewType)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserCalendar> GetCalendarByNameAsync(string name)
+    public async Task<UserCalendar> GetCalendarByNameAsync(string name)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserCalendar> UpdateCalendarAsync(string id, UserCalendar calendar)
+    public async Task<UserCalendar> UpdateCalendarAsync(string calendarId, UserCalendar calendar)
     {
         throw new NotImplementedException();
     }
