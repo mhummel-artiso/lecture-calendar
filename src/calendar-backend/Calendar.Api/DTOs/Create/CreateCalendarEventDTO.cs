@@ -1,6 +1,6 @@
-﻿namespace Calendar.Api.DTOs
+﻿namespace Calendar.Api.DTOs.Create
 {
-    public class CreateEventDTO
+    public class CreateCalendarEventDTO
     {
         public string? Location { get; set; }
         public DateTimeOffset Start { get; set; }

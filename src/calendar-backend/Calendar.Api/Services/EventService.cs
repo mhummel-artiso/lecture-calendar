@@ -1,4 +1,5 @@
-﻿using Calendar.Api.Services.Interfaces;
+﻿using Calendar.Api.Models;
+using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
 
@@ -36,17 +37,7 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<CalendarEvent>> GetEventsFromDayAsync(string calendarId, DateTime date)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<CalendarEvent>> GetEventsFromMonthAsync(string calendarId, DateTime date)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<CalendarEvent>> GetEventsFromWeekAsync(string calendarId, DateTime date)
+        public async Task<IEnumerable<CalendarEvent>> GetEventsAsync(string calendarId, ViewType viewType, DateTime date)
         {
             throw new NotImplementedException();
         }

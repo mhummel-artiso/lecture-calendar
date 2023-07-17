@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Calendar.Api.DTOs;
+using Calendar.Api.DTOs.Create;
+using Calendar.Api.DTOs.Update;
 using Calendar.Mongo.Db.Models;
 
 namespace Calendar.Api.Profiles
@@ -8,11 +10,11 @@ namespace Calendar.Api.Profiles
     {
         public CalendarProfile()
         {
-            CreateMap<CreateCalendarDTO, UserCalendar>().ReverseMap();
+            CreateMap<CreateUserCalendarDTO, UserCalendar>().ReverseMap();
 
-            CreateMap<UpdateCalendarDTO, UserCalendar>().ReverseMap();
+            CreateMap<UpdateUserCalendarDTO, UserCalendar>().ReverseMap();
 
-            CreateMap<UserCalendar, ReturnCalendarDTO>().ReverseMap();
+            CreateMap<UserCalendar, UserCalendarDTO>().ReverseMap();
         }
     }
 }

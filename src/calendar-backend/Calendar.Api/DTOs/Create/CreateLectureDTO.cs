@@ -1,4 +1,4 @@
-﻿namespace Calendar.Api.DTOs
+﻿namespace Calendar.Api.DTOs.Create
 {
     public class CreateLectureDTO
     {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Calendar.Api.DTOs;
+using Calendar.Api.DTOs.Create;
+using Calendar.Api.DTOs.Update;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;

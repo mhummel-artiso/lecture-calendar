@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Calendar.Api.DTOs;
+using Calendar.Api.DTOs.Create;
+using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
@@ -26,7 +27,7 @@ public class EventController : ControllerBase
     // TODO: lectureId in Servicemethode diskutieren
     [HttpPost("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateEventDTO calendarEvent, string calendarId)
+    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateCalendarEventDTO calendarEvent, string calendarId)
     {
         if (calendarEvent == null)
         {
@@ -81,7 +82,7 @@ public class EventController : ControllerBase
     // TODO: Mit Samuel besprechen
     [HttpPut("{id}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> EditEvent(string id, [FromBody] UpdateEventDTO calendarEvent)
+    public async Task<ActionResult<CalendarEvent>> EditEvent(string id, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
         if (string.IsNullOrEmpty(id))
         {

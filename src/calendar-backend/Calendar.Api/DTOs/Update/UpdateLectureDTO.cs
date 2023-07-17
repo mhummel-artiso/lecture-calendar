@@ -1,4 +1,6 @@
-﻿namespace Calendar.Api.DTOs
+﻿using Calendar.Api.DTOs.Create;
+
+namespace Calendar.Api.DTOs.Update
 {
     public class UpdateLectureDTO : CreateLectureDTO
     {
