@@ -41,6 +41,7 @@ public class CalendarService : ICalendarService
         throw new NotImplementedException();
     }
 
+    // Warning: Be careful not to delete events.
     public async Task<UserCalendar> UpdateCalendarAsync(string calendarId, UserCalendar calendar)
     {
         throw new NotImplementedException();
