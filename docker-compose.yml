@@ -1,46 +1,16 @@
 # start container: docker compose up -d --build
 # stop container: docker compose down
+
+# Set environments, label and command in docker-compose.override.yml
+
 version: "3.9"
 
 services:
-  calendarapi:
-    build:
-      dockerfile:
-  client:
-    build: ./src/calendar-client
-    restart: always
-    networks:
-      - frontend
-    ports:
-      - 3005:80
-  mongodb:
-    image: mongo
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - noSqlData:/data/db
-  mariadb:
-    image: mariadb
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 3306:3306
-    environment:
-      # user name: root
-      MARIADB_ROOT_PASSWORD: example
-    volumes:
-      - sqlData:/var/lib/mysql
+  # API
   calendarapi:
     build:
       context: src/calendar-backend
-      dockerfile: calendar-api/Dockerfile
+      dockerfile: Calendar.Api/Dockerfile
     depends_on:
       mongodb:
         condition: service_started
@@ -50,8 +20,80 @@ services:
       - frontend
     ports:
       - 4000:80
-    environment:
-      MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
+  # Client
+  client:
+    build: ./src/calendar-client
+    restart: always
+    networks:
+      - frontend
+    ports:
+      - 3005:80
+  
+  mongodb:
+    image: mongo
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 27017:27017
+    volumes:
+      - noSqlData:/data/db
+  
+  mariadb:
+    image: mariadb
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 3306:3306
+    volumes:
+      - sqlData:/var/lib/mysql
+
+  # Authelia
+  authelia:
+    image: authelia/authelia
+    restart: on-failure:1
+    volumes:
+      - ./config/authelia:/config
+      - ./config/secrets:/secrets:ro
+    networks:
+      - frontend
+    ports:
+      - 9091:9091
+
+  # traefik
+  traefik:
+    image: traefik:v2.10.3
+    volumes:
+      - ./config/traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - frontend
+    ports:
+      - '80:80'
+      - '443:443'
+
+  # redis for authelia sessions
+  redis:
+    image: redis:alpine
+    container_name: redis
+    volumes:
+      - ./redis:/data
+    networks:
+      - backend
+    expose:
+      - 6379
+    restart: unless-stopped
+
+  # for auhteni
+  # posgress:
+  #   image: "postgres:alpine3.18"
+  #   container_name: authelia-posgress
+  #   networks:
+  #     - backend
+  #   environment:
+  #     - POSTGRES_PASSWORD=74RuqICjDPQEFREmhIFaqRf6H
+  #     - POSTGRES_USER=authelia
 
 volumes:
   noSqlData:
@@ -60,4 +102,5 @@ volumes:
 networks:
   backend:
   frontend:
+    driver: bridge
 
