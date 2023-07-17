@@ -36,6 +36,21 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<CalendarEvent>> GetEventsFromDayAsync(string calendarId, DateTime date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<CalendarEvent>> GetEventsFromMonthAsync(string calendarId, DateTime date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<CalendarEvent>> GetEventsFromWeekAsync(string calendarId, DateTime date)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId)
         {
             throw new NotImplementedException();
