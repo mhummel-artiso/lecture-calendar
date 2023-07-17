@@ -1,11 +1,8 @@
 set -e
 
+# Here comes initial data from mongo
 mongosh <<EOF
 use lecture-calendar;
-db.createUser({
-  user: 'calendar',
-  pwd: '$CALENDAR_PASSWORD',
-  roles: [{ role: 'readWrite', db: 'lecture-calendar' }],
-});
-db.createCollection('calendar')
+db.createCollection('events')
+db.createCollection('lectures')
 EOF
