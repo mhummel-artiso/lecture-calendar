@@ -11,7 +11,7 @@ namespace Calendar.Api.Services.Interfaces
 
         Task<CalendarEvent> AddEventAsync(CalendarEvent lectureEvent, string calendarId);
 
-        Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId);
+        Task<CalendarEvent> UpdateEventAsync(CalendarEvent lectureEvent, string calendarId);
 
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
     }

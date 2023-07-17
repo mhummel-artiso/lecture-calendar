@@ -6,9 +6,9 @@ namespace Calendar.Api.Services.Interfaces
     {
         Task GetLectureByIdAsync(string lectureId);
 
-        Task AddLectureAsync(Lecture lecture);
+        Task<Lecture> AddLectureAsync(Lecture lecture);
 
-        Task UpdateLectureAsync(Lecture lecture);
+        Task<Lecture> UpdateLectureAsync(Lecture lecture);
 
         Task<bool> DeleteLectureByIdAsync(string lectureId);
     }

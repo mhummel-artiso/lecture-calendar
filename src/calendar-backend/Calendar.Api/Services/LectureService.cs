@@ -16,7 +16,7 @@ namespace Calendar.Api.Services
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
 
-        public async Task AddLectureAsync(Lecture lecture)
+        public async Task<Lecture> AddLectureAsync(Lecture lecture)
         {
             throw new NotImplementedException();
         }
@@ -31,7 +31,7 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task UpdateLectureAsync(Lecture lecture)
+        public async Task<Lecture> UpdateLectureAsync(Lecture lecture)
         {
             throw new NotImplementedException();
         }

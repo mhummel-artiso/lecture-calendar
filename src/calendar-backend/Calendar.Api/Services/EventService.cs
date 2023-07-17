@@ -42,7 +42,7 @@ namespace Calendar.Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task UpdateEventAsync(CalendarEvent lectureEvent, string calendarId)
+        public async Task<CalendarEvent> UpdateEventAsync(CalendarEvent lectureEvent, string calendarId)
         {
             throw new NotImplementedException();
         }
