@@ -11,6 +11,8 @@ namespace Calendar.Api.Profiles
             CreateMap<CreateEventDTO, CalendarEvent>().ReverseMap();
 
             CreateMap<UpdateEventDTO, CalendarEvent>().ReverseMap();
+
+            CreateMap<CalendarEvent, ReturnEventDTO>().ReverseMap();
         }
     }
 }

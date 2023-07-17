@@ -8,10 +8,11 @@ namespace Calendar.Api.Profiles
     {
         public CalendarProfile()
         {
-
             CreateMap<CreateCalendarDTO, UserCalendar>().ReverseMap();
 
             CreateMap<UpdateCalendarDTO, UserCalendar>().ReverseMap();
+
+            CreateMap<UserCalendar, ReturnCalendarDTO>().ReverseMap();
         }
     }
 }

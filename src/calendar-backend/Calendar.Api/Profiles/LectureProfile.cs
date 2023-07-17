@@ -11,6 +11,8 @@ namespace Calendar.Api.Profiles
             CreateMap<CreateLectureDTO, Lecture>().ReverseMap();
 
             CreateMap<UpdateLectureDTO, Lecture>().ReverseMap();
+
+            CreateMap<Lecture, ReturnLectureDTO>().ReverseMap();
         }
     }
 }
