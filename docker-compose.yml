@@ -6,7 +6,7 @@
 version: "3.9"
 
 services:
-  # API
+  # Api
   calendarapi:
     build:
       context: src/calendar-backend
@@ -20,6 +20,7 @@ services:
       - frontend
     ports:
       - 4000:80
+
   # Client
   client:
     build: ./src/calendar-client
@@ -28,6 +29,7 @@ services:
       - frontend
     ports:
       - 3005:80
+
   # Mongo DB
   mongodb:
     image: mongo
@@ -38,6 +40,7 @@ services:
       - 27017:27017
     volumes:
       - noSqlData:/data/db
+
   # Maria DB
   mariadb:
     image: mariadb
@@ -48,15 +51,22 @@ services:
       - 3306:3306
     volumes:
       - sqlData:/var/lib/mysql
+
   # Authelia
   authelia:
-    image: authelia/authelia
+    image: authelia/authelia:latest
     restart: on-failure:1
+    depends_on:
+      - redis
+      - mariadb
+      # - traefik
     volumes:
-      - ./config/authelia:/config
+      # - ${PWD}/config/authelia/configuration.yml:/config/configuration.yml
+      - ./config/authelia/:/config/
       - ./config/secrets:/secrets:ro
     networks:
       - frontend
+      - backend
     ports:
       - 9091:9091
 
@@ -71,18 +81,28 @@ services:
     ports:
       - '80:80'
       - '443:443'
+      
+  posgressdb:
+      image: "postgres:alpine3.18"
+      networks:
+        - backend
+      ports:
+        - "5432"
+      environment:
+        - POSTGRES_PASSWORD=74RuqICjDPQEFREmhIFaqRf6H
+        - POSTGRES_USER=authelia
 
   # redis for authelia sessions
   redis:
     image: redis:alpine
-    container_name: redis
     volumes:
+      - ./config/redis.conf:/etc/redis/redis.conf
       - ./config/redis:/data
     networks:
       - backend
     expose:
       - 6379
-    restart: unless-stopped
+    restart: on-failure:1
 
 volumes:
   noSqlData:
@@ -92,4 +112,4 @@ networks:
   backend:
   frontend:
     driver: bridge
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx
+# dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx
