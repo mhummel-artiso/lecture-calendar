@@ -16,12 +16,24 @@ namespace Calendar.Api.Services
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
 
-        public async Task<IEnumerable<Lecture>> GetAllLecturesFromCalendarAsync(string calendarId) => throw new NotImplementedException();
-        public async Task<IEnumerable<Lecture>> GetLecturesByCalendarNameAsync(string calendarName) => throw new NotImplementedException();
-        public async Task<IEnumerable<Lecture>> GetLecturesWeekSectionAsync(string calendarName, int weekNumber, int year) => throw new NotImplementedException();
-        public async Task<IEnumerable<Lecture>> GetLecturesDaySectionAsync(string calendarName, DateTime date) => throw new NotImplementedException();
-        public async Task AddLectureAsync(Lecture lecture, string calendarId) => throw new NotImplementedException();
-        public async Task UpdateLectureAsync(Lecture lecture, string calendarName) => throw new NotImplementedException();
-        public async Task<bool> DeleteLectureByIdAsync(string id) => throw new NotImplementedException();
+        public async Task AddLectureAsync(Lecture lecture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> DeleteLectureByIdAsync(string lectureId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task GetLectureByIdAsync(string lectureId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateLectureAsync(Lecture lecture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
