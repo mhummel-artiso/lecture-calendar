@@ -16,13 +16,13 @@ public class CalendarService : ICalendarService
         ArgumentNullException.ThrowIfNull(dbCollection);
     }
 
-    public async Task<IEnumerable<UserCalendar>> GetCalendarsByNames(IEnumerable<string> names)
+    public async Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names)
     {
         var keys = names.ToList();
         var result = await dbCollection.Find(x => keys.Contains(x.Name)).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
         return result;
     }
-    public async Task<UserCalendar?> GetCalendarMetadata(string calendarId)
+    public async Task<UserCalendar?> GetCalendarMetadataAsync(string calendarId)
     {
         var calendar = await dbCollection
             .Find(x => x.Id == calendarId)
@@ -30,7 +30,7 @@ public class CalendarService : ICalendarService
             .FirstOrDefaultAsync();
         return calendar;
     }
-    public async Task<UserCalendar?> GetCompleteCalendar(string calendarId)
+    public async Task<UserCalendar?> GetCompleteCalendarAsync(string calendarId)
     {
         var calendar = await dbCollection
             .Find(x => x.Id == calendarId)

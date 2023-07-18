@@ -24,7 +24,6 @@ public class EventController : ControllerBase
         this.logger = logger;
     }
 
-    // TODO: lectureId in Servicemethode diskutieren
     [HttpPost("{calendarId}")]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateCalendarEventDTO calendarEvent, string calendarId)
@@ -34,7 +33,7 @@ public class EventController : ControllerBase
             return BadRequest();
         }
 
-        var result = await service.AddEventAsync(mapper.Map<CalendarEvent>(calendarEvent), calendarId);
+        var result = await service.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         return Ok(result);
     }
 
@@ -43,11 +42,6 @@ public class EventController : ControllerBase
     [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendar>> GetEvent(string id)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
-
         try
         {
             var calendarEvent = await service.GetEventAsync(id);
@@ -63,11 +57,6 @@ public class EventController : ControllerBase
     [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable <CalendarEvent>>> GetAllEventsFromCalendar(string calendarId)
     {
-        if (string.IsNullOrEmpty(calendarId))
-        {
-            return BadRequest();
-        }
-
         try
         {
             var calendarEvent = await service.GetAllEventsFromCalendarAsync(calendarId);
@@ -79,36 +68,25 @@ public class EventController : ControllerBase
         }
     }
 
-    // TODO: Mit Samuel besprechen
     [HttpPut("{id}")]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<CalendarEvent>> EditEvent(string id, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
         if (calendarEvent == null)
         {
             return BadRequest();
         }
 
-        var result = await service.UpdateEventAsync(id, mapper.Map<UserCalendar>(calendarEvent));
+        var result = await service.UpdateEventAsync(id, mapper.Map<CalendarEvent>(calendarEvent));
         return Ok(result);
     }
 
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{calendarId}/{id}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> DeleteEvent(string id)
+    public async Task<ActionResult<CalendarEvent>> DeleteEvent(string calendarId, string id)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
-
-        var success = await service.DeleteEventByIdAsync(id);
-
+        var success = await service.DeleteEventByIdAsync(calendarId, id);
         return Ok(success);
     }
 }

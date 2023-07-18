@@ -23,7 +23,6 @@ public class LectureController : ControllerBase
         this.logger = logger;
     }
 
-
     [HttpPost]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<Lecture>> AddLecture([FromBody] CreateLectureDTO lecture)
@@ -37,19 +36,13 @@ public class LectureController : ControllerBase
         return Ok(result);
     }
 
-    // TODO: Methode muss noch überarbeitet werden
     [HttpGet("{lectureId}")]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<Lecture>> GetLecture(string id)
+    public async Task<ActionResult<Lecture>> GetLecture(string lectureId)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
-
         try
         {
-            var lecture = await service.GetLectureAsync(id);
+            var lecture = await service.GetLectureByIdAsync(lectureId);
             return Ok(lecture);
         }
         catch (Exception ex)
@@ -62,11 +55,6 @@ public class LectureController : ControllerBase
     [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable<Lecture>>> GetAllLecturesFromCalendar(string calendarId)
     {
-        if (string.IsNullOrEmpty(calendarId))
-        {
-            return BadRequest();
-        }
-
         try
         {
             var calendarEvent = await service.GetAllLecturesFromCalendarAsync(calendarId);
@@ -78,15 +66,10 @@ public class LectureController : ControllerBase
         }
     }
 
-    // TODO: Mit Samuel besprechen
     [HttpPut("{id}")]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<Lecture>> EditLecture(string id, [FromBody] UpdateLectureDTO lecture)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
         if (lecture == null)
         {
             return BadRequest();
@@ -96,16 +79,10 @@ public class LectureController : ControllerBase
         return Ok(result);
     }
 
-
     [HttpDelete("{id}")]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<Lecture>> DeleteLecture(string id)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
-
         var success = await service.DeleteLectureByIdAsync(id);
 
         return Ok(success);
