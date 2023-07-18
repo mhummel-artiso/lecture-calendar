@@ -12,6 +12,6 @@ namespace Calendar.Api.DTOs
         public DateTimeOffset EndSeries { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset LastUpdateDate { get; set; }
-        public Lecture? Lecture { get; set; }
+        public LectureDTO? Lecture { get; set; }
     }
 }

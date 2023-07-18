@@ -17,7 +17,8 @@ namespace Calendar.Api.Services
             calendarCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
-
+        public async Task<IEnumerable<Lecture>> GetLecturesAsync() =>
+            await dbCollection.Find(x => true).ToListAsync();
         public async Task<Lecture?> GetLectureByIdAsync(string lectureId) =>
             await dbCollection.Find(x => x.Id == lectureId).FirstOrDefaultAsync();
 
@@ -33,7 +34,7 @@ namespace Calendar.Api.Services
         }
         public async Task<bool> DeleteLectureByIdAsync(string lectureId)
         {
-            
+
             var result = await dbCollection.DeleteOneAsync(x => x.Id == lectureId);
             return result.DeletedCount == 1;
         }

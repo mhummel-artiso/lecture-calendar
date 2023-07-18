@@ -4,6 +4,7 @@ namespace Calendar.Api.Services.Interfaces
 {
     public interface ILectureService
     {
+        Task<IEnumerable<Lecture>> GetLecturesAsync();
         Task<Lecture?> GetLectureByIdAsync(string lectureId);
 
         Task<Lecture> AddLectureAsync(Lecture lecture);

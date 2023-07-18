@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Collections;
 using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
@@ -30,9 +32,10 @@ public class CalendarController : ControllerBase
     }
 
     #region UserCalendar
+
     [HttpPost]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<UserCalendar>> AddCalendar([FromBody] CreateUserCalendarDTO calendar)
+    public async Task<ActionResult<UserCalendarDTO>> AddCalendar([FromBody] CreateUserCalendarDTO calendar)
     {
         if (calendar == null)
         {
@@ -40,58 +43,65 @@ public class CalendarController : ControllerBase
         }
 
         var result = await calendarService.AddCalendarAsync(mapper.Map<UserCalendar>(calendar));
-        return Ok(result);
+
+        return Ok(mapper.Map<UserCalendarDTO>(result));
     }
 
     [HttpGet]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<UserCalendar>> GetCalendarsByNames()
+    public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
         var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
-
-        var testdata = new List<string> {"TINF21AI"};   // TODO: use groups from claim 
+        var testdata = new List<string>
+        {
+            "TINF21AI"
+        }; // TODO: use groups from claim 
         var calendar = await calendarService.GetCalendarsByNamesAsync(testdata);
-        return Ok(calendar);
-       
+
+        return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
     }
 
     [HttpGet("{calendarId}")]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<UserCalendar>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
-    {             
+    public async Task<ActionResult<UserCalendarDTO>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
+    {
         var calendar = await calendarService.GetCalendarByIdAsync(calendarId, includeEvents);
-        return Ok(calendar);       
+        if (calendar == null)
+            return NotFound();
+        return Ok(mapper.Map<UserCalendarDTO>(calendar));
     }
 
     [HttpPut("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task <ActionResult<UserCalendar>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO calendar)
+    public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO calendar)
     {
         if (calendar == null)
         {
             return BadRequest();
-        }        
+        }
 
         var result = await calendarService.UpdateCalendarAsync(calendarId, mapper.Map<UserCalendar>(calendar));
-        return Ok(result);
+        if (result == null)
+            return NotFound();
+        return Ok(mapper.Map<UserCalendarDTO>(result));
     }
 
 
     [HttpDelete("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<UserCalendar>> DeleteCalendar(string calendarId)
+    public async Task<ActionResult<bool>> DeleteCalendar(string calendarId)
     {
         var success = await calendarService.DeleteCalendarByIdAsync(calendarId);
-
         return Ok(success);
     }
+
     #endregion
 
-
     #region CalendarEvents
+
     [HttpPost("{calendarId}/event")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateCalendarEventDTO calendarEvent, string calendarId)
+    public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO calendarEvent)
     {
         if (calendarEvent == null)
         {
@@ -99,41 +109,33 @@ public class CalendarController : ControllerBase
         }
 
         var result = await eventService.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        return Ok(result);
-    }
 
-    [HttpGet("{calendarId}/event/{eventId}")]
-    [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<UserCalendar>> GetEvent(string calendarId, string eventId)
-    {
-        
-        var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
-
-        if (calendarEvent == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(calendarEvent);
+        return Ok(mapper.Map<CalendarEventDTO>(result));
     }
 
     [HttpGet("{calendarId}/event")]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<IEnumerable<CalendarEvent>>> GetAllEventsFromCalendar(string calendarId)
+    public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId)
     {
-        var calendarEvent = await eventService.GetAllEventsFromCalendarAsync(calendarId);
+        var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
+        return Ok(mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents));
+    }
+
+    [HttpGet("{calendarId}/event/{eventId}")]
+    [Authorize(Roles = "viewer,editor")]
+    public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
+    {
+        var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
 
         if (calendarEvent == null)
-        {
             return NotFound();
-        }
 
-        return Ok(calendarEvent);
+        return Ok(mapper.Map<CalendarEventDTO>(calendarEvent));
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> EditEvent(string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
         if (calendarEvent == null)
         {
@@ -141,16 +143,19 @@ public class CalendarController : ControllerBase
         }
 
         var result = await eventService.UpdateEventAsync(eventId, mapper.Map<CalendarEvent>(calendarEvent));
-        return Ok(result);
+        if (result == null)
+            return NotFound();
+        return Ok(mapper.Map<CalendarEventDTO>(result));
     }
-
 
     [HttpDelete("{calendarId}/event/{eventId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEvent>> DeleteEvent(string calendarId, string eventId)
+    public async Task<ActionResult<bool>> DeleteEvent(string calendarId, string eventId)
     {
         var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
         return Ok(success);
     }
+
     #endregion
+
 }
