@@ -52,7 +52,7 @@ public class CalendarController : ControllerBase
         try
         {
             var view = string.IsNullOrEmpty(viewType) ? ViewType.Week : Enum.Parse<ViewType>(viewType);
-            var calendar = await service.GetCalendarMetadata(id);
+            var calendar = await service.GetCalendarById(id);
             return Ok(calendar);
         }
         catch(Exception ex)
