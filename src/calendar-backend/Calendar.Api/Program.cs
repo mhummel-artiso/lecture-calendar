@@ -1,7 +1,6 @@
 using Calendar.Api.Configurations;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);

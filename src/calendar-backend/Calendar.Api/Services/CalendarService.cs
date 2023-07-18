@@ -16,57 +16,43 @@ public class CalendarService : ICalendarService
         ArgumentNullException.ThrowIfNull(dbCollection);
     }
 
+    public async Task<IEnumerable<UserCalendar>> GetCalendarsByNames(IEnumerable<string> names)
+    {
+        var keys = names.ToList();
+        var result = await dbCollection.Find(x => keys.Contains(x.Name)).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
+        return result;
+    }
+    public async Task<UserCalendar?> GetCalendarMetadata(string calendarId)
+    {
+        var calendar = await dbCollection
+            .Find(x => x.Id == calendarId)
+            .Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events))
+            .FirstOrDefaultAsync();
+        return calendar;
+    }
+    public async Task<UserCalendar?> GetCompleteCalendar(string calendarId)
+    {
+        var calendar = await dbCollection
+            .Find(x => x.Id == calendarId)
+            .FirstOrDefaultAsync();
+        return calendar;
+    }
     public async Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
     {
-        throw new NotImplementedException();
+        await dbCollection.InsertOneAsync(calendar);
+        return calendar;
     }
-
+    public async Task<UserCalendar?> UpdateCalendarAsync(string calendarId, UserCalendar updateCalendar)
+    {
+        var updates = new UpdateDefinitionBuilder<UserCalendar>()
+            .Set(x => x.Name, updateCalendar.Name)
+            .Set(x => x.StartDate, updateCalendar.StartDate);
+        var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, updates);
+        return result.IsAcknowledged ? updateCalendar : null;
+    }
     public async Task<bool> DeleteCalendarByIdAsync(string calendarId)
     {
-        throw new NotImplementedException();
+        var result = await dbCollection.DeleteOneAsync(x => x.Id == calendarId);
+        return result.DeletedCount == 1;
     }
-
-    public async Task<Dictionary<string, string>> GetCalendarIdsByNames(IEnumerable<string> name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<UserCalendar> GetCalendarMetadata(string calendarId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<UserCalendar> GetCompleteCalendar(string calendarId)
-    {
-        throw new NotImplementedException();
-    }
-
-    // Warning: Be careful not to delete events.
-    public async Task<UserCalendar> UpdateCalendarAsync(string calendarId, UserCalendar calendar)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<UserCalendar>> GetAsync() =>
-        await dbCollection.Find(_ => true).ToListAsync();
-
-    //public async Task<Book?> GetAsync(string id) =>
-    //    await calendarCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
-
-    //public async Task CreateAsync(Book newBook) =>
-    //    await calendarCollection.InsertOneAsync(newBook);
-
-    //public async Task UpdateAsync(string id, Book updatedBook) =>
-    //    await calendarCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
-
-    //public async Task RemoveAsync(string id) =>
-    //    await calendarCollection.DeleteOneAsync(x => x.Id == id);
-
-    //public async Task<bool> CreateCalendar(Mongo.Db.Models.Calendar classCalendar)
-    //{
-
-    //    await calendarCollection.InsertOneAsync(classCalendar);
-    //    return true;
-    //}
-    //public CalendarItem GetCalendar(Guid studentClass) => throw new NotImplementedException();
 }

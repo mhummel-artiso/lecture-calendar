@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace Calendar.Mongo.Db.Models
 {
@@ -21,6 +22,6 @@ namespace Calendar.Mongo.Db.Models
         public DateTimeOffset CreatedDate { get; set; }
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset LastUpdateDate { get; set; }
-        public string? LectureId { get; set; }
+        public MongoDBRef LectureId { get; set; }
     }
 }
