@@ -1,44 +1,68 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { AuthProvider } from 'oidc-react';
+import { AuthProvider, AuthProviderProps } from 'oidc-react';
+import {
+    Routes,
+    Route,
+    // Link,
+    // useNavigate,
+    // useLocation,
+    // Navigate,
+    // Outlet,
+} from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const oidcConfig = {
-    onSignIn: () => {
-      // Redirect?
-    },
-    authority: 'https://localhost:8080/oauth',
-    clientId: 'this-is-a-client-id',
-    redirectUri: 'https://my-app.com/',
-  };
-  
-  return (
-    <AuthProvider {...oidcConfig}>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </ AuthProvider>
-  )
+    const [count, setCount] = useState(0)
+
+    const oidcConfig: AuthProviderProps = {
+        onBeforeSignIn:() =>{
+            console.log("window.location.href",window.location.href)
+            return window.location.href;
+        },
+        onSignIn: (user) => {
+            // Redirect?
+            console.log('user',user);
+        },
+        onSignOut: (props) => {
+            console.log('props',props);
+        },
+        loadUserInfo: true,
+        authority: 'http://localhost:9091/oauth',
+        clientId: 'this-is-a-client-id',
+        redirectUri: 'http://localhost:3005/',
+    };
+
+    return (
+        <AuthProvider {...oidcConfig}>
+            <Routes>
+                <Route caseSensitive={true} path="/" element={(<>
+                    <div>
+                        <a href="https://vitejs.dev" target="_blank">
+                            <img src={viteLogo} className="logo" alt="Vite logo"/>
+                        </a>
+                        <a href="https://react.dev" target="_blank">
+                            <img src={reactLogo} className="logo react" alt="React logo"/>
+                        </a>
+                    </div>
+                    <h1>Vite + React</h1>
+                    <div className="card">
+                        <button onClick={() => setCount((count) => count + 1)}>
+                            count is {count}
+                        </button>
+                        <p>
+                            Edit <code>src/App.tsx</code> and save to test HMR
+                        </p>
+                    </div>
+                    <p className="read-the-docs">
+                        Click on the Vite and React logos to learn more
+                    </p>
+                </>)}>
+                </Route>
+            </Routes>
+        </ AuthProvider>
+    )
 }
 
 export default App

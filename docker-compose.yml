@@ -70,17 +70,17 @@ services:
     ports:
       - 9091:9091
 
-  # traefik
-  traefik:
-    image: traefik:v2.10.3
-    volumes:
-      - ./config/traefik:/etc/traefik
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - frontend
-    ports:
-      - '80:80'
-      - '443:443'
+  # # traefik
+  # traefik:
+  #   image: traefik:v2.10.3
+  #   volumes:
+  #     - ./config/traefik:/etc/traefik
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - frontend
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
       
   posgressdb:
       image: "postgres:alpine3.18"

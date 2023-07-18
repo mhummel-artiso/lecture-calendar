@@ -7,7 +7,7 @@ theme: 'auto'
 
 # This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
 jwt_secret: ''
-default_redirection_url: https://public.localhost
+default_redirection_url: https://localhost:3000
 server:
   host: localhost
   port: 9091
@@ -21,7 +21,7 @@ totp:
 #   issuer: authelia.com
 
 # duo_api:
-#  hostname: api-123456789.localhost
+#  hostname: api-123456789.localhost:9091
 #  integration_key: ABCDEF
 #  # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY_FILE
 #  secret_key: 1234567890abcdefghifjkl
@@ -33,14 +33,14 @@ authentication_backend:
     search:
       email: true
     password:
-        algorithm: sha2crypt
-        # argon2:
-        #   variant: argon2id
-        #   iterations: 3
-        #   memory: 65536
-        #   parallelism: 4
-        #   key_length: 32
-        #   salt_length: 16
+        algorithm: argon2
+        argon2:
+          variant: argon2id
+          iterations: 3
+          memory: 65536
+          parallelism: 4
+          key_length: 32
+          salt_length: 16
         # scrypt:
         #   iterations: 16
         #   block_size: 8
@@ -63,12 +63,12 @@ access_control:
   default_policy: one_factor
   rules:
     # Rules applied to everyone
-    - domain: public.localhost
-      policy: bypass
-    - domain: traefik.localhost
+    - domain: localhost:9091
       policy: one_factor
-    - domain: secure.localhost
-      policy: one_factor
+    # - domain: traefik.localhost:9091
+    #   policy: one_factor
+    # - domain: localhost:9091
+    #   policy: one_factor
 
 session:
   # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
@@ -76,7 +76,7 @@ session:
   same_site: lax
   expiration: 1h  # 1 hour
   inactivity: 5m  # 5 minutes
-  domain: 'authelia.localhost'
+  domain: 'localhost:9091'
   
   # redis:
   #   host: redis
@@ -85,7 +85,7 @@ session:
 
   # cookies:
   #   - name: authelia_session
-  #     domain: localhost  # Should match whatever your root protected domain is
+  #     domain: localhost:9091  # Should match whatever your root protected domain is
   #     expiration: 3600  # 1 hour
   #     inactivity: 300  # 5 minutes
 
@@ -120,9 +120,9 @@ notifier:
 #     username: test
 #     # This secret can also be set using the env variables AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
 #     password: password
-#     host: mail.localhost
+#     host: mail.localhost:9091
 #     port: 25
-#     sender: admin@localhost
+#     sender: admin@localhost:9091
 identity_providers:
   #
   # OpenID Connect (Identity Provider)
@@ -221,7 +221,7 @@ identity_providers:
         # - https://example.com
 
       ## Automatically adds the origin portion of all redirect URI's on all clients to the list of allowed_origins,
-      ## provided they have the scheme http or https and do not have the hostname of localhost.
+      ## provided they have the scheme http or https and do not have the hostname of localhost:9091.
       allowed_origins_from_client_redirect_uris: true
 
     ## Clients is a list of known clients and their configuration.
@@ -237,7 +237,7 @@ identity_providers:
       - id: web-client
         description: The Web client for calendar
         secret: this_is_a_secret # TODO change this secret
-        sector_identifier: localhost
+        sector_identifier: localhost:9091
         public: false
         authorization_policy: one_factor
         # The consent mode controls how consent is obtained.
@@ -255,7 +255,7 @@ identity_providers:
           - profile
          # Redirect URI's specifies a list of valid case-sensitive callbacks for this client.
         redirect_uris:
-           - https://oidc.example.com:8080/oauth2/callback
+           - https://localhost:3000/
         # Grant Types configures which grants this client can obtain.
         # It's not recommended to define this unless you know what you're doing.
         grant_types:
