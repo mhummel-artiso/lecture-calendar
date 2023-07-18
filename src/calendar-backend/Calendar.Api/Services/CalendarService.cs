@@ -22,20 +22,16 @@ public class CalendarService : ICalendarService
         var result = await dbCollection.Find(x => keys.Contains(x.Name)).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
         return result;
     }
-    public async Task<UserCalendar?> GetCalendarMetadataAsync(string calendarId)
+    public async Task<UserCalendar?> GetCalendarById(string calendarId, bool includeEvents)
     {
-        var calendar = await dbCollection
-            .Find(x => x.Id == calendarId)
-            .Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events))
-            .FirstOrDefaultAsync();
-        return calendar;
-    }
-    public async Task<UserCalendar?> GetCompleteCalendarAsync(string calendarId)
-    {
-        var calendar = await dbCollection
-            .Find(x => x.Id == calendarId)
-            .FirstOrDefaultAsync();
-        return calendar;
+        var query = dbCollection
+            .Find(x => x.Id == calendarId);
+        if (!includeEvents)
+            query = query
+                .Project<UserCalendar>(
+                    Builders<UserCalendar>.Projection
+                        .Exclude(x => x.Events));
+        return await query.FirstOrDefaultAsync();
     }
     public async Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
     {

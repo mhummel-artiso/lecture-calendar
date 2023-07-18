@@ -14,7 +14,7 @@ if (environmentConfig == null) throw new ArgumentNullException(nameof(environmen
 if (environmentConfig.MONGODB_CONNECTIONSTRING == null) throw new ArgumentNullException(nameof(environmentConfig.MONGODB_CONNECTIONSTRING));
 
 // Mongo configuration
-builder.Services.AddScoped<IMongoClient>(x => new MongoClient(environmentConfig.MONGODB_CONNECTIONSTRING));
+builder.Services.AddSingleton<IMongoClient>(x => new MongoClient(environmentConfig.MONGODB_CONNECTIONSTRING));
 builder.Services.AddScoped<IMongoDatabase>(x =>
 {
     var client = x.GetRequiredService<IMongoClient>();

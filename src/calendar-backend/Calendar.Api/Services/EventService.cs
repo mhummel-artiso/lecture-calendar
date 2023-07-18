@@ -17,13 +17,11 @@ namespace Calendar.Api.Services
             dbCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
-
         public async Task<CalendarEvent?> GetEventAsync(string calendarId, string eventId)
         {
             var result = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
             return result?.Events?.FirstOrDefault(x => x.Id == eventId);
         }
-
         public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTime date)
         {
             var result = await dbCollection
@@ -41,7 +39,6 @@ namespace Calendar.Api.Services
             };
             return result.Events.Where(x => x.Start >= startDate && x.End <= endDate);
         }
-
         public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
         {
             var result = await dbCollection
@@ -49,14 +46,12 @@ namespace Calendar.Api.Services
                 .FirstOrDefaultAsync();
             return result?.Events ?? new List<CalendarEvent>(); // null if calendar not exists
         }
-
         public async Task<CalendarEvent?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             var update = new UpdateDefinitionBuilder<UserCalendar>().AddToSet(x => x.Events, calendarEvent);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
             return result.IsAcknowledged ? calendarEvent : null;
         }
-
         public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent)
         {
             var update = new UpdateDefinitionBuilder<UserCalendar>()
