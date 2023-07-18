@@ -58,7 +58,7 @@ namespace Calendar.Api.Services
                 .Set(x => x.Events.First(x => x.Id == lectureEvent.Id), lectureEvent);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
             // TODO test this method
-            return result.IsAcknowledged ? lectureEvent : null;
+            return result.ModifiedCount > 0 ? lectureEvent : null;
         }
 
         public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)
@@ -69,7 +69,7 @@ namespace Calendar.Api.Services
                 return false;
             var update = new UpdateDefinitionBuilder<UserCalendar>().Pull(x => x.Events, item);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
-            return result.IsAcknowledged;
+            return result.ModifiedCount > 0;
         }
     }
 }
