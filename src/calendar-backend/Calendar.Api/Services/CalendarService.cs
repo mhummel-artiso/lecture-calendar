@@ -22,7 +22,7 @@ public class CalendarService : ICalendarService
         var result = await dbCollection.Find(x => keys.Contains(x.Name)).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
         return result;
     }
-    public async Task<UserCalendar?> GetCalendarById(string calendarId, bool includeEvents)
+    public async Task<UserCalendar?> GetCalendarByIdAsync(string calendarId, bool includeEvents)
     {
         var query = dbCollection
             .Find(x => x.Id == calendarId);

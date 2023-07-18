@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
 
@@ -15,18 +16,20 @@ namespace Calendar.Api.Controllers;
 [Route("v1/api/[controller]")]
 public class CalendarController : ControllerBase
 {
-    private readonly ICalendarService service;
+    private readonly ICalendarService calendarService;
+    private readonly IEventService eventService;
     private readonly IMapper mapper;
     private readonly ILogger<CalendarController> logger;
 
-    public CalendarController(ICalendarService service, IMapper mapper, ILogger<CalendarController> logger)
+    public CalendarController(ICalendarService calendarService, IEventService eventService, IMapper mapper, ILogger<CalendarController> logger)
     {
-        this.service = service;
+        this.calendarService = calendarService;
+        this.eventService = eventService;
         this.mapper = mapper;
         this.logger = logger;
     }
 
-
+    #region UserCalendar
     [HttpPost]
     [Authorize(Roles = "editor")]
     public async Task<ActionResult<UserCalendar>> AddCalendar([FromBody] CreateUserCalendarDTO calendar)
@@ -36,74 +39,118 @@ public class CalendarController : ControllerBase
             return BadRequest();
         }
 
-        var result = await service.AddCalendarAsync(mapper.Map<UserCalendar>(calendar));
+        var result = await calendarService.AddCalendarAsync(mapper.Map<UserCalendar>(calendar));
         return Ok(result);
     }
 
     [HttpGet]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<UserCalendar>> GetCalendarsByName(string id, [FromQuery] string? viewType)
+    public async Task<ActionResult<UserCalendar>> GetCalendarsByNames()
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
+        var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
 
-        try
-        {
-            var view = string.IsNullOrEmpty(viewType) ? ViewType.Week : Enum.Parse<ViewType>(viewType);
-            var calendar = await service.GetCalendarMetadataAsync(id);
-            return Ok(calendar);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, $"Failed to parse {nameof(viewType)}");
-            return BadRequest(ex.Message);
-        }
+        var testdata = new List<string> {"TINF21AI"};   // TODO: use groups from claim 
+        var calendar = await calendarService.GetCalendarsByNamesAsync(testdata);
+        return Ok(calendar);
+       
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{calendarId}")]
     [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<UserCalendar>> GetCalendar(string id,[FromQuery] string? viewType)
-    {
-        if (string.IsNullOrEmpty(id))
-        {
-            return BadRequest();
-        }
-
-        try
-        {
-            var view = string.IsNullOrEmpty(viewType) ? ViewType.Week : Enum.Parse<ViewType>(viewType);
-            var calendar = await service.GetCalendarById(id);
-            return Ok(calendar);
-        }
-        catch(Exception ex)
-        {
-            logger.LogError(ex, $"Failed to parse {nameof(viewType)}");
-            return BadRequest(ex.Message);
-        }
+    public async Task<ActionResult<UserCalendar>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
+    {             
+        var calendar = await calendarService.GetCalendarByIdAsync(calendarId, includeEvents);
+        return Ok(calendar);       
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task <ActionResult<UserCalendar>> EditCalendar(string id, [FromBody] UpdateUserCalendarDTO calendar)
+    public async Task <ActionResult<UserCalendar>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO calendar)
     {
         if (calendar == null)
         {
             return BadRequest();
         }        
 
-        var result = await service.UpdateCalendarAsync(id, mapper.Map<UserCalendar>(calendar));
+        var result = await calendarService.UpdateCalendarAsync(calendarId, mapper.Map<UserCalendar>(calendar));
         return Ok(result);
     }
 
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{calendarId}")]
     [Authorize(Roles = "editor")]
-    public async Task<ActionResult<UserCalendar>> DeleteCalendar(string id)
+    public async Task<ActionResult<UserCalendar>> DeleteCalendar(string calendarId)
     {
-        var success = await service.DeleteCalendarByIdAsync(id);
+        var success = await calendarService.DeleteCalendarByIdAsync(calendarId);
 
         return Ok(success);
     }
+    #endregion
+
+
+    #region CalendarEvents
+    [HttpPost("{calendarId}/event")]
+    [Authorize(Roles = "editor")]
+    public async Task<ActionResult<CalendarEvent>> AddEvent([FromBody] CreateCalendarEventDTO calendarEvent, string calendarId)
+    {
+        if (calendarEvent == null)
+        {
+            return BadRequest();
+        }
+
+        var result = await eventService.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+        return Ok(result);
+    }
+
+    [HttpGet("{calendarId}/event/{eventId}")]
+    [Authorize(Roles = "viewer,editor")]
+    public async Task<ActionResult<UserCalendar>> GetEvent(string calendarId, string eventId)
+    {
+        
+        var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
+
+        if (calendarEvent == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(calendarEvent);
+    }
+
+    [HttpGet("{calendarId}/event")]
+    [Authorize(Roles = "viewer,editor")]
+    public async Task<ActionResult<IEnumerable<CalendarEvent>>> GetAllEventsFromCalendar(string calendarId)
+    {
+        var calendarEvent = await eventService.GetAllEventsFromCalendarAsync(calendarId);
+
+        if (calendarEvent == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(calendarEvent);
+    }
+
+    [HttpPut("{calendarId}/event/{eventId}")]
+    [Authorize(Roles = "editor")]
+    public async Task<ActionResult<CalendarEvent>> EditEvent(string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    {
+        if (calendarEvent == null)
+        {
+            return BadRequest();
+        }
+
+        var result = await eventService.UpdateEventAsync(eventId, mapper.Map<CalendarEvent>(calendarEvent));
+        return Ok(result);
+    }
+
+
+    [HttpDelete("{calendarId}/event/{eventId}")]
+    [Authorize(Roles = "editor")]
+    public async Task<ActionResult<CalendarEvent>> DeleteEvent(string calendarId, string eventId)
+    {
+        var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
+        return Ok(success);
+    }
+    #endregion
 }
