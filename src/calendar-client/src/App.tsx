@@ -1,8 +1,8 @@
-import './App.css'
 import { AuthProvider } from 'oidc-react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import React from 'react'
+import { CalendarPage } from './pages/CalendarPage'
 
 function App() {
     const oidcConfig = {
@@ -17,7 +17,7 @@ function App() {
     const router = createBrowserRouter([
         {
             path: '/',
-            element: <div>Hello world!</div>,
+            element: <CalendarPage />,
         },
         {
             path: '/test',
