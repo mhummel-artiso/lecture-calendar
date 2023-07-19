@@ -1,6 +1,6 @@
 import './App.css'
 import { AuthProvider } from 'oidc-react'
-import { Button } from "@material-ui/core";
+import { Button } from '@material-ui/core'
 
 function App() {
     const oidcConfig = {
@@ -14,7 +14,7 @@ function App() {
 
     return (
         <AuthProvider {...oidcConfig}>
-            <Button variant="contained" >Hello World</Button>
+            <Button variant="contained">Hello World</Button>
             <h1>Calendar Client</h1>
         </AuthProvider>
     )
