@@ -1,6 +1,8 @@
 import './App.css'
 import { AuthProvider } from 'oidc-react'
-import { Button } from '@material-ui/core'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+import React from 'react'
 
 function App() {
     const oidcConfig = {
@@ -12,10 +14,24 @@ function App() {
         redirectUri: 'https://my-app.com/',
     }
 
+    const router = createBrowserRouter([
+        {
+            path: '/',
+            element: <div>Hello world!</div>,
+        },
+        {
+            path: '/test',
+            element: <div>Test</div>,
+        },
+        {
+            path: '/*',
+            element: <div>404</div>,
+        },
+    ])
+
     return (
         <AuthProvider {...oidcConfig}>
-            <Button variant="contained">Hello World</Button>
-            <h1>Calendar Client</h1>
+            <RouterProvider router={router} />
         </AuthProvider>
     )
 }
