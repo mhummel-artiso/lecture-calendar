@@ -42,67 +42,39 @@ services:
       - noSqlData:/data/db
 
   # Maria DB
-  mariadb:
-    image: mariadb
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 3306:3306
-    volumes:
-      - sqlData:/var/lib/mysql
+  # mariadb:
+  #   image: mariadb
+  #   restart: always
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - sqlData:/var/lib/mysql
 
-  # Authelia
-  authelia:
-    image: authelia/authelia:latest
+  # keycloak
+  keycloak:
+    image: keycloak/keycloak:22.0.1
     restart: on-failure:1
     depends_on:
-      - redis
-      - mariadb
-      # - traefik
-    volumes:
-      # - ${PWD}/config/authelia/configuration.yml:/config/configuration.yml
-      - ./config/authelia/:/config/
-      - ./config/secrets:/secrets:ro
+      - posgressdb
     networks:
       - frontend
       - backend
+    volumes:
+      - ./config/keycloak/init:/opt/keycloak/data/import:ro
     ports:
-      - 9091:9091
+      - 8080:8080
 
-  # # traefik
-  # traefik:
-  #   image: traefik:v2.10.3
-  #   volumes:
-  #     - ./config/traefik:/etc/traefik
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   networks:
-  #     - frontend
-  #   ports:
-  #     - '80:80'
-  #     - '443:443'
-      
   posgressdb:
       image: "postgres:alpine3.18"
       networks:
         - backend
       ports:
         - "5432"
-      environment:
-        - POSTGRES_PASSWORD=74RuqICjDPQEFREmhIFaqRf6H
-        - POSTGRES_USER=authelia
-
-  # redis for authelia sessions
-  redis:
-    image: redis:alpine
-    volumes:
-      - ./config/redis.conf:/etc/redis/redis.conf
-      - ./config/redis:/data
-    networks:
-      - backend
-    expose:
-      - 6379
-    restart: on-failure:1
+      volumes:
+        # - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        - sqlData:/var/lib/postgresql/data
 
 volumes:
   noSqlData:
