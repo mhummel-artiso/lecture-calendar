@@ -24,7 +24,7 @@ services:
       - loadbalancer-network
 
   client-2:
-    image: lecture-calendar-client-1
+    build: ./src/calendar-client
     restart: always
     networks:
       - loadbalancer-network
