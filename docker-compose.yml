@@ -1,39 +1,12 @@
 # start container: docker compose up -d --build
 # stop container: docker compose down
+
+# Set environments, label and command in docker-compose.override.yml
+
 version: "3.9"
 
 services:
-  client:
-    build: ./src/calendar-client
-    restart: always
-    networks:
-      - frontend
-    ports:
-      - 3005:80
-  mongodb:
-    image: mongo
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - noSqlData:/data/db
-  mariadb:
-    image: mariadb
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 3306:3306
-    environment:
-      # user name: root
-      MARIADB_ROOT_PASSWORD: example
-    volumes:
-      - sqlData:/var/lib/mysql
+  # Api
   calendar.api:
     build:
       context: src/calendar-backend
@@ -41,14 +14,62 @@ services:
     depends_on:
       mongodb:
         condition: service_started
+      keycloak:
+        condition: service_started
     restart: always
     networks:
       - backend
       - frontend
     ports:
       - 4000:80
-    environment:
-      MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
+
+  # Client
+  client:
+    build: ./src/calendar-client
+    restart: always
+    depends_on:
+      keycloak:
+        condition: service_started
+    networks:
+      - frontend
+    ports:
+      - 3005:80
+
+  # Mongo DB
+  mongodb:
+    image: mongo
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 27017:27017
+    volumes:
+      - noSqlData:/data/db
+
+  # keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    restart: on-failure:1
+    depends_on:
+      posgressdb:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./config/keycloak/import:/opt/keycloak/data/import:ro
+    ports:
+      - 8080:8080
+
+  posgressdb:
+      image: "postgres:alpine3.18"
+      networks:
+        - backend
+      ports:
+        - "5432"
+      volumes:
+        # - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        - sqlData:/var/lib/postgresql/data
 
 volumes:
   noSqlData:
@@ -57,4 +78,5 @@ volumes:
 networks:
   backend:
   frontend:
-
+    driver: bridge
+# dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx
