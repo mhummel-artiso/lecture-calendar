@@ -24,10 +24,12 @@ services:
       - loadbalancer-network
 
   client-2:
-    build: ./src/calendar-client
+    image: lecture-calendar-client-1
     restart: always
     networks:
       - loadbalancer-network
+    depends_on:
+      - client-1
 
   mongodb:
     image: mongo
