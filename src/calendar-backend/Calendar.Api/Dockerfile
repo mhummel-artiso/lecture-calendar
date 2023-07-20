@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["calendar-api/calendar-api.csproj", "calendar-api/"]
-RUN dotnet restore "calendar-api/calendar-api.csproj"
+COPY ["Calendar.Api/Calendar.Api.csproj", "Calendar.Api/"]
+RUN dotnet restore "Calendar.Api/Calendar.Api.csproj"
 COPY . .
-WORKDIR "/src/calendar-api"
-RUN dotnet build "calendar-api.csproj" -c Release -o /app/build
+WORKDIR "/src/Calendar.Api"
+RUN dotnet build "Calendar.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "calendar-api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Calendar.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "calendar-api.dll"]
+ENTRYPOINT ["dotnet", "Calendar.Api.dll"]

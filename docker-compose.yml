@@ -34,10 +34,10 @@ services:
       MARIADB_ROOT_PASSWORD: example
     volumes:
       - sqlData:/var/lib/mysql
-  calendarapi:
+  calendar.api:
     build:
       context: src/calendar-backend
-      dockerfile: calendar-api/Dockerfile
+      dockerfile: Calendar.Api/Dockerfile
     depends_on:
       mongodb:
         condition: service_started
