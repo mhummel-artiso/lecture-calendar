@@ -3,13 +3,32 @@
 version: "3.9"
 
 services:
-  client:
+
+  nginx:
+    image: nginx:latest
+    container_name: client-loadbalancer
+    ports:
+      - 80:80
+    depends_on:
+      - client-1
+      - client-2
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - loadbalancer-network
+
+  client-1:
     build: ./src/calendar-client
     restart: always
     networks:
-      - frontend
-    ports:
-      - 3005:80
+      - loadbalancer-network
+
+  client-2:
+    build: ./src/calendar-client
+    restart: always
+    networks:
+      - loadbalancer-network
+
   mongodb:
     image: mongo
     restart: always
@@ -42,11 +61,10 @@ services:
       mongodb:
         condition: service_started
     restart: always
-    networks:
-      - backend
-      - frontend
     ports:
       - 4000:80
+    networks:
+      - backend
     environment:
       MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
 
@@ -56,5 +74,6 @@ volumes:
 
 networks:
   backend:
-  frontend:
+  loadbalancer-network:
+    driver: bridge
 
