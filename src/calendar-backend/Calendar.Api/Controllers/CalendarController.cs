@@ -48,7 +48,8 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "viewer,editor")]
+    //[Authorize(Roles = "calendar-viewer,calendar-editor")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
         var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
