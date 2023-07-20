@@ -11,10 +11,11 @@ import {
     // Outlet,
 } from "react-router-dom";
 import { LogedInPage } from "./LogedInPage.tsx";
+import { useEnvironment } from './hooks/useEnvironment.tsx';
 
 function App() {
     const [user, setUser] = useState<User|null>(null)
-
+    const envConfig=useEnvironment();
     const oidcConfig: AuthProviderProps = {
         onSignIn: (user) => {
             // Redirect?
@@ -24,12 +25,12 @@ function App() {
         onSignOut: (props) => {
             console.log('props', props);
         },
-        // loadUserInfo: true,
-        // authority: 'http://localhost:8080/realms/master',
-        // // autoSignIn: true,
-        // clientId: 'calendar-client',
-        // clientSecret: 'Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA',
-        // redirectUri: 'http://localhost:3000',
+        loadUserInfo: true,
+        autoSignIn: true,
+        authority: envConfig.VITE_OIDC_AUTHORITY,
+        clientId: "calendar-client",
+        clientSecret:  envConfig.VITE_OIDC_CLIENT_SECRET,
+        redirectUri: envConfig.BASE_URL,
     };
 
     return (

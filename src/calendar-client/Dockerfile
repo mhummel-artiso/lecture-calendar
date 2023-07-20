@@ -1,7 +1,11 @@
 # build environment
 FROM node:20.4.0-alpine as build
+ARG VITE_API_URL=""
+ARG VITE_OIDC_CLIENT_ID=""
+ARG VITE_OIDC_AUTHORITY=""
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install -g npm
