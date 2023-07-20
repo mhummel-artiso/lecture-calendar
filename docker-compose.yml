@@ -6,6 +6,7 @@ services:
 
   nginx:
     image: nginx:latest
+    restart: always
     container_name: client-loadbalancer
     ports:
       - 80:80
