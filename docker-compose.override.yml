@@ -4,7 +4,7 @@ volumes:
   redisinsight:
 
 services:
-  calendarapi:
+  calendar.api:
     environment:
       MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
       TZ: Europe/Berlin

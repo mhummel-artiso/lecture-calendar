@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  cCalendar.api:
+  calendar.api:
     image: ${DOCKER_REGISTRY-}calendarapi
     build:
       context: .

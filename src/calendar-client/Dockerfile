@@ -4,7 +4,7 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
-Run npm install -g npm
+RUN npm install -g npm
 RUN npm ci --silent
 RUN npm install react-scripts -g --silent
 COPY . ./
