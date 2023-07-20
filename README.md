@@ -13,7 +13,7 @@
   - `POSTGRESQL_HOST` : Server name (`NULL`) [**Required**]
   - `POSTGRESQL_PORT` : Server port (`5432`) [*Optional*]
   - `POSTGRESQL_DATABASE` : Database name (`"lecture-calendar"`) [*Optional*]
-  - `POSTGRESQL_USER_NAME` : PostgreSQL username (`NULL`) [**Required**]
+  - `POSTGRESQL_USER_NAME` : PostgreSQL username (`postgres`) [**Required**]
   - `POSTGRESQL_USER_PASSWORD` : PostgreSQL Password (`NULL`) [**Required**]
 - OIDC and Swagger
   - `OIDC_URL` : The url to the OIDC service (`""`) [**Required**]
