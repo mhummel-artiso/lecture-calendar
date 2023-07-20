@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { AuthProvider, AuthProviderProps } from 'oidc-react';
+import { AuthProvider, AuthProviderProps, User } from 'oidc-react';
 import {
     Routes,
     Route,
@@ -12,54 +10,34 @@ import {
     // Navigate,
     // Outlet,
 } from "react-router-dom";
+import { LogedInPage } from "./LogedInPage.tsx";
 
 function App() {
-    const [count, setCount] = useState(0)
+    const [user, setUser] = useState<User|null>(null)
 
     const oidcConfig: AuthProviderProps = {
-        onBeforeSignIn:() =>{
-            console.log("window.location.href",window.location.href)
-            return window.location.href;
-        },
         onSignIn: (user) => {
             // Redirect?
-            console.log('user',user);
+            console.log('user', user, window.location);
+            setUser(user);
         },
         onSignOut: (props) => {
-            console.log('props',props);
+            console.log('props', props);
         },
-        loadUserInfo: true,
-        authority: 'http://localhost:9091/oauth',
-        clientId: 'this-is-a-client-id',
-        redirectUri: 'http://localhost:3005/',
+        // loadUserInfo: true,
+        // authority: 'http://localhost:8080/realms/master',
+        // // autoSignIn: true,
+        // clientId: 'calendar-client',
+        // clientSecret: 'Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA',
+        // redirectUri: 'http://localhost:3000',
     };
 
     return (
         <AuthProvider {...oidcConfig}>
             <Routes>
-                <Route caseSensitive={true} path="/" element={(<>
-                    <div>
-                        <a href="https://vitejs.dev" target="_blank">
-                            <img src={viteLogo} className="logo" alt="Vite logo"/>
-                        </a>
-                        <a href="https://react.dev" target="_blank">
-                            <img src={reactLogo} className="logo react" alt="React logo"/>
-                        </a>
-                    </div>
-                    <h1>Vite + React</h1>
-                    <div className="card">
-                        <button onClick={() => setCount((count) => count + 1)}>
-                            count is {count}
-                        </button>
-                        <p>
-                            Edit <code>src/App.tsx</code> and save to test HMR
-                        </p>
-                    </div>
-                    <p className="read-the-docs">
-                        Click on the Vite and React logos to learn more
-                    </p>
-                </>)}>
+                <Route caseSensitive={true} path="/" element={<LogedInPage />}>
                 </Route>
+
             </Routes>
         </ AuthProvider>
     )

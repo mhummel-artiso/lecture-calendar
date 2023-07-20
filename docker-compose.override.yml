@@ -8,23 +8,10 @@ services:
     environment:
       MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
       TZ: Europe/Berlin
-    # labels:
-    # - 'traefik.enable=true'
-    # - 'traefik.http.routers.keycloak.rule=Host(`api.${DOMAIN}`)'
-    # - 'traefik.http.routers.keycloak.entrypoints=https'
+
   client:
     environment:
      TZ: Europe/Berlin
-    # labels:
-    #   - 'traefik.enable=true'
-    #   - 'traefik.http.routers.keycloak.rule=Host(`${DOMAIN}`)'
-    #   - 'traefik.http.routers.keycloak.entrypoints=https'
-  
-  # mariadb:
-  #   environment:
-  #     # user name: root
-  #     MARIADB_ROOT_PASSWORD: example
-  #     TZ: Europe/Berlin
   
   mongodb:
     environment:
@@ -37,70 +24,39 @@ services:
       timeout: 10s
       retries: 5
 
+  # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
+  # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
   keycloak:
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD", "curl --fail -s http://localhost:8080/health | jq 'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+    #   interval: 30s
+    #   timeout: 3s
+    #   start_period: 10s
+    #   retries: 10
     command:
+      - "--verbose"
       - "start-dev"
-      - "--db=postgres"
+      - "--import-realm"
       - "--features=token-exchange"
-      - "--db-url=jdbc:postgresql://posgressdb/keycloak" 
-      - "--db-username=keycloak"
-      - "--db-password=${MASTER_PW}"
-      # - "--https-key-store-file=<file>"
-      # - "--https-key-store-password=<password>"
+      # - "--https-key-store-file=/etc/x509/https/tls.jks"
+      # - "--https-key-store-password=${MASTER_PW}"
     environment:
       TZ: Europe/Berlin
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
-    # labels:
-    #   - 'traefik.enable=true'
-    #   - 'traefik.http.routers.keycloak.rule=Host(`keycloak.${DOMAIN}`)'
-    #   - 'traefik.http.routers.keycloak.entrypoints=https'
-    #   - 'traefik.http.routers.keycloak.tls=true'
-    #   - 'traefik.http.routers.keycloak.tls.certresolver=letsencrypt'
-    #   - 'traefik.http.middlewares.keycloak.forwardauth.address=http://keycloak:9091/api/authz/forward-auth?authelia_url=https://keycloak.${DOMAIN}'  # yamllint disable-line rule:line-length
-    #   - 'traefik.http.middlewares.keycloak.forwardauth.trustForwardHeader=true'
-    #   - 'traefik.http.middlewares.keycloak.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'  # yamllint disable-line rule:line-length
-    # tty: true
-    # healthcheck:
-    #   ## In production the healthcheck section should be commented.
-    #   disable: true
+      KC_HEALTH_ENABLED: true
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://posgressdb/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${MASTER_PW}
+
   posgressdb:
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5432/health"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
       retries: 5
     environment:
-      - POSTGRES_PASSWORD=${MASTER_PW}
-      - POSTGRES_USER=keycloak
-  # traefik:
-  #   environment:
-  #     TZ: Europe/Berlin
-  #   labels:
-  #     - 'traefik.enable=true'
-  #     - 'traefik.http.routers.api.rule=Host(`traefik.${DOMAIN}`)'
-  #     - 'traefik.http.routers.api.entrypoints=http'
-  #     - 'traefik.http.routers.api.service=api@internal'
-  #     - 'traefik.http.routers.api.tls=true'
-  #     - 'traefik.http.routers.api.tls.certresolver=letsencrypt'
-  #     - 'traefik.http.routers.api.middlewares=keycloak@docker'
-  #   command:
-  #     - '--api'
-  #     - '--providers.docker=true'
-  #     - '--providers.docker.exposedByDefault=false'
-  #     - '--entrypoints.http=true'
-  #     - '--entrypoints.http.address=:80'
-  #     - '--entrypoints.http.http.redirections.entrypoint.to=https'
-  #     - '--entrypoints.http.http.redirections.entrypoint.scheme=https'
-  #     - '--entrypoints.https=true'
-  #     - '--entrypoints.https.address=:443'
-  #     - '--certificatesResolvers.letsencrypt.acme.email=hummelm.tin21@student.dhbw-heidenheim.de'
-  #     - '--certificatesResolvers.letsencrypt.acme.storage=/etc/traefik/acme.json'
-  #     - '--certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=http'
-  #     - '--log=true'
-  #     - '--log.level=DEBUG'
+      TZ: Europe/Berlin
+      POSTGRES_PASSWORD: ${MASTER_PW}
+      POSTGRES_USER: keycloak
