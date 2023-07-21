@@ -12,7 +12,7 @@
         "POSTGRESQL_USER_NAME": "postgresql",
         "POSTGRESQL_USER_PASSWORD": "74RuqICjDPQEFREmhIFaqRf6H",
         "OIDC_URL": "http://localhost:8080/realms/Calendar",
-        "OIDC_SWAGGER_CLIENT_SECRET": "r85SmZckHHaj0i4aBKzq2oniEHuuK56N",
+        "OIDC_SWAGGER_CLIENT_SECRET": "hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR",
         "OIDC_SWAGGER_REDIRECT_URL": "http://localhost:5057/swagger/index.html",
         "JWT_AUDIENCE": "http://localhost:8080/realms/Calendar",
         "JWT_AUTHORITY": "http://localhost:8080/realms/Calendar",
