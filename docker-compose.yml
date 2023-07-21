@@ -54,7 +54,7 @@ services:
     volumes:
       - mongodb-data:/data/db
       - ./config/mongodb/logs:/var/log/mongodb:rw
-      # - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
+      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
 
   # keycloak authentication
   keycloak:
