@@ -25,7 +25,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<LectureDTO>> AddLecture([FromBody] CreateLectureDTO lecture)
     {
         if (lecture == null)
@@ -39,7 +39,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "viewer,editor")]
+    // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable<LectureDTO>>> GetLecture(string lectureId)
     {
         var lecture = await service.GetLectureByIdAsync(lectureId);
@@ -53,7 +53,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpGet("{lectureId}")]
-    [Authorize(Roles = "viewer,editor")]
+    // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<LectureDTO>> GetLectureById(string lectureId)
     {
         var lecture = await service.GetLectureByIdAsync(lectureId);
@@ -67,7 +67,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpPut("{lectureId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<LectureDTO>> EditLecture(string lectureId, [FromBody] UpdateLectureDTO lecture)
     {
         if (lecture == null)
@@ -81,7 +81,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpDelete("{lectureId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteLecture(string lectureId)
     {
         var success = await service.DeleteLectureByIdAsync(lectureId);

@@ -15,7 +15,7 @@ import { useEnvironment } from './hooks/useEnvironment.tsx';
 
 function App() {
     const [user, setUser] = useState<User|null>(null)
-    const envConfig=useEnvironment();
+    const envConfig= useEnvironment();
     const oidcConfig: AuthProviderProps = {
         onSignIn: (user) => {
             // Redirect?
@@ -24,21 +24,24 @@ function App() {
         },
         onSignOut: (props) => {
             console.log('props', props);
+            window.location.href=envConfig.VITE_OIDC_REDIRECT_URL
         },
         loadUserInfo: true,
-        autoSignIn: true,
+        autoSignIn: false,
         authority: envConfig.VITE_OIDC_AUTHORITY,
         clientId: "calendar-client",
         clientSecret:  envConfig.VITE_OIDC_CLIENT_SECRET,
-        redirectUri: envConfig.BASE_URL,
+        redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
+        postLogoutRedirectUri: "http://localhost:3000/logedout"
     };
 
     return (
         <AuthProvider {...oidcConfig}>
             <Routes>
+                <Route caseSensitive={true} path="/logedout" element={<div>logout</div>}>
+                </Route>
                 <Route caseSensitive={true} path="/" element={<LogedInPage />}>
                 </Route>
-
             </Routes>
         </ AuthProvider>
     )

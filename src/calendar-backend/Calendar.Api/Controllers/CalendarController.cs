@@ -34,7 +34,7 @@ public class CalendarController : ControllerBase
     #region UserCalendar
 
     [HttpPost]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<UserCalendarDTO>> AddCalendar([FromBody] CreateUserCalendarDTO calendar)
     {
         if (calendar == null)
@@ -63,7 +63,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}")]
-    [Authorize(Roles = "viewer,editor")]
+    // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendarDTO>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
     {
         var calendar = await calendarService.GetCalendarByIdAsync(calendarId, includeEvents);
@@ -73,7 +73,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPut("{calendarId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO calendar)
     {
         if (calendar == null)
@@ -89,7 +89,7 @@ public class CalendarController : ControllerBase
 
 
     [HttpDelete("{calendarId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteCalendar(string calendarId)
     {
         var success = await calendarService.DeleteCalendarByIdAsync(calendarId);
@@ -101,7 +101,7 @@ public class CalendarController : ControllerBase
     #region CalendarEvents
 
     [HttpPost("{calendarId}/event")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO calendarEvent)
     {
         if (calendarEvent == null)
@@ -115,7 +115,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}/event")]
-    [Authorize(Roles = "viewer,editor")]
+    // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId)
     {
         var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
@@ -123,7 +123,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}/event/{eventId}")]
-    [Authorize(Roles = "viewer,editor")]
+    // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
     {
         var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
@@ -135,7 +135,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<CalendarEventDTO>> EditEvent(string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
         if (calendarEvent == null)
@@ -150,7 +150,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpDelete("{calendarId}/event/{eventId}")]
-    [Authorize(Roles = "editor")]
+    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteEvent(string calendarId, string eventId)
     {
         var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);

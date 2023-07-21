@@ -31,8 +31,9 @@ services:
       context: ./src/calendar-client
       args:
         - VITE_API_URL=http://localhost:5000
-        - VITE_OIDC_CLIENT_ID=Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA
+        - VITE_OIDC_CLIENT_SECRET=Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA
         - VITE_OIDC_AUTHORITY=http://localhost:8080/realms/Calendar
+        - VITE_OIDC_REDIRECT_URL=http://localhost:3000
     restart: always
     depends_on:
       keycloak:

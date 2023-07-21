@@ -1,10 +1,11 @@
 # lecture-calendar
 
 ## Docker container
-
+### Configurations
+path to configs: ./config/\<container-name\>/
 ### Api
 #### Environment variables
-
+(OIDC: open id connect)
 - `ASPNETCORE_ENVIRONMENT` : The asp.net core environment (`Production`) [*Optional*]
 - Mongo
   - `MONGODB_SERVER` : Server name with protocol and port (`NULL`) [**Required**]
@@ -13,7 +14,7 @@
   - `POSTGRESQL_HOST` : Server name (`NULL`) [**Required**]
   - `POSTGRESQL_PORT` : Server port (`5432`) [*Optional*]
   - `POSTGRESQL_DATABASE` : Database name (`"lecture-calendar"`) [*Optional*]
-  - `POSTGRESQL_USER_NAME` : PostgreSQL username (`postgres`) [**Required**]
+  - `POSTGRESQL_USER_NAME` : PostgreSQL username (`postgres`) [*Optional*]
   - `POSTGRESQL_USER_PASSWORD` : PostgreSQL Password (`NULL`) [**Required**]
 - OIDC and Swagger
   - `OIDC_URL` : The url to the OIDC service (`""`) [**Required**]

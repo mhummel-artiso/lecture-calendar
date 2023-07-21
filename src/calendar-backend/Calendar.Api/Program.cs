@@ -32,12 +32,8 @@ try
 
     builder.Host.UseSerilog((ctx, config) =>
         config
-            .ReadFrom
-            .Configuration(configuration)
-            .Enrich
-            .FromLogContext()
-            .WriteTo
-            .Console()
+            .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
     );
 
     //builder.Services.AddSerilog();
@@ -63,15 +59,17 @@ try
     #region PostgreSQL db
 
     // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-3.1
-    builder.Services.AddDbContext<PersistKeyContext>(options =>
-    {
-        var postgresqlConfig = configuration.Get<PostgreSqlEnvironmentConfiguration>()?.Validate();
-        ArgumentNullException.ThrowIfNull(postgresqlConfig);
-        var str = postgresqlConfig.GetConnectionString();
-        options.UseNpgsql(str);
-    });
-
-    builder.Services.AddDataProtection().PersistKeysToDbContext<PersistKeyContext>();
+    // builder.Services.AddDbContext<PersistKeyContext>(options =>
+    // {
+    //     var postgresqlConfig = configuration.Get<PostgreSqlEnvironmentConfiguration>()?.Validate();
+    //     ArgumentNullException.ThrowIfNull(postgresqlConfig);
+    //     var str = postgresqlConfig.GetConnectionString();
+    //     options.UseNpgsql(str);
+    // });
+    //
+    // builder.Services
+    //     .AddDataProtection()
+    //     .PersistKeysToDbContext<PersistKeyContext>();
 
     #endregion
 
@@ -92,7 +90,7 @@ try
             {
                 ValidAudience = jwtConfig.JWT_AUDIENCE,
                 // ValidIssuer = jwtConfig.JWT_ISSUER,
-                //// IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.JWT_KEY)),
+                // IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.JWT_KEY)),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = false,
