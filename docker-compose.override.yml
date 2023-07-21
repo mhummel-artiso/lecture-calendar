@@ -11,7 +11,7 @@ services:
       MONGODB_SERVER: mongodb://mongodb:mongodb@localhost:27017
       MONGODB_DB_NAME: lecture-calendar
       POSTGRESQL_HOST: localhost      
-      POSTGRESQL_USER_NAME: postgresql
+      POSTGRESQL_USER_NAME: ${POSTGRES_USER}
       POSTGRESQL_USER_PASSWORD: 74RuqICjDPQEFREmhIFaqRf6H
       OIDC_URL: http://localhost:8080/realms/Calendar
       OIDC_SWAGGER_CLIENT_SECRET: hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR
@@ -52,8 +52,8 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
       KC_HEALTH_ENABLED: true
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://posgressdb/keycloak
-      KC_DB_USERNAME: postgres
+      KC_DB_URL: jdbc:postgresql://postgressdb/keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
     # healthcheck:
     #   test: ["CMD", "curl --fail -s http://localhost:8080/health | jq 'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
@@ -62,16 +62,18 @@ services:
     #   start_period: 10s
     #   retries: 10
 
-  posgressdb:
+  postgressdb:
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
       TZ: Europe/Berlin
+      PGUSER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${MASTER_PW}
-      POSTGRES_USER: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: keycloak
   
   seq:
     environment:

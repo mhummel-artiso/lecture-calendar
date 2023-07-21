@@ -16,7 +16,7 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
-      posgressdb:
+      postgressdb:
         condition: service_healthy
     restart: always
     networks:
@@ -30,9 +30,9 @@ services:
     build: 
       context: ./src/calendar-client
       args:
-        - VITE_API_URL="http://localhost:5000"
-        - VITE_OIDC_CLIENT_ID="Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA"
-        - VITE_OIDC_AUTHORITY="http://localhost:8080/realms/master"
+        - VITE_API_URL=http://localhost:5000
+        - VITE_OIDC_CLIENT_ID=Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA
+        - VITE_OIDC_AUTHORITY=http://localhost:8080/realms/Calendar
     restart: always
     depends_on:
       keycloak:
@@ -40,7 +40,7 @@ services:
     networks:
       - frontend
     ports:
-      - 3005:80
+      - 3000:80
 
   # mongo db
   mongodb:
@@ -60,7 +60,7 @@ services:
     image: quay.io/keycloak/keycloak:22.0.1
     restart: on-failure:1
     depends_on:
-      posgressdb:
+      postgressdb:
         condition: service_healthy
     networks:
       - frontend
@@ -70,14 +70,15 @@ services:
     ports:
       - 8080:8080
   # postgres db
-  posgressdb:
+  postgressdb:
       image: "postgres:alpine3.18"
       networks:
         - backend
+        - frontend
       ports:
-        - "5432"
+        - "5432:5432"
       volumes:
-        - posgress-data:/var/lib/postgresql/data
+        - postgress-data:/var/lib/postgresql/data
         # - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
         # - ./config/postgres/logs:/var/log/postgresql:rw
   # seq logging
@@ -94,7 +95,7 @@ services:
 volumes:
   mongodb-data:
     driver: local
-  posgress-data:
+  postgress-data:
     driver: local
   seq-data:
     driver: local
