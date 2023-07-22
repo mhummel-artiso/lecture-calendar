@@ -25,14 +25,14 @@ namespace Calendar.Api.Services
             var result = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
             return result?.Events?.FirstOrDefault(x => x.Id == eventId);
         }
-        public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTime date)
+        public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date)
         {
             var result = await dbCollection
                 .Find(x => x.Id == calendarId)
                 .FirstOrDefaultAsync();
             if (result == null)
                 return null; // null if calendar not exists
-            var startDate = new DateTimeOffset(date.AddDays(-(int)date.DayOfWeek));
+            var startDate = date.AddDays(-(int)date.DayOfWeek);
             var endDate = viewType switch
             {
                 ViewType.Day => startDate.AddDays(1),

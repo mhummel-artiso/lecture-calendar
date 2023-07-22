@@ -2,6 +2,7 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -122,7 +123,22 @@ public class CalendarController : ControllerBase
         var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
         return Ok(mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents));
     }
-
+    [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
+    // [Authorize(Roles = "viewer,editor")]
+    public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId, DateTimeOffset date, string viewType)
+    {
+        try
+        {
+            var type = Enum.Parse<ViewType>(viewType);
+            var calendarEvents = await eventService.GetEventsAsync(calendarId, type, date);
+            return Ok(mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents));
+        }
+        catch (ArgumentException e)
+        {
+            logger.LogError(e, "fail to parse view type");
+            return BadRequest("invalid view type");
+        }
+    }
     [HttpGet("{calendarId}/event/{eventId}")]
     // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
