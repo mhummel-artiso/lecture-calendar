@@ -2,14 +2,11 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
-using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using System.Collections;
 using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
@@ -49,7 +46,7 @@ public class CalendarController : ControllerBase
 
     [HttpGet]
     //[Authorize(Roles = "calendar-viewer,calendar-editor")]
-    [Authorize]
+    //[Authorize]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
         var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
