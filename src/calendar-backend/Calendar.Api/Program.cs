@@ -116,6 +116,7 @@ try
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()
         .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>()
+        .AddSingleton<IKeyGenerator,KeyGenerator>()
         .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
     #endregion

@@ -14,7 +14,6 @@ namespace Calendar.Api.Services
         {
             this.logger = logger;
             dbCollection = db.GetCollection<Lecture>(nameof(Lecture));
-            calendarCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
         public async Task<IEnumerable<Lecture>> GetLecturesAsync() =>
@@ -24,17 +23,27 @@ namespace Calendar.Api.Services
 
         public async Task<Lecture> AddLectureAsync(Lecture lecture)
         {
+            lecture.CreatedDate = DateTimeOffset.Now;
             await dbCollection.InsertOneAsync(lecture);
             return lecture;
         }
-        public async Task<Lecture?> UpdateLectureAsync(string id, Lecture lecture)
+        public async Task<Lecture?> UpdateLectureAsync(string lectureId, Lecture lecture)
         {
-            var result = await dbCollection.ReplaceOneAsync(x => x.Id == id, lecture);
-            return result.IsModifiedCountAvailable ? lecture : null;
+            lecture.LastUpdateDate = DateTimeOffset.Now;
+            var update = new UpdateDefinitionBuilder<Lecture>()
+                .Set(x => x.Professor, lecture.Professor)
+                .Set(x => x.Comment, lecture.Comment)
+                .Set(x => x.Title, lecture.Title)
+                .Set(x => x.LastUpdateDate, DateTimeOffset.UtcNow);
+            var result = await dbCollection.UpdateOneAsync(x => x.Id == lectureId, update);
+            return result.ModifiedCount == 1
+                ? await dbCollection
+                    .Find(x => x.Id == lectureId)
+                    .FirstOrDefaultAsync()
+                : null;
         }
         public async Task<bool> DeleteLectureByIdAsync(string lectureId)
         {
-
             var result = await dbCollection.DeleteOneAsync(x => x.Id == lectureId);
             return result.DeletedCount == 1;
         }

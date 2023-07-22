@@ -35,6 +35,13 @@ public class CalendarService : ICalendarService
     }
     public async Task<UserCalendar> AddCalendarAsync(UserCalendar calendar)
     {
+        var existed = await dbCollection
+            .Find(x =>
+                string.Equals(calendar.Name, x.Name, StringComparison.OrdinalIgnoreCase))
+                    .FirstOrDefaultAsync();
+        if (existed != null)
+            throw new ApplicationException($"the calendar with the name {calendar.Name} already exists");
+        calendar.CreatedDate = DateTimeOffset.Now;
         await dbCollection.InsertOneAsync(calendar);
         return calendar;
     }
@@ -42,9 +49,14 @@ public class CalendarService : ICalendarService
     {
         var updates = new UpdateDefinitionBuilder<UserCalendar>()
             .Set(x => x.Name, updateCalendar.Name)
-            .Set(x => x.StartDate, updateCalendar.StartDate);
+            .Set(x => x.StartDate, updateCalendar.StartDate)
+            .Set(x => x.LastUpdateDate, DateTimeOffset.UtcNow);
         var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, updates);
-        return result.IsAcknowledged ? updateCalendar : null;
+        return result.ModifiedCount == 1
+            ? await dbCollection
+                .Find(x => x.Id == calendarId)
+                .FirstOrDefaultAsync()
+            : null;
     }
     public async Task<bool> DeleteCalendarByIdAsync(string calendarId)
     {

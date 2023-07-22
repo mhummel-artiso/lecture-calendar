@@ -6,7 +6,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGODB_SERVER": "mongodb://root:74RuqICjDPQEFREmhIFaqRf6H@localhost:27017",
+        "MONGODB_SERVER": "mongodb://localhost:27017",
         "MONGODB_DB_NAME": "lecture-calendar",
         "POSTGRESQL_HOST": "localhost",
         "POSTGRESQL_PORT": "5432",

@@ -3,6 +3,7 @@ using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using System.Linq.Expressions;
 
 namespace Calendar.Api.Services
 {
@@ -10,10 +11,12 @@ namespace Calendar.Api.Services
     {
         private readonly IMongoCollection<UserCalendar> dbCollection;
         private readonly ILogger<ICalendarService> logger;
+        private readonly IKeyGenerator keyGenerator;
 
-        public EventService(ILogger<ICalendarService> logger, IMongoDatabase db)
+        public EventService(ILogger<ICalendarService> logger, IMongoDatabase db, IKeyGenerator keyGenerator)
         {
             this.logger = logger;
+            this.keyGenerator = keyGenerator;
             dbCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
@@ -48,17 +51,33 @@ namespace Calendar.Api.Services
         }
         public async Task<CalendarEvent?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            var update = new UpdateDefinitionBuilder<UserCalendar>().AddToSet(x => x.Events, calendarEvent);
+            calendarEvent.LastUpdateDate = DateTimeOffset.UtcNow;
+            calendarEvent.Id = keyGenerator.GenerateKey();
+            var update = new UpdateDefinitionBuilder<UserCalendar>()
+                .AddToSet(x => x.Events, calendarEvent);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
             return result.IsAcknowledged ? calendarEvent : null;
         }
         public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent)
         {
+            var calendar = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
+            ArgumentNullException.ThrowIfNull(calendarId);
+
+            var itemToUpdate = calendar.Events.FirstOrDefault(x => x.Id == lectureEvent.Id);
+            ArgumentNullException.ThrowIfNull(itemToUpdate);
+            itemToUpdate.LastUpdateDate = DateTimeOffset.UtcNow;
+            itemToUpdate.Location = itemToUpdate.Location;
+            itemToUpdate.Start = itemToUpdate.Start;
+            itemToUpdate.End = itemToUpdate.End;
+            itemToUpdate.StartSeries = itemToUpdate.StartSeries;
+            itemToUpdate.EndSeries = itemToUpdate.EndSeries;
+
             var update = new UpdateDefinitionBuilder<UserCalendar>()
-                .Set(x => x.Events.First(x => x.Id == lectureEvent.Id), lectureEvent);
+                .Set(x => x.Events.First(x => x.Id == lectureEvent.Id), itemToUpdate);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
             // TODO test this method
-            return result.ModifiedCount > 0 ? lectureEvent : null;
+            var updatedItem = (await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync())?.Events.FirstOrDefault(x => x.Id == lectureEvent.Id);
+            return result.ModifiedCount > 0 ? updatedItem : null;
         }
 
         public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)

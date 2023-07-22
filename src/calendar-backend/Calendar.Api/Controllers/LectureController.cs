@@ -26,29 +26,23 @@ public class LectureController : ControllerBase
 
     [HttpPost]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<LectureDTO>> AddLecture([FromBody] CreateLectureDTO lecture)
+    public async Task<ActionResult<LectureDTO>> AddLecture([FromBody] CreateLectureDTO? lecture)
     {
         if (lecture == null)
         {
             return BadRequest();
         }
-
-        var result = await service.AddLectureAsync(mapper.Map<Lecture>(lecture));
-
-        return Ok(mapper.Map<LectureDTO>(result));
+        var data = mapper.Map<Lecture>(lecture);
+        var result = await service.AddLectureAsync(data);
+        var d = mapper.Map<LectureDTO>(result);
+        return Created(nameof(AddLecture), d);
     }
 
     [HttpGet]
     // [Authorize(Roles = "viewer,editor")]
-    public async Task<ActionResult<IEnumerable<LectureDTO>>> GetLecture(string lectureId)
+    public async Task<ActionResult<IEnumerable<LectureDTO>>> GetLectures()
     {
-        var lecture = await service.GetLectureByIdAsync(lectureId);
-
-        if (lecture == null)
-        {
-            return NotFound();
-        }
-
+        var lecture = await service.GetLecturesAsync();
         return Ok(mapper.Map<IEnumerable<LectureDTO>>(lecture));
     }
 

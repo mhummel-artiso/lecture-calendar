@@ -32,21 +32,25 @@ public class CalendarController : ControllerBase
 
     [HttpPost]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<UserCalendarDTO>> AddCalendar([FromBody] CreateUserCalendarDTO calendar)
+    public async Task<ActionResult<UserCalendarDTO>> AddCalendar([FromBody] CreateUserCalendarDTO? calendar)
     {
         if (calendar == null)
         {
             return BadRequest();
         }
-
-        var result = await calendarService.AddCalendarAsync(mapper.Map<UserCalendar>(calendar));
-
-        return Ok(mapper.Map<UserCalendarDTO>(result));
+        try
+        {
+            var result = await calendarService.AddCalendarAsync(mapper.Map<UserCalendar>(calendar));
+            return CreatedAtAction(nameof(AddCalendar), mapper.Map<UserCalendarDTO>(result));
+        }
+        catch (ApplicationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet]
     //[Authorize(Roles = "calendar-viewer,calendar-editor")]
-    //[Authorize]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
         var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
@@ -108,7 +112,7 @@ public class CalendarController : ControllerBase
 
         var result = await eventService.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
 
-        return Ok(mapper.Map<CalendarEventDTO>(result));
+        return CreatedAtAction(nameof(AddEvent), mapper.Map<CalendarEventDTO>(result));
     }
 
     [HttpGet("{calendarId}/event")]
@@ -133,14 +137,15 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}/event/{eventId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
         if (calendarEvent == null)
         {
             return BadRequest();
         }
-
-        var result = await eventService.UpdateEventAsync(eventId, mapper.Map<CalendarEvent>(calendarEvent));
+        if (eventId != calendarEvent.Id)
+            return BadRequest("event id not the same");
+        var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         if (result == null)
             return NotFound();
         return Ok(mapper.Map<CalendarEventDTO>(result));

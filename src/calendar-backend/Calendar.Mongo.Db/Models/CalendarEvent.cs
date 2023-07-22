@@ -21,7 +21,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset CreatedDate { get; set; }
         [BsonRepresentation(BsonType.String)]
-        public DateTimeOffset LastUpdateDate { get; set; }
-        public MongoDBRef LectureId { get; set; }
+        public DateTimeOffset? LastUpdateDate { get; set; }
+        public string? LectureId { get; set; }
     }
 }
