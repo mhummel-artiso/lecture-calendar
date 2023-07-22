@@ -1,11 +1,13 @@
 import {
+    Paper,
+    ToggleButton,
+    ToggleButtonGroup,
     AppBar,
     Button,
     Grid,
     Toolbar,
     Typography,
-} from '@material-ui/core'
-import { Paper, ToggleButton, ToggleButtonGroup } from '@mui/material'
+} from '@mui/material'
 import React, { useState } from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler'
 import {
@@ -79,11 +81,11 @@ export const CalendarPage = () => {
 
             <Grid item>
                 <Paper elevation={0}>
-                    <Scheduler data={schedulerData} locale={"de-DE"}>
+                    <Scheduler data={schedulerData} locale={'de-DE'}>
                         <ViewState
                             currentDate={currentDate}
                             currentViewName={calendarView}
-                            defaultCurrentViewName={"Week"}
+                            defaultCurrentViewName={'Week'}
                         />
                         <DayView startDayHour={9} endDayHour={18} />
 

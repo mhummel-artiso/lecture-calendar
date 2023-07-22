@@ -1,8 +1,10 @@
 import { AuthProvider } from 'oidc-react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Routes, Route, Link, BrowserRouter } from 'react-router-dom'
 
 import React from 'react'
 import { CalendarPage } from './pages/CalendarPage'
+import { AdminPage } from './pages/AdminPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
     const oidcConfig = {
@@ -14,24 +16,21 @@ function App() {
         redirectUri: 'https://my-app.com/',
     }
 
-    const router = createBrowserRouter([
-        {
-            path: '/',
-            element: <CalendarPage />,
-        },
-        {
-            path: '/test',
-            element: <div>Test</div>,
-        },
-        {
-            path: '/*',
-            element: <div>404</div>,
-        },
-    ])
-
     return (
         <AuthProvider {...oidcConfig}>
-            <RouterProvider router={router} />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<CalendarPage />} />
+                    {/* This page is only for administrator to see specific calendars.*/}
+                    <Route
+                        path="/calendar/:calendarName"
+                        element={<CalendarPage />}
+                    />
+                    {/* Only for administrator.*/}
+                    <Route path="/administration" element={<AdminPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+            </BrowserRouter>
         </AuthProvider>
     )
 }
