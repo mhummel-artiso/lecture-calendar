@@ -3,12 +3,13 @@
     "http": {
       "commandName": "Project",
       "launchUrl": "swagger",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGODB_SERVER": "mongodb://mongodb:mongodb@localhost:27017",
+        "MONGODB_SERVER": "mongodb://root:74RuqICjDPQEFREmhIFaqRf6H@localhost:27017",
         "MONGODB_DB_NAME": "lecture-calendar",
         "POSTGRESQL_HOST": "localhost",
-        "POSTGRESQL_PORT": 5432,
+        "POSTGRESQL_PORT": "5432",
         "POSTGRESQL_USER_NAME": "postgresql",
         "POSTGRESQL_USER_PASSWORD": "74RuqICjDPQEFREmhIFaqRf6H",
         "OIDC_URL": "http://localhost:8080/realms/Calendar",
