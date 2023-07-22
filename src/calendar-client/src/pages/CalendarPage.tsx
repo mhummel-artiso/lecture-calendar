@@ -21,8 +21,8 @@ import {
 import { NavBar } from '../components/NavBar'
 
 export const CalendarPage = () => {
-    const [calendarView, setCalendarView] = useState('Week');
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [calendarView, setCalendarView] = useState('Week')
+    const [currentDate, setCurrentDate] = useState(new Date())
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -32,24 +32,59 @@ export const CalendarPage = () => {
     }
 
     const handleNavigate = (date: Date, isForward: boolean) => {
-        const multiplier = isForward ? 1 : -1;
-    
+        const multiplier = isForward ? 1 : -1
+
         switch (calendarView) {
             case 'Day':
-                date.setDate(date.getDate() + multiplier);
-                break;
+                date.setDate(date.getDate() + multiplier)
+                break
             case 'Week':
-                date.setDate(date.getDate() + multiplier * 7);
-                break;
+                date.setDate(date.getDate() + multiplier * 7)
+                break
             case 'Month':
-                date.setMonth(date.getMonth() + multiplier);
-                break;
+                date.setMonth(date.getMonth() + multiplier)
+                break
             default:
-                break;
+                break
         }
 
-        setCurrentDate(new Date(date)); 
-    };
+        setCurrentDate(new Date(date))
+    }
+
+    const formatCurrentDate = (viewType: string) => {
+        switch (viewType) {
+            case 'Day':
+                return currentDate.toLocaleDateString('de-DE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                })
+            case 'Week':
+                const firstDayOfWeek = new Date(currentDate)
+                const lastDayOfWeek = new Date(currentDate)
+                const firstDay =
+                    firstDayOfWeek.getDate() - firstDayOfWeek.getDay() + 1
+                const lastDay = firstDay + 6
+                firstDayOfWeek.setDate(firstDay)
+                lastDayOfWeek.setDate(lastDay)
+                return `${firstDayOfWeek.toLocaleDateString('de-DE', {
+                    day: 'numeric',
+                    month: 'long',
+                })} - ${lastDayOfWeek.toLocaleDateString('de-DE', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                })}`
+            case 'Month':
+                return currentDate.toLocaleDateString('de-DE', {
+                    month: 'long',
+                    year: 'numeric',
+                })
+            default:
+                return ''
+        }
+    }
 
     return (
         <Grid container>
@@ -63,13 +98,34 @@ export const CalendarPage = () => {
                             currentViewName={calendarView}
                             defaultCurrentViewName={'Week'}
                         />
-                        <DayView startDayHour={9} endDayHour={18}/>
-                        <WeekView startDayHour={9} endDayHour={18}/>
+                        <DayView startDayHour={9} endDayHour={18} />
+                        <WeekView startDayHour={9} endDayHour={18} />
                         <MonthView />
 
-                        <Grid container justifyContent="space-between" sx={{padding: 3}}>
-                            <Fab color="primary" onClick={() => handleNavigate(currentDate, false)}>&#10094;</Fab>
-                            <Fab color="primary" onClick={() => handleNavigate(currentDate, true)}>&#10095;</Fab>
+                        <Grid
+                            container
+                            justifyContent="space-between"
+                            sx={{ padding: 3 }}
+                        >
+                            <Fab
+                                color="primary"
+                                onClick={() =>
+                                    handleNavigate(currentDate, false)
+                                }
+                            >
+                                &#10094;
+                            </Fab>
+                            <Typography variant="subtitle1">
+                                {formatCurrentDate(calendarView)}
+                            </Typography>
+                            <Fab
+                                color="primary"
+                                onClick={() =>
+                                    handleNavigate(currentDate, true)
+                                }
+                            >
+                                &#10095;
+                            </Fab>
                         </Grid>
 
                         <Appointments />
