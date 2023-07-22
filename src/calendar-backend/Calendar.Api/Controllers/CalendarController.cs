@@ -75,7 +75,7 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO calendar)
+    public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO? calendar)
     {
         if (calendar == null)
         {
@@ -103,7 +103,7 @@ public class CalendarController : ControllerBase
 
     [HttpPost("{calendarId}/event")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO? calendarEvent)
     {
         if (calendarEvent == null)
         {
@@ -137,7 +137,7 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}/event/{eventId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO? calendarEvent)
     {
         if (calendarEvent == null)
         {

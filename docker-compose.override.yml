@@ -35,23 +35,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-  mongo-express:
-    image: mongo-express
-    ports:
-        - '8081:8081'
-    depends_on:
-      - mongodb
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_PORT=27017
-      # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
-      # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
-      - ME_CONFIG_MONGODB_AUTH_USERNAME=root
-      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
-      - ME_CONFIG_BASICAUTH_USERNAME=root
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
-    networks:
-      - backend
+
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
   keycloak:
@@ -95,3 +79,22 @@ services:
     environment:
       ACCEPT_EULA: Y
       TZ: Europe/Berlin
+  
+  # to debug mongo docker container
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #       - '8081:8081'
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=mongodb
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+  #     # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
+  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=root
+  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
+  #     - ME_CONFIG_BASICAUTH_USERNAME=root
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
+  #   networks:
+  #     - backend

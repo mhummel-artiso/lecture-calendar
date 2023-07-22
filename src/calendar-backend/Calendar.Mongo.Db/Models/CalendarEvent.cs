@@ -10,6 +10,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
         public string? Location { get; set; }
+        public string? Description { get; set; }
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset Start { get; set; }
         [BsonRepresentation(BsonType.String)]

@@ -38,10 +38,10 @@ public class CalendarService : ICalendarService
         var existed = await dbCollection
             .Find(x =>
                 string.Equals(calendar.Name, x.Name, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync();
         if (existed != null)
             throw new ApplicationException($"the calendar with the name {calendar.Name} already exists");
-        calendar.CreatedDate = DateTimeOffset.Now;
+        calendar.CreatedDate = DateTimeOffset.UtcNow;
         await dbCollection.InsertOneAsync(calendar);
         return calendar;
     }

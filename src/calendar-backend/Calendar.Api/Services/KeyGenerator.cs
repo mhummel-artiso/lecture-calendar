@@ -3,11 +3,12 @@
 public class KeyGenerator : IKeyGenerator
 {
     const string CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private readonly static Random r = new Random();
+    private static readonly Random random = new Random();
 
     public string GenerateKey()
     {
+        // not perfect
         return new string(Enumerable.Repeat(CHARS, 24)
-            .Select(s => s[r.Next(s.Length)]).ToArray());
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }

@@ -67,6 +67,7 @@ namespace Calendar.Api.Services
             ArgumentNullException.ThrowIfNull(itemToUpdate);
             itemToUpdate.LastUpdateDate = DateTimeOffset.UtcNow;
             itemToUpdate.Location = itemToUpdate.Location;
+            itemToUpdate.Description = itemToUpdate.Description;
             itemToUpdate.Start = itemToUpdate.Start;
             itemToUpdate.End = itemToUpdate.End;
             itemToUpdate.StartSeries = itemToUpdate.StartSeries;

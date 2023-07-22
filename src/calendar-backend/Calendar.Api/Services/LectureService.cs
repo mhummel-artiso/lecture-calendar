@@ -23,13 +23,12 @@ namespace Calendar.Api.Services
 
         public async Task<Lecture> AddLectureAsync(Lecture lecture)
         {
-            lecture.CreatedDate = DateTimeOffset.Now;
+            lecture.CreatedDate = DateTimeOffset.UtcNow;
             await dbCollection.InsertOneAsync(lecture);
             return lecture;
         }
         public async Task<Lecture?> UpdateLectureAsync(string lectureId, Lecture lecture)
         {
-            lecture.LastUpdateDate = DateTimeOffset.Now;
             var update = new UpdateDefinitionBuilder<Lecture>()
                 .Set(x => x.Professor, lecture.Professor)
                 .Set(x => x.Comment, lecture.Comment)

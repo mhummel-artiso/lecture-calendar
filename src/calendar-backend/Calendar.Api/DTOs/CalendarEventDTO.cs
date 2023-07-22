@@ -6,6 +6,7 @@ namespace Calendar.Api.DTOs
     {
         public string? Id { get; set; }
         public string? Location { get; set; }
+        public string? Description { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
         public DateTimeOffset StartSeries { get; set; }
