@@ -18,6 +18,8 @@ import {
     Appointments,
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
+import { NavBar } from '../components/NavBar'
+import { useParams } from 'react-router-dom'
 
 
 const styles = {
@@ -81,40 +83,7 @@ export const CalendarPage = () => {
 
     return (
         <Grid container>
-            <AppBar position="sticky">
-                <Toolbar>
-                    <Grid container alignItems="center">
-                        <Grid item container md={3}>
-                            <Typography variant="h6">
-                                Studienkalender
-                            </Typography>
-                        </Grid>
-                        <Grid item container justifyContent="flex-end" md={8}>
-                            <Paper>
-                                <ToggleButtonGroup
-                                    size="small"
-                                    color="standard"
-                                    value={calendarView}
-                                    exclusive
-                                    onChange={handleChange}
-                                >
-                                    <ToggleButton value="Day">Tag</ToggleButton>
-
-                                    <ToggleButton value="Week">
-                                        Woche
-                                    </ToggleButton>
-                                    <ToggleButton value="Month">
-                                        Monat
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
-                            </Paper>
-                        </Grid>
-                        <Grid item container justifyContent="flex-end" md={1}>
-                            <Button color="inherit">Abmelden</Button>
-                        </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
+            <NavBar />
 
             <Grid item>
                 <Paper elevation={0}>
