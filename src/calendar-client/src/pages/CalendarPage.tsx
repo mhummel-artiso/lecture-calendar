@@ -19,23 +19,6 @@ import {
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { NavBar } from '../components/NavBar'
-import { useParams } from 'react-router-dom'
-
-
-const styles = {
-    buttonright: {
-      position: 'fixed',
-      bottom: '50%',
-      right: '20px',
-    },
-    buttonleft: {
-        position: 'fixed',
-        bottom: '50%',
-        left: '100px',
-      },
-};
-
-
 
 export const CalendarPage = () => {
     const [calendarView, setCalendarView] = useState('Week');
@@ -68,34 +51,20 @@ export const CalendarPage = () => {
         setCurrentDate(new Date(date)); 
     };
 
-    const schedulerData = [
-        {
-            startDate: '2018-11-01T09:45',
-            endDate: '2018-11-01T11:00',
-            title: 'Meeting',
-        },
-        {
-            startDate: '2018-11-01T12:00',
-            endDate: '2018-11-01T13:30',
-            title: 'Go to a gym',
-        },
-    ]
-
     return (
         <Grid container>
             <NavBar />
 
             <Grid item>
                 <Paper elevation={0}>
-                    <Scheduler data={schedulerData} locale={'de-DE'}>
+                    <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate}
                             currentViewName={calendarView}
                             defaultCurrentViewName={'Week'}
                         />
-                        <DayView startDayHour={9} endDayHour={18} />
-
-                        <WeekView startDayHour={9} endDayHour={18} />
+                        <DayView startDayHour={9} endDayHour={18}/>
+                        <WeekView startDayHour={9} endDayHour={18}/>
                         <MonthView />
 
                         <Grid container justifyContent="space-between" sx={{padding: 3}}>
