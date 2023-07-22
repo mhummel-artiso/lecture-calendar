@@ -5,6 +5,8 @@ import React from 'react'
 import { CalendarPage } from './pages/CalendarPage'
 import { AdminPage } from './pages/AdminPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { Grid } from '@mui/material'
+import { NavBar } from './components/NavBar'
 
 function App() {
     const oidcConfig = {

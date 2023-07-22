@@ -1,5 +1,11 @@
 import { Grid } from '@mui/material'
+import { NavBar } from '../components/NavBar'
+import React from 'react'
 
 export const AdminPage = () => {
-    return <Grid>Hello</Grid>
+    return (
+        <Grid container>
+            <NavBar />
+        </Grid>
+    )
 }
