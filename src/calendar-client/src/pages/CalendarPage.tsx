@@ -8,6 +8,8 @@ import {
     Toolbar,
     Typography,
     Fab,
+    Stack,
+    Box,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler'
@@ -21,7 +23,7 @@ import {
 import { NavBar } from '../components/NavBar'
 
 export const CalendarPage = () => {
-    const [calendarView, setCalendarView] = useState('Week')
+    const [calendarView, setCalendarView] = useState('Month')
     const [currentDate, setCurrentDate] = useState(new Date())
 
     const handleChange = (
@@ -47,7 +49,6 @@ export const CalendarPage = () => {
             default:
                 break
         }
-
         setCurrentDate(new Date(date))
     }
 
@@ -87,50 +88,75 @@ export const CalendarPage = () => {
     }
 
     return (
-        <Grid container>
+        <Grid height="100%">
             <NavBar />
-
-            <Grid item>
-                <Paper elevation={0}>
+            <Grid container sx={{ padding: 3 }} alignItems="center">
+                <Grid item xl={10} md={9} xs={12}>
+                    <Grid
+                        container
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <Fab
+                            color="primary"
+                            onClick={() => handleNavigate(currentDate, false)}
+                        >
+                            &#10094;
+                        </Fab>
+                        <Typography variant="subtitle1">
+                            {formatCurrentDate(calendarView)}
+                        </Typography>
+                        <Fab
+                            color="primary"
+                            onClick={() => handleNavigate(currentDate, true)}
+                        >
+                            &#10095;
+                        </Fab>
+                    </Grid>
+                </Grid>
+                <Grid item xl={2} md={3} xs={12}>
+                    <Grid
+                        container
+                        justifyContent="flex-end"
+                        alignItems="center"
+                    >
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={calendarView}
+                            exclusive
+                            onChange={handleChange}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="Month">Monat</ToggleButton>
+                            <ToggleButton value="Week">Woche</ToggleButton>
+                            <ToggleButton value="Day">Tag</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid container sx={{ position: 'relative', height: '800px' }}>
+                <Grid
+                    sx={{
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        position: 'absolute',
+                    }}
+                >
                     <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate}
                             currentViewName={calendarView}
                             defaultCurrentViewName={'Week'}
                         />
-                        <DayView startDayHour={9} endDayHour={18} />
-                        <WeekView startDayHour={9} endDayHour={18} />
+                        <DayView startDayHour={6} endDayHour={18} />
+                        <WeekView startDayHour={6} endDayHour={18} />
                         <MonthView />
-
-                        <Grid
-                            container
-                            justifyContent="space-between"
-                            sx={{ padding: 3 }}
-                        >
-                            <Fab
-                                color="primary"
-                                onClick={() =>
-                                    handleNavigate(currentDate, false)
-                                }
-                            >
-                                &#10094;
-                            </Fab>
-                            <Typography variant="subtitle1">
-                                {formatCurrentDate(calendarView)}
-                            </Typography>
-                            <Fab
-                                color="primary"
-                                onClick={() =>
-                                    handleNavigate(currentDate, true)
-                                }
-                            >
-                                &#10095;
-                            </Fab>
-                        </Grid>
 
                         <Appointments />
                     </Scheduler>
-                </Paper>
+                </Grid>
             </Grid>
         </Grid>
     )
