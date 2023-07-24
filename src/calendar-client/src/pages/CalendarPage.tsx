@@ -88,9 +88,9 @@ export const CalendarPage = () => {
     }
 
     return (
-        <Grid height="100%">
+        <Box sx={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
             <NavBar />
-            <Grid container sx={{ padding: 3 }} alignItems="center">
+            <Grid item container sx={{ padding: 3 }} alignItems="center">
                 <Grid item xl={10} md={9} xs={12}>
                     <Grid
                         container
@@ -134,7 +134,7 @@ export const CalendarPage = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid container sx={{ position: 'relative', height: '800px' }}>
+            <Grid sx={{ position: 'relative', flexGrow: 1 }}>
                 <Grid
                     sx={{
                         top: 0,
@@ -158,6 +158,6 @@ export const CalendarPage = () => {
                     </Scheduler>
                 </Grid>
             </Grid>
-        </Grid>
+        </Box>
     )
 }
