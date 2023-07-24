@@ -19,6 +19,16 @@ interface Props {
 export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
     const [course, setCourse] = React.useState('tin21');                // Change to use course that Person is currently on its calendar
     const [lecture, setLecture] = React.useState('');
+    const [courseList, setCourseList] = React.useState([
+        { id: 1, value: "tin20", label: "TIN20" },
+        { id: 2, value: "tin21", label: "TIN21" },
+        { id: 3, value: "tin22", label: "TIN22" },
+    ]);
+    const [lectureList, setLectureList] = React.useState([
+        { id: 1, value: "mathe", label: "Mathematik" },
+        { id: 2, value: "compilerbau", label: "Compilerbau" },
+        { id: 3, value: "datenbanken", label: "Datenbanken" },
+    ]);
 
     return (
         <Dialog open={isDialogOpen} onClose={handleDialogClose}>
@@ -28,27 +38,29 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                     {/* TODO: API Daten fetchen */}
                     <TextField
                         margin="dense"
-                        defaultValue={"tin20"}
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
                         select 
                         label="Kurs"
                         >
-                        <MenuItem key={1} value="tin20">TIN20</MenuItem>
-                        <MenuItem key={2} value="tin21">TIN21</MenuItem>
-                        <MenuItem key={3} value="tin22">TIN22</MenuItem>
+                        {courseList.map((item) => (
+                            <MenuItem key={item.id} value={item.value}>
+                            {item.label}
+                            </MenuItem>
+                        ))}
                     </TextField>
                     <TextField
                         margin="dense"
-                        defaultValue={"Mathe"}
                         value={lecture}
                         onChange={(e) => setLecture(e.target.value)}
                         select 
                         label="Vorlesung"
                         >
-                        <MenuItem key={1} value="mathe">Mathematik</MenuItem>
-                        <MenuItem key={2} value="compilerbau">Compilerbau</MenuItem>
-                        <MenuItem key={3} value="datenbanken">Datenbanken</MenuItem>
+                        {lectureList.map((item) => (
+                            <MenuItem key={item.id} value={item.value}>
+                            {item.label}
+                            </MenuItem>
+                        ))}
                     </TextField>
                     <TextField
                         margin="dense"
