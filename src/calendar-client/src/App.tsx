@@ -8,6 +8,11 @@ import { Grid } from '@mui/material'
 import { NavBar } from './components/NavBar'
 import { AuthProvider, AuthProviderProps, User } from 'oidc-react'
 import { useEnvironment } from './hooks/useEnvironment.tsx'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de';
+
 function App() {
     const envConfig = useEnvironment()
     const oidcConfig: AuthProviderProps = {
@@ -30,19 +35,21 @@ function App() {
 
     return (
         <AuthProvider {...oidcConfig}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<CalendarPage />} />
-                    {/* This page is only for administrator to see specific calendars.*/}
-                    <Route
-                        path="/calendar/:calendarName"
-                        element={<CalendarPage />}
-                    />
-                    {/* Only for administrator.*/}
-                    <Route path="/administration" element={<AdminPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </BrowserRouter>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='de'>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<CalendarPage />} />
+                        {/* This page is only for administrator to see specific calendars.*/}
+                        <Route
+                            path="/calendar/:calendarName"
+                            element={<CalendarPage />}
+                        />
+                        {/* Only for administrator.*/}
+                        <Route path="/administration" element={<AdminPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                </BrowserRouter>
+            </LocalizationProvider>
         </AuthProvider>
     )
 }
