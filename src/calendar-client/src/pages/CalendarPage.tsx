@@ -1,16 +1,14 @@
 import {
-    Paper,
     ToggleButton,
     ToggleButtonGroup,
-    AppBar,
-    Button,
     Grid,
-    Toolbar,
     Typography,
     Fab,
-    Stack,
     Box,
 } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import React, { useState } from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler'
 import {
@@ -21,10 +19,14 @@ import {
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { NavBar } from '../components/NavBar'
+import { EventDialog } from '../components/EventDialog'
 
 export const CalendarPage = () => {
     const [calendarView, setCalendarView] = useState('Month')
     const [currentDate, setCurrentDate] = useState(new Date())
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+    const isEditor = true
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -88,76 +90,107 @@ export const CalendarPage = () => {
     }
 
     return (
-        <Box sx={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
-            <NavBar />
-            <Grid item container sx={{ padding: 3 }} alignItems="center">
-                <Grid item xl={10} md={9} xs={12}>
-                    <Grid
-                        container
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        <Fab
-                            color="primary"
-                            onClick={() => handleNavigate(currentDate, false)}
+        <>
+            {' '}
+            <Box
+                sx={{
+                    display: 'flex',
+                    height: '100%',
+                    flexDirection: 'column',
+                }}
+            >
+                <NavBar />
+                <Grid item container sx={{ padding: 3 }} alignItems="center">
+                    <Grid item xl={10} md={9} xs={12}>
+                        <Grid
+                            container
+                            justifyContent="space-between"
+                            alignItems="center"
                         >
-                            &#10094;
-                        </Fab>
-                        <Typography variant="subtitle1">
-                            {formatCurrentDate(calendarView)}
-                        </Typography>
-                        <Fab
-                            color="primary"
-                            onClick={() => handleNavigate(currentDate, true)}
+                            <Fab
+                                color="primary"
+                                onClick={() =>
+                                    handleNavigate(currentDate, false)
+                                }
+                            >
+                                <KeyboardArrowLeftIcon />
+                            </Fab>
+                            <Typography variant="subtitle1">
+                                {formatCurrentDate(calendarView)}
+                            </Typography>
+                            <Fab
+                                color="primary"
+                                onClick={() =>
+                                    handleNavigate(currentDate, true)
+                                }
+                            >
+                                <KeyboardArrowRightIcon />
+                            </Fab>
+                        </Grid>
+                    </Grid>
+                    <Grid item xl={2} md={3} xs={12}>
+                        <Grid
+                            container
+                            justifyContent="flex-end"
+                            alignItems="center"
                         >
-                            &#10095;
-                        </Fab>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={calendarView}
+                                exclusive
+                                onChange={handleChange}
+                                aria-label="Platform"
+                            >
+                                <ToggleButton value="Month">Monat</ToggleButton>
+                                <ToggleButton value="Week">Woche</ToggleButton>
+                                <ToggleButton value="Day">Tag</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xl={2} md={3} xs={12}>
+                <Grid sx={{ position: 'relative', flexGrow: 1 }}>
                     <Grid
-                        container
-                        justifyContent="flex-end"
-                        alignItems="center"
+                        sx={{
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            position: 'absolute',
+                        }}
                     >
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={calendarView}
-                            exclusive
-                            onChange={handleChange}
-                            aria-label="Platform"
-                        >
-                            <ToggleButton value="Month">Monat</ToggleButton>
-                            <ToggleButton value="Week">Woche</ToggleButton>
-                            <ToggleButton value="Day">Tag</ToggleButton>
-                        </ToggleButtonGroup>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid sx={{ position: 'relative', flexGrow: 1 }}>
-                <Grid
-                    sx={{
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        position: 'absolute',
-                    }}
-                >
-                    <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
-                        <ViewState
-                            currentDate={currentDate}
-                            currentViewName={calendarView}
-                            defaultCurrentViewName={'Week'}
-                        />
-                        <DayView startDayHour={6} endDayHour={18} />
-                        <WeekView startDayHour={6} endDayHour={18} />
-                        <MonthView />
+                        <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
+                            <ViewState
+                                currentDate={currentDate}
+                                currentViewName={calendarView}
+                                defaultCurrentViewName={'Week'}
+                            />
+                            <DayView startDayHour={6} endDayHour={18} />
+                            <WeekView startDayHour={6} endDayHour={18} />
+                            <MonthView />
 
-                        <Appointments />
-                    </Scheduler>
+                            <Appointments />
+                        </Scheduler>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Box>
+                {isEditor && (
+                    <Fab
+                        color="primary"
+                        sx={{
+                            position: 'absolute',
+                            bottom: 0,
+                            right: 0,
+                            margin: 7,
+                        }}
+                        onClick={() => setIsDialogOpen(true)}
+                    >
+                        <AddIcon />
+                    </Fab>
+                )}
+            </Box>
+            <EventDialog
+                isDialogOpen={isDialogOpen}
+                handleDialogClose={() => setIsDialogOpen(false)}
+            />
+        </>
     )
 }
