@@ -1,19 +1,14 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using Calendar.Api.DTOs.Update;
 
-namespace Calendar.Mongo.Db.Models
+namespace Calendar.Api.DTOs
 {
-    public class Lecture
+    public class LectureDTO
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
         public string? Title { get; set; }
         public string? Comment { get; set; }
         public string? Professor { get; set; }
-        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset CreatedDate { get; set; }
-        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset LastUpdateDate { get; set; }
     }
 }

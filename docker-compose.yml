@@ -6,7 +6,7 @@
 version: "3.9"
 
 services:
-  # Api
+  # calendar api
   calendar.api:
     build:
       context: src/calendar-backend
@@ -16,6 +16,8 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
+      postgressdb:
+        condition: service_healthy
     restart: always
     networks:
       - backend
@@ -23,9 +25,16 @@ services:
     ports:
       - 4000:80
 
-  # Client
+  # calendar client
   client:
-    build: ./src/calendar-client
+    build: 
+      context: ./src/calendar-client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:5000
+        - VITE_OIDC_CLIENT_SECRET=Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA
+        - VITE_OIDC_AUTHORITY=http://localhost:8080/realms/Calendar
+        - VITE_OIDC_REDIRECT_URL=http://localhost:3000
     restart: always
     depends_on:
       keycloak:
@@ -33,9 +42,9 @@ services:
     networks:
       - frontend
     ports:
-      - 3005:80
+      - 3000:80
 
-  # Mongo DB
+  # mongo db
   mongodb:
     image: mongo
     restart: always
@@ -44,14 +53,16 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - noSqlData:/data/db
+      - mongodb-data:/data/db
+      - ./config/mongodb/logs:/var/log/mongodb:rw
+      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
 
-  # keycloak
+  # keycloak authentication
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.1
     restart: on-failure:1
     depends_on:
-      posgressdb:
+      postgressdb:
         condition: service_healthy
     networks:
       - frontend
@@ -60,20 +71,36 @@ services:
       - ./config/keycloak/import:/opt/keycloak/data/import:ro
     ports:
       - 8080:8080
-
-  posgressdb:
+  # postgres db
+  postgressdb:
       image: "postgres:alpine3.18"
       networks:
         - backend
+        - frontend
       ports:
-        - "5432"
+        - "5432:5432"
       volumes:
+        - postgress-data:/var/lib/postgresql/data
         # - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-        - sqlData:/var/lib/postgresql/data
+        # - ./config/postgres/logs:/var/log/postgresql:rw
+  # seq logging
+  seq:
+    image: datalust/seq:latest
+    restart: always
+    ports:
+      - "5341:80"
+    volumes:
+      - seq-data:/data
+    networks:
+      - backend
 
 volumes:
-  noSqlData:
-  sqlData:
+  mongodb-data:
+    driver: local
+  postgress-data:
+    driver: local
+  seq-data:
+    driver: local
 
 networks:
   backend:
