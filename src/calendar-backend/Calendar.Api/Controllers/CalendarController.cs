@@ -18,13 +18,19 @@ public class CalendarController : ControllerBase
 {
     private readonly ICalendarService calendarService;
     private readonly IEventService eventService;
+    private readonly ILectureService lectureService;
     private readonly IMapper mapper;
     private readonly ILogger<CalendarController> logger;
 
-    public CalendarController(ICalendarService calendarService, IEventService eventService, IMapper mapper, ILogger<CalendarController> logger)
+    public CalendarController(ICalendarService calendarService,
+        IEventService eventService,
+        ILectureService lectureService,
+        IMapper mapper,
+        ILogger<CalendarController> logger)
     {
         this.calendarService = calendarService;
         this.eventService = eventService;
+        this.lectureService = lectureService;
         this.mapper = mapper;
         this.logger = logger;
     }
@@ -89,7 +95,6 @@ public class CalendarController : ControllerBase
         return Ok(mapper.Map<UserCalendarDTO>(result));
     }
 
-
     [HttpDelete("{calendarId}")]
     // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteCalendar(string calendarId)
@@ -112,8 +117,12 @@ public class CalendarController : ControllerBase
         }
 
         var result = await eventService.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-
-        return CreatedAtAction(nameof(AddEvent), mapper.Map<CalendarEventDTO>(result));
+        var mappedResult = mapper.Map<CalendarEventDTO>(result);
+        if (!string.IsNullOrWhiteSpace(calendarEvent.LectureId))
+        {
+            await AddLectureToEventAsync(mappedResult);
+        }
+        return CreatedAtAction(nameof(AddEvent), mappedResult);
     }
 
     [HttpGet("{calendarId}/event")]
@@ -121,8 +130,16 @@ public class CalendarController : ControllerBase
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId)
     {
         var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
-        return Ok(mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents));
+        if (calendarEvents is null)
+            return BadRequest("Calendar not Found");
+        var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
+        foreach (var mappedDto in mappedDtos)
+        {
+            await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+        }
+        return Ok(mappedDtos);
     }
+
     [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
     // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId, DateTimeOffset date, string viewType)
@@ -131,7 +148,12 @@ public class CalendarController : ControllerBase
         {
             var type = Enum.Parse<ViewType>(viewType);
             var calendarEvents = await eventService.GetEventsAsync(calendarId, type, date);
-            return Ok(mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents));
+            var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
+            foreach (var mappedDto in mappedDtos)
+            {
+                await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            }
+            return Ok(mappedDtos);
         }
         catch (ArgumentException e)
         {
@@ -139,6 +161,7 @@ public class CalendarController : ControllerBase
             return BadRequest("invalid view type");
         }
     }
+
     [HttpGet("{calendarId}/event/{eventId}")]
     // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
@@ -147,8 +170,9 @@ public class CalendarController : ControllerBase
 
         if (calendarEvent == null)
             return NotFound();
-
-        return Ok(mapper.Map<CalendarEventDTO>(calendarEvent));
+        var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
+        await AddLectureToEventAsync(mappedDto);
+        return Ok(mappedDto);
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
@@ -164,7 +188,9 @@ public class CalendarController : ControllerBase
         var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         if (result == null)
             return NotFound();
-        return Ok(mapper.Map<CalendarEventDTO>(result));
+        var mappedDto = mapper.Map<CalendarEventDTO>(result);
+        await AddLectureToEventAsync(mappedDto);
+        return Ok(mappedDto);
     }
 
     [HttpDelete("{calendarId}/event/{eventId}")]
@@ -173,6 +199,14 @@ public class CalendarController : ControllerBase
     {
         var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
         return Ok(success);
+    }
+
+    private async Task AddLectureToEventAsync(CalendarEventDTO eventDto)
+    {
+        if (string.IsNullOrWhiteSpace(eventDto.LectureId))
+            return;
+        var lecture = await lectureService.GetLectureByIdAsync(eventDto.LectureId);
+        eventDto.Lecture = mapper.Map<LectureDTO>(lecture);
     }
 
     #endregion

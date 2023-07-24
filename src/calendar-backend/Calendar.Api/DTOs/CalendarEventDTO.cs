@@ -1,4 +1,5 @@
 ﻿using Calendar.Mongo.Db.Models;
+using System.Text.Json.Serialization;
 
 namespace Calendar.Api.DTOs
 {
@@ -14,5 +15,6 @@ namespace Calendar.Api.DTOs
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset LastUpdateDate { get; set; }
         public LectureDTO? Lecture { get; set; }
+        [JsonIgnore] public string? LectureId { get; set; }
     }
 }
