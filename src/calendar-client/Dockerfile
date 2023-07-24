@@ -10,8 +10,9 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install -g npm
-RUN npm ci --silent
-RUN npm install react-scripts -g --silent
+RUN npm config set legacy-peer-deps true
+RUN npm ci
+RUN npm install react-scripts -g
 COPY . ./
 RUN npm run build
 
