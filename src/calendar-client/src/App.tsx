@@ -4,14 +4,15 @@ import React from 'react'
 import { CalendarPage } from './pages/CalendarPage'
 import { AdminPage } from './pages/AdminPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { Grid } from '@mui/material'
-import { NavBar } from './components/NavBar'
 import { AuthProvider, AuthProviderProps, User } from 'oidc-react'
 import { useEnvironment } from './hooks/useEnvironment.tsx'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs from 'dayjs';
-import 'dayjs/locale/de';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+import 'dayjs/locale/de'
+import { queryClient } from './utils/queryClient'
 
 function App() {
     const envConfig = useEnvironment()
@@ -30,26 +31,36 @@ function App() {
         clientId: 'calendar-client',
         clientSecret: envConfig.VITE_OIDC_CLIENT_SECRET,
         redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
-        postLogoutRedirectUri: 'http://localhost:3000/logedout',
+        postLogoutRedirectUri: 'http://localhost:3000',
     }
 
     return (
         <AuthProvider {...oidcConfig}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='de'>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<CalendarPage />} />
-                        {/* This page is only for administrator to see specific calendars.*/}
-                        <Route
-                            path="/calendar/:calendarName"
-                            element={<CalendarPage />}
-                        />
-                        {/* Only for administrator.*/}
-                        <Route path="/administration" element={<AdminPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                </BrowserRouter>
-            </LocalizationProvider>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+            <QueryClientProvider client={queryClient}>
+                <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="de"
+                >
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<CalendarPage />} />
+                            {/* This page is only for administrator to see specific calendars.*/}
+                            <Route
+                                path="/calendar/:calendarName"
+                                element={<CalendarPage />}
+                            />
+                            {/* Only for administrator.*/}
+                            <Route
+                                path="/administration"
+                                element={<AdminPage />}
+                            />
+                            <Route path="*" element={<NotFoundPage />} />
+                        </Routes>
+                    </BrowserRouter>
+                </LocalizationProvider>
+                <ReactQueryDevtools />
+            </QueryClientProvider>
         </AuthProvider>
     )
 }
