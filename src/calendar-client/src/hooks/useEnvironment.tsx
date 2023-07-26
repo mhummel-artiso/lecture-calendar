@@ -16,3 +16,8 @@ export const useEnvironment = () => {
         BASE_URL: import.meta.env.BASE_URL,
     }
 }
+
+export const getGlobalEnv = () => {
+    console.log('path', import.meta.env)
+    return { VITE_API_URL: import.meta.env.VITE_API_URL as string }
+}
