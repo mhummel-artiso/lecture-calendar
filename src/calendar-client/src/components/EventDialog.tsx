@@ -77,18 +77,6 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                             </MenuItem>
                         ))}
                     </TextField>
-                    <TextField
-                        margin="dense"
-                        id="dozent"
-                        type="text"
-                        label="Dozent"
-                    />
-                    <TextField
-                        margin="dense"
-                        id="name"
-                        label="Vorlesungsort"
-                        type="text"
-                    />
                     <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
                         <DatePicker label="Tag"/>
                         <TimePicker label="Beginn"/>
@@ -111,6 +99,18 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         </TextField>
                         <DatePicker label="Serienende" sx={{ml:2, mt: 1, mb: 1}} disabled={selectedValue===serialList[0].value}/>
                     </Stack>
+                    <TextField
+                        margin="dense"
+                        id="dozent"
+                        type="text"
+                        label="Dozent"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="name"
+                        label="Vorlesungsort"
+                        type="text"
+                    />
                     <TextField
                         multiline
                         margin="dense"
