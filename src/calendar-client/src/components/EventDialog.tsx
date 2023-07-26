@@ -9,7 +9,7 @@ import {
     TextField,
 } from '@mui/material'
 import React, { useState } from 'react'
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 
 interface Props {
     isDialogOpen: boolean
@@ -17,18 +17,18 @@ interface Props {
 }
 
 export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
-    const [course, setCourse] = React.useState('tin21');                // Change to use course that Person is currently on its calendar
-    const [lecture, setLecture] = React.useState('');
+    const [course, setCourse] = React.useState('tin21') // Change to use course that Person is currently on its calendar
+    const [lecture, setLecture] = React.useState('')
     const [courseList, setCourseList] = React.useState([
-        { id: 1, value: "tin20", label: "TIN20" },
-        { id: 2, value: "tin21", label: "TIN21" },
-        { id: 3, value: "tin22", label: "TIN22" },
-    ]);
+        { id: 1, value: 'tin20', label: 'TIN20' },
+        { id: 2, value: 'tin21', label: 'TIN21' },
+        { id: 3, value: 'tin22', label: 'TIN22' },
+    ])
     const [lectureList, setLectureList] = React.useState([
-        { id: 1, value: "mathe", label: "Mathematik" },
-        { id: 2, value: "compilerbau", label: "Compilerbau" },
-        { id: 3, value: "datenbanken", label: "Datenbanken" },
-    ]);
+        { id: 1, value: 'mathe', label: 'Mathematik' },
+        { id: 2, value: 'compilerbau', label: 'Compilerbau' },
+        { id: 3, value: 'datenbanken', label: 'Datenbanken' },
+    ])
 
     return (
         <Dialog open={isDialogOpen} onClose={handleDialogClose}>
@@ -40,12 +40,12 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         margin="dense"
                         value={course}
                         onChange={(e) => setCourse(e.target.value)}
-                        select 
+                        select
                         label="Kurs"
-                        >
+                    >
                         {courseList.map((item) => (
                             <MenuItem key={item.id} value={item.value}>
-                            {item.label}
+                                {item.label}
                             </MenuItem>
                         ))}
                     </TextField>
@@ -53,12 +53,12 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         margin="dense"
                         value={lecture}
                         onChange={(e) => setLecture(e.target.value)}
-                        select 
+                        select
                         label="Vorlesung"
-                        >
+                    >
                         {lectureList.map((item) => (
                             <MenuItem key={item.id} value={item.value}>
-                            {item.label}
+                                {item.label}
                             </MenuItem>
                         ))}
                     </TextField>
@@ -68,8 +68,14 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         type="text"
                         label="Dozent"
                     />
-                    <DateTimePicker label="Vorlesungsbeginn" sx={{mt:1, mb: 1}}/>
-                    <DateTimePicker label="Vorlesungsende" sx={{mt:1, mb: 1}}/>
+                    <DateTimePicker
+                        label="Vorlesungsbeginn"
+                        sx={{ mt: 1, mb: 1 }}
+                    />
+                    <DateTimePicker
+                        label="Vorlesungsende"
+                        sx={{ mt: 1, mb: 1 }}
+                    />
                     <TextField
                         margin="dense"
                         id="name"

@@ -9,7 +9,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler'
 import {
     Scheduler,
@@ -20,11 +20,38 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { NavBar } from '../components/NavBar'
 import { EventDialog } from '../components/EventDialog'
+import { useQuery } from '@tanstack/react-query'
+import axios, { AxiosResponse } from 'axios'
+import { Calendar } from '../models/calendar'
+import { queryKey } from '@tanstack/react-query/build/lib/__tests__/utils'
+import { useAxios } from '../hooks/useAxios'
+import { axiosInstance } from '../utils/axiosInstance'
 
 export const CalendarPage = () => {
     const [calendarView, setCalendarView] = useState('Month')
     const [currentDate, setCurrentDate] = useState(new Date())
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+    // const instance = useAxios();
+
+    const fetchCalendar = async (): Promise<AxiosResponse<Calendar>> => {
+        const response = await axiosInstance.get<Calendar>('Calendar')
+        console.log('repsonse', response)
+        return Promise.resolve(response.data)
+    }
+
+    const { isLoading, data, isError, error } = useQuery({
+        queryKey: ['calendars'],
+        queryFn: fetchCalendar,
+    })
+
+    useEffect(() => {
+        console.log('data', data)
+    }, [data])
+
+    useEffect(() => {
+        console.log('data', data)
+    }, [isLoading])
 
     const isEditor = true
 
