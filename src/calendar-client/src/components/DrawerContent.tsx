@@ -11,6 +11,10 @@ import React from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import { useNavigate } from 'react-router-dom'
+import { AxiosResponse } from 'axios'
+import { Calendar } from '../models/calendar'
+import { axiosInstance } from '../utils/axiosInstance'
+import { useQuery } from '@tanstack/react-query'
 
 interface props {
     handleClose: () => void
@@ -18,11 +22,16 @@ interface props {
 
 export const DrawerContent = ({ handleClose }: props) => {
     const navigate = useNavigate()
-    const [courseList, setCourseList] = React.useState([
-        { id: 1, value: 'tin20', label: 'TIN20' },
-        { id: 2, value: 'tin21', label: 'TIN21' },
-        { id: 3, value: 'tin22', label: 'TIN22' },
-    ])
+
+    const fetchCalendar = async (): Promise<Calendar[]> => {
+        const response = await axiosInstance.get<Calendar[]>('Calendar')
+        return Promise.resolve(response.data)
+    }
+
+    const { isLoading, data, isError, error, isFetching } = useQuery({
+        queryKey: ['calendars'],
+        queryFn: fetchCalendar,
+    })
 
     return (
         <Box role="presentation" onClick={handleClose} sx={{ width: '400px' }}>
@@ -41,17 +50,19 @@ export const DrawerContent = ({ handleClose }: props) => {
             </List>
             <Divider />
             <List>
-                {courseList.map((course, index) => (
+                {data?.map((calendar, index) => (
                     <ListItem key={index} disablePadding>
                         <ListItemButton
                             onClick={() =>
-                                navigate(`/calendar/${course.value}`)
+                                navigate(`/calendar/${calendar.name}`, {
+                                    state: calendar,
+                                })
                             }
                         >
                             <ListItemIcon>
                                 <CalendarTodayIcon />
                             </ListItemIcon>
-                            <ListItemText primary={course.label} />
+                            <ListItemText primary={calendar.name} />
                         </ListItemButton>
                     </ListItem>
                 ))}
