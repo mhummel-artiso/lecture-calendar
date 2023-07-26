@@ -7,9 +7,14 @@ import {
     MenuItem,
     Stack,
     TextField,
+    Switch,
+    FormControlLabel,
+    Checkbox,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 interface Props {
     isDialogOpen: boolean
@@ -29,6 +34,17 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
         { id: 2, value: "compilerbau", label: "Compilerbau" },
         { id: 3, value: "datenbanken", label: "Datenbanken" },
     ]);
+    const [serialList, setSerialList] = React.useState([
+        { id: 1, value: "dnr", label: "Einzeltermin" },
+        { id: 2, value: "weekly", label: "Wöchentlich wiederholen" },
+        { id: 3, value: "monthly", label: "Monatlich wiederholen" },
+    ]);
+    const [selectedValue, setSelectedValue] = useState(serialList[0].value);
+
+    const handleSelectChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setSelectedValue(event.target.value);
+    };
+
 
     return (
         <Dialog open={isDialogOpen} onClose={handleDialogClose}>
@@ -68,14 +84,34 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         type="text"
                         label="Dozent"
                     />
-                    <DateTimePicker label="Vorlesungsbeginn" sx={{mt:1, mb: 1}}/>
-                    <DateTimePicker label="Vorlesungsende" sx={{mt:1, mb: 1}}/>
                     <TextField
                         margin="dense"
                         id="name"
                         label="Vorlesungsort"
                         type="text"
                     />
+                    <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
+                        <DatePicker label="Tag"/>
+                        <TimePicker label="Beginn"/>
+                        <TimePicker label="Ende"/>
+                    </Stack>
+                    <Stack direction="row" >
+                        <TextField
+                            margin="dense"
+                            select 
+                            fullWidth
+                            defaultValue={serialList[0].value}
+                            value={selectedValue}
+                            onChange={handleSelectChange}
+                            >
+                            {serialList.map((item) => (
+                                <MenuItem key={item.id} value={item.value}>
+                                {item.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <DatePicker label="Serienende" sx={{ml:2, mt: 1, mb: 1}} disabled={selectedValue===serialList[0].value}/>
+                    </Stack>
                     <TextField
                         multiline
                         margin="dense"
