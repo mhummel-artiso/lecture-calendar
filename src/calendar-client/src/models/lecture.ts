@@ -1,8 +1,8 @@
 export interface Lecture {
-    Id?: string
-    Title: string
-    Comment?: string
-    Professor?: string
-    CreatedDate?: Date
-    LastUpdateDate?: Date
+    id?: string
+    title: string
+    comment?: string
+    professor?: string
+    createdDate?: Date
+    lastUpdateDate?: Date
 }

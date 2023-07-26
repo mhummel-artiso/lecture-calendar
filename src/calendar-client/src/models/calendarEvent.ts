@@ -1,11 +1,13 @@
+import { Lecture } from './lecture'
+
 export interface CalendarEvent {
-    Id?: string
-    Location: string
-    Start: Date
-    End: Date
-    StartSeries?: Date
-    EndSeries?: Date
-    CreatedDate?: Date
-    LastUpdateDate?: Date
-    Lecture?: Lecture
+    id?: string
+    location: string
+    start: Date
+    end: Date
+    startSeries?: Date
+    endSeries?: Date
+    createdDate?: Date
+    lastUpdateDate?: Date
+    lecture?: Lecture
 }

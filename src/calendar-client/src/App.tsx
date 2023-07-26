@@ -13,9 +13,12 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import 'dayjs/locale/de'
 import { queryClient } from './utils/queryClient'
+import { NavBar } from './components/NavBar'
+import { Box } from "@mui/material";
 
 function App() {
     const envConfig = useEnvironment()
+
     const oidcConfig: AuthProviderProps = {
         onSignIn: (user) => {
             // Redirect?
@@ -23,14 +26,14 @@ function App() {
         },
         onSignOut: (props) => {
             console.log('props', props)
-            window.location.href = envConfig.VITE_OIDC_REDIRECT_URL
+            window.location.href = envConfig.OIDC_REDIRECT_URL
         },
         loadUserInfo: true,
         autoSignIn: false,
-        authority: envConfig.VITE_OIDC_AUTHORITY,
+        authority: envConfig.OIDC_AUTHORITY,
         clientId: 'calendar-client',
-        clientSecret: envConfig.VITE_OIDC_CLIENT_SECRET,
-        redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
+        clientSecret: envConfig.OIDC_CLIENT_SECRET,
+        redirectUri: envConfig.OIDC_REDIRECT_URL,
         postLogoutRedirectUri: 'http://localhost:3000',
     }
 
@@ -43,23 +46,32 @@ function App() {
                     adapterLocale="de"
                 >
                     <BrowserRouter>
-                        <Routes>
-                            <Route path="/" element={<CalendarPage />} />
-                            {/* This page is only for administrator to see specific calendars.*/}
-                            <Route
-                                path="/calendar/:calendarName"
-                                element={<CalendarPage />}
-                            />
-                            {/* Only for administrator.*/}
-                            <Route
-                                path="/administration"
-                                element={<AdminPage />}
-                            />
-                            <Route path="*" element={<NotFoundPage />} />
-                        </Routes>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                height: '100%',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <NavBar />
+                            <Routes>
+                                <Route path="/" element={<CalendarPage />} />
+                                {/* This page is only for administrator to see specific calendars.*/}
+                                <Route
+                                    path="/calendar/:calendarName"
+                                    element={<CalendarPage />}
+                                />
+                                {/* Only for administrator.*/}
+                                <Route
+                                    path="/administration"
+                                    element={<AdminPage />}
+                                />
+                                <Route path="*" element={<NotFoundPage />} />
+                            </Routes>
+                        </Box>
                     </BrowserRouter>
                 </LocalizationProvider>
-                <ReactQueryDevtools />
+                {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools />}
             </QueryClientProvider>
         </AuthProvider>
     )
