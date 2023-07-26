@@ -8,9 +8,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       #               protocol://user:password@host:port
-      MONGODB_SERVER: mongodb://root:${MASTER_PW}@localhost:27017
+      MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
       MONGODB_DB_NAME: lecture-calendar
-      POSTGRESQL_HOST: localhost      
+      POSTGRESQL_HOST: postgressdb      
       POSTGRESQL_USER_NAME: ${POSTGRES_USER}
       POSTGRESQL_USER_PASSWORD: 74RuqICjDPQEFREmhIFaqRf6H
       OIDC_URL: http://localhost:8080/realms/Calendar
