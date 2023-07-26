@@ -163,7 +163,7 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
-
+    app.UseCors(c => c.AllowAnyOrigin());
     app.Run();
 }
 catch (ArgumentException ex)

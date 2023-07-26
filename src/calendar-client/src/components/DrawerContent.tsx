@@ -19,10 +19,10 @@ interface props {
 export const DrawerContent = ({ handleClose }: props) => {
     const navigate = useNavigate()
     const [courseList, setCourseList] = React.useState([
-        { id: 1, value: "tin20", label: "TIN20" },
-        { id: 2, value: "tin21", label: "TIN21" },
-        { id: 3, value: "tin22", label: "TIN22" },
-    ]);
+        { id: 1, value: 'tin20', label: 'TIN20' },
+        { id: 2, value: 'tin21', label: 'TIN21' },
+        { id: 3, value: 'tin22', label: 'TIN22' },
+    ])
 
     return (
         <Box role="presentation" onClick={handleClose} sx={{ width: '400px' }}>
@@ -44,7 +44,9 @@ export const DrawerContent = ({ handleClose }: props) => {
                 {courseList.map((course, index) => (
                     <ListItem key={index} disablePadding>
                         <ListItemButton
-                            onClick={() => navigate(`/calendar/${course.value}`)}
+                            onClick={() =>
+                                navigate(`/calendar/${course.value}`)
+                            }
                         >
                             <ListItemIcon>
                                 <CalendarTodayIcon />

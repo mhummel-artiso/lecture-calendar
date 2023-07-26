@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { Calendar } from '../models/types'
+import { Calendar } from '../models/lecture'
 import localforage from 'localforage'
 
 export const CalendarService = () => {
