@@ -44,7 +44,7 @@ export const AdminPage = () => {
         return Promise.resolve(response.data);
     }
 
-    const { isLoading, data, isError, error, isFetching, refetch } = useQuery({
+    const lectureQuery = useQuery({
         queryKey: ['lectures'],
         queryFn: fetchLectures,
     })
@@ -61,7 +61,11 @@ export const AdminPage = () => {
 
     const deleteLecture = useMutation({mutationFn:(lectureId: string) => {
         return axiosInstance.delete(`Lecture/${lectureId}`);
-    }, onSuccess:(data) => {refetch()}});
+    }, onSuccess:(data) => {lectureQuery.refetch()}});
+    
+    const deleteCalendar = useMutation({mutationFn:(calendarId: string) => {
+        return axiosInstance.delete(`Calendar/${calendarId}`);
+    }, onSuccess:(data) => {calendarQuery.refetch()}});
     
     return (
         <Box
@@ -100,7 +104,7 @@ export const AdminPage = () => {
                                                     <IconButton
                                                         edge="end"
                                                         aria-label="delete"
-                                                        onClick={() => {}}
+                                                        onClick={() => deleteCalendar.mutate(calendar.id!)}
                                                     >
                                                         <DeleteIcon />
                                                     </IconButton>
@@ -123,7 +127,7 @@ export const AdminPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
-                                {data?.map((lecture, index) => {
+                                {lectureQuery.data?.map((lecture, index) => {
                                     return (
                                         <ListItem
                                             divider
