@@ -17,7 +17,7 @@ import React, { useState } from 'react'
 import FolderIcon from '@mui/icons-material/Folder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery} from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
 import axios from 'axios'
 import { Lecture } from '../models/lecture'
@@ -34,15 +34,19 @@ export const AdminPage = () => {
     }
     
     const fetchLectures = async (): Promise<Lecture[]> => {
-        const response = await axiosInstance.get<Lecture[]>('Lecture')
-        return Promise.resolve(response.data)
+        const response = await axiosInstance.get<Lecture[]>('Lecture');
+        return Promise.resolve(response.data);
     }
 
-    const { isLoading, data, isError, error, isFetching } = useQuery({
+    const { isLoading, data, isError, error, isFetching, refetch } = useQuery({
         queryKey: ['lectures'],
         queryFn: fetchLectures,
     })
 
+    const deleteLecture = useMutation({mutationFn:(lectureId: string) => {
+        return axiosInstance.delete(`Lecture/${lectureId}`);
+    }, onSuccess:(data) => {refetch()}});
+    
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
@@ -117,6 +121,7 @@ export const AdminPage = () => {
                                                 <IconButton
                                                     edge="end"
                                                     aria-label="delete"
+                                                    onClick={() => deleteLecture.mutate(lecture.id!)}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>

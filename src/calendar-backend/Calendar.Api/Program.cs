@@ -158,6 +158,7 @@ try
 
     app.UseSerilogRequestLogging();
     // app.UseHttpsRedirection();
+    app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod());
 
     app.UseAuthentication();
     app.UseAuthorization();
