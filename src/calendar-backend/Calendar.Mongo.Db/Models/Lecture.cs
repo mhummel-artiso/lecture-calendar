@@ -7,7 +7,7 @@ namespace Calendar.Mongo.Db.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public ObjectId Id { get; set; }
         public string? Title { get; set; }
         public string? Comment { get; set; }
         public string? Professor { get; set; }

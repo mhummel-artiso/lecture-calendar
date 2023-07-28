@@ -7,7 +7,7 @@
         public string? Description { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
-        public DateTimeOffset StartSeries { get; set; }
-        public DateTimeOffset EndSeries { get; set; }
+        public DateTimeOffset? StartSeries { get; set; }
+        public DateTimeOffset? EndSeries { get; set; }
     }
 }

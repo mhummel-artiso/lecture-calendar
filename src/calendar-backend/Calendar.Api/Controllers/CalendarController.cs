@@ -57,18 +57,29 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet]
-    //[Authorize(Roles = "calendar-viewer,calendar-editor")]
-    public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
+    // FOR TESTING, later use GetCalendarsByNames()
+    public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetAllCalendars()
     {
-        var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
-        var testdata = new List<string>
-        {
-            "TINF21AI"
-        }; // TODO: use groups from claim 
-        var calendar = await calendarService.GetCalendarsByNamesAsync(testdata);
+        var calendar = await calendarService.GetCalendar();
 
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
     }
+
+
+
+    //[HttpGet]
+    ////[Authorize(Roles = "calendar-viewer,calendar-editor")]
+    //public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
+    //{
+    //    var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
+    //    var testdata = new List<string>
+    //    {
+    //        "TINF21AI"
+    //    }; // TODO: use groups from claim 
+    //    var calendar = await calendarService.GetCalendarsByNamesAsync(testdata);
+
+    //    return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
+    //}
 
     [HttpGet("{calendarId}")]
     // [Authorize(Roles = "viewer,editor")]

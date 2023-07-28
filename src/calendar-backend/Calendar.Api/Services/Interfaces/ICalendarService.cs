@@ -14,4 +14,7 @@ public interface ICalendarService
     Task<UserCalendar?> UpdateCalendarAsync(string calendarId, UserCalendar updateCalendar);
 
     Task<bool> DeleteCalendarByIdAsync(string calendarId);
+
+    // FOR TESTING
+    Task<IEnumerable<UserCalendar>> GetCalendar();
 }

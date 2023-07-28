@@ -1,6 +1,7 @@
 ﻿using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Expressions;
@@ -22,13 +23,13 @@ namespace Calendar.Api.Services
         }
         public async Task<CalendarEvent?> GetEventAsync(string calendarId, string eventId)
         {
-            var result = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
-            return result?.Events?.FirstOrDefault(x => x.Id == eventId);
+            var result = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
+            return result?.Events?.FirstOrDefault(x => x.Id == new ObjectId(eventId));
         }
         public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date)
         {
             var result = await dbCollection
-                .Find(x => x.Id == calendarId)
+                .Find(x => x.Id == new ObjectId(calendarId))
                 .FirstOrDefaultAsync();
             if (result == null)
                 return null; // null if calendar not exists
@@ -45,22 +46,27 @@ namespace Calendar.Api.Services
         public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
         {
             var result = await dbCollection
-                .Find(x => x.Id == calendarId)
+                .Find(x => x.Id == new ObjectId(calendarId))
                 .FirstOrDefaultAsync();
             return result?.Events ?? new List<CalendarEvent>(); // null if calendar not exists
         }
         public async Task<CalendarEvent?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             calendarEvent.LastUpdateDate = DateTimeOffset.UtcNow;
-            calendarEvent.Id = keyGenerator.GenerateKey();
+            calendarEvent.CreatedDate = DateTimeOffset.UtcNow;
+            calendarEvent.Start = calendarEvent.Start.ToUniversalTime();
+            calendarEvent.End = calendarEvent.End.ToUniversalTime();
+            calendarEvent.StartSeries = calendarEvent.StartSeries?.ToUniversalTime();
+            calendarEvent.EndSeries = calendarEvent.StartSeries?.ToUniversalTime();
+            calendarEvent.Id = ObjectId.GenerateNewId();
             var update = new UpdateDefinitionBuilder<UserCalendar>()
                 .AddToSet(x => x.Events, calendarEvent);
-            var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
+            var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
             return result.IsAcknowledged ? calendarEvent : null;
         }
         public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent)
         {
-            var calendar = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
+            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
             ArgumentNullException.ThrowIfNull(calendarId);
 
             var itemToUpdate = calendar.Events.FirstOrDefault(x => x.Id == lectureEvent.Id);
@@ -75,20 +81,20 @@ namespace Calendar.Api.Services
 
             var update = new UpdateDefinitionBuilder<UserCalendar>()
                 .Set(x => x.Events.First(x => x.Id == lectureEvent.Id), itemToUpdate);
-            var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
+            var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
             // TODO test this method
-            var updatedItem = (await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync())?.Events.FirstOrDefault(x => x.Id == lectureEvent.Id);
+            var updatedItem = (await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync())?.Events.FirstOrDefault(x => x.Id == lectureEvent.Id);
             return result.ModifiedCount > 0 ? updatedItem : null;
         }
 
         public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)
         {
-            var calendar = await dbCollection.Find(x => x.Id == calendarId).FirstOrDefaultAsync();
-            var item = calendar?.Events.FirstOrDefault(x => x.Id == eventId);
+            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
+            var item = calendar?.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
             if (item is null)
                 return false;
             var update = new UpdateDefinitionBuilder<UserCalendar>().Pull(x => x.Events, item);
-            var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, update);
+            var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
             return result.ModifiedCount > 0;
         }
     }
