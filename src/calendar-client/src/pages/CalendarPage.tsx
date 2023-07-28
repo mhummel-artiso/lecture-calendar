@@ -24,7 +24,6 @@ import { useQuery } from '@tanstack/react-query'
 import axios, { AxiosResponse } from 'axios'
 import { Calendar } from '../models/calendar'
 import { queryKey } from '@tanstack/react-query/build/lib/__tests__/utils'
-import { useAxios } from '../hooks/useAxios'
 import { axiosInstance } from '../utils/axiosInstance'
 
 export const CalendarPage = () => {

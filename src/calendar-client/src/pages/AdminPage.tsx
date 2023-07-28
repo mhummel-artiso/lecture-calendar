@@ -24,6 +24,7 @@ import axios from 'axios'
 import { Lecture } from '../models/lecture'
 import AddIcon from '@mui/icons-material/Add'
 import { LectureDialog } from '../components/LectureDialog'
+import { Calendar } from '../models/calendar'
 
 export const AdminPage = () => {
     const [expanded, setExpanded] = useState('')
@@ -46,6 +47,16 @@ export const AdminPage = () => {
     const { isLoading, data, isError, error, isFetching, refetch } = useQuery({
         queryKey: ['lectures'],
         queryFn: fetchLectures,
+    })
+
+    const fetchCalendars = async (): Promise<Calendar[]> => {
+        const response = await axiosInstance.get<Calendar[]>('Calendar');
+        return Promise.resolve(response.data);
+    }
+
+    const calendarQuery = useQuery({
+        queryKey: ['calendars'],
+        queryFn: fetchCalendars,
     })
 
     const deleteLecture = useMutation({mutationFn:(lectureId: string) => {
@@ -80,30 +91,25 @@ export const AdminPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
-                                    {[...Array(5).keys()].map(
-                                        (value, index, array) => {
-                                            return (
-                                                <ListItem
-                                                    divider
-                                                    key={index}
-                                                    secondaryAction={
-                                                        <IconButton
-                                                            edge="end"
-                                                            aria-label="delete"
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    }
-                                                >
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                            <FolderIcon />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText primary="Single-line item" />
-                                                </ListItem>
-                                            )
-                                        }
+                                    {calendarQuery.data?.map((calendar, index) => {
+                                        return (
+                                            <ListItem
+                                                divider
+                                                key={index}
+                                                secondaryAction={
+                                                    <IconButton
+                                                        edge="end"
+                                                        aria-label="delete"
+                                                        onClick={() => {}}
+                                                    >
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                }
+                                            >
+                                                <ListItemText primary={calendar.name}/>
+                                            </ListItem>
+                                        )
+                                    }
                                     )}
                                 </List>
                             </AccordionDetails>
