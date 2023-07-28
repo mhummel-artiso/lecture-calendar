@@ -4,6 +4,7 @@ import {
     AccordionSummary,
     Avatar,
     Box,
+    Fab,
     Grid,
     IconButton,
     List,
@@ -21,9 +22,13 @@ import {useMutation, useQuery} from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
 import axios from 'axios'
 import { Lecture } from '../models/lecture'
+import AddIcon from '@mui/icons-material/Add'
+import { LectureDialog } from '../components/LectureDialog'
 
 export const AdminPage = () => {
     const [expanded, setExpanded] = useState('')
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const isEditor = true
 
     const handleExpanded = (name: string) => {
         if (name === expanded) {
@@ -141,6 +146,24 @@ export const AdminPage = () => {
                     <Typography variant={'h4'}>Details</Typography>
                 </Grid>
             </Grid>
+            {isEditor && (
+                <Fab
+                    color="primary"
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0,
+                        margin: 7,
+                    }}
+                    onClick={() => setIsDialogOpen(true)}
+                >
+                    <AddIcon />
+                </Fab>
+            )}
+            <LectureDialog
+                isDialogOpen={isDialogOpen}
+                handleDialogClose={() => setIsDialogOpen(false)}
+            />
         </Box>
     )
 }
