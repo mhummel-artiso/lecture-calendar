@@ -17,6 +17,10 @@ import React, { useState } from 'react'
 import FolderIcon from '@mui/icons-material/Folder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import {useQuery} from '@tanstack/react-query'
+import { axiosInstance } from '../utils/axiosInstance'
+import axios from 'axios'
+import { Lecture } from '../models/lecture'
 
 export const AdminPage = () => {
     const [expanded, setExpanded] = useState('')
@@ -28,6 +32,17 @@ export const AdminPage = () => {
             setExpanded(name)
         }
     }
+    
+    const fetchLectures = async (): Promise<Lecture[]> => {
+        const response = await axiosInstance.get<Lecture[]>('Lecture')
+        return Promise.resolve(response.data)
+    }
+
+    const { isLoading, data, isError, error, isFetching } = useQuery({
+        queryKey: ['lectures'],
+        queryFn: fetchLectures,
+    })
+
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
@@ -93,31 +108,25 @@ export const AdminPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
-                                    {[...Array(20).keys()].map(
-                                        (value, index, array) => {
-                                            return (
-                                                <ListItem
-                                                    divider
-                                                    key={index}
-                                                    secondaryAction={
-                                                        <IconButton
-                                                            edge="end"
-                                                            aria-label="delete"
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    }
+                                {data?.map((lecture, index) => {
+                                    return (
+                                        <ListItem
+                                            divider
+                                            key={index}
+                                            secondaryAction={
+                                                <IconButton
+                                                    edge="end"
+                                                    aria-label="delete"
                                                 >
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                            <FolderIcon />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText primary="Single-line item" />
-                                                </ListItem>
-                                            )
-                                        }
-                                    )}
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            }
+                                        >
+                                            <ListItemText primary={lecture.title}/>
+                                        </ListItem>
+                                    )
+                                }
+                                )}
                                 </List>
                             </AccordionDetails>
                         </Accordion>
