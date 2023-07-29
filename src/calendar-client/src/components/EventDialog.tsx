@@ -7,13 +7,13 @@ import {
     MenuItem,
     Stack,
     TextField,
-    Switch,
-    FormControlLabel,
-    Checkbox,
 } from '@mui/material'
-import React, { useState } from 'react';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import React, { useEffect, useState } from 'react'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { fetchCalendars } from '../services/CalendarService'
+import { useQuery } from '@tanstack/react-query'
+import { fetchLectures } from '../services/LectureService'
 
 interface Props {
     isDialogOpen: boolean
@@ -21,83 +21,90 @@ interface Props {
 }
 
 export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
-    const [course, setCourse] = React.useState('tin21') // Change to use course that Person is currently on its calendar
-    const [lecture, setLecture] = React.useState('')
-    const [courseList, setCourseList] = React.useState([
-        { id: 1, value: 'tin20', label: 'TIN20' },
-        { id: 2, value: 'tin21', label: 'TIN21' },
-        { id: 3, value: 'tin22', label: 'TIN22' },
-    ])
-    const [lectureList, setLectureList] = React.useState([
-        { id: 1, value: "mathe", label: "Mathematik" },
-        { id: 2, value: "compilerbau", label: "Compilerbau" },
-        { id: 3, value: "datenbanken", label: "Datenbanken" },
-    ]);
-    const [serialList, setSerialList] = React.useState([
-        { id: 1, value: "dnr", label: "Einzeltermin" },
-        { id: 2, value: "weekly", label: "Wöchentlich wiederholen" },
-        { id: 3, value: "monthly", label: "Monatlich wiederholen" },
-    ]);
-    const [selectedValue, setSelectedValue] = useState(serialList[0].value);
+    const { data: calendarsData } = useQuery({
+        queryKey: ['calendars'],
+        queryFn: fetchCalendars,
+    })
 
-    const handleSelectChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setSelectedValue(event.target.value);
-    };
+    const { data: lectureData } = useQuery({
+        queryKey: ['lectures'],
+        queryFn: fetchLectures,
+    })
 
+    const serialList = [
+        { value: 'dnr', label: 'Einzeltermin' },
+        { value: 'weekly', label: 'Wöchentlich wiederholen' },
+        { value: 'monthly', label: 'Monatlich wiederholen' },
+    ]
+
+    const [selectedValue, setSelectedValue] = useState(serialList[0].value)
+    const [selectedCalendarId, setSelectedCalendarId] = React.useState('') // Change to use course that Person is currently on its calendar
+    const [selectedLectureId, setSelectedLectureId] = React.useState('')
+
+    const handleClose = () => {
+        setSelectedCalendarId('')
+        setSelectedLectureId('')
+        handleDialogClose()
+    }
 
     return (
-        <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <Dialog open={isDialogOpen} onClose={handleClose}>
             <DialogTitle>Event hinzufügen</DialogTitle>
             <DialogContent sx={{ width: '500px' }}>
                 <Stack>
-                    {/* TODO: API Daten fetchen */}
                     <TextField
                         margin="dense"
-                        value={course}
-                        onChange={(e) => setCourse(e.target.value)}
+                        value={selectedCalendarId}
+                        onChange={(e) => setSelectedCalendarId(e.target.value)}
                         select
                         label="Kurs"
                     >
-                        {courseList.map((item) => (
-                            <MenuItem key={item.id} value={item.value}>
-                                {item.label}
+                        {calendarsData?.map((item) => (
+                            <MenuItem key={item.id} value={item.id}>
+                                {item.name}
                             </MenuItem>
                         ))}
                     </TextField>
                     <TextField
                         margin="dense"
-                        value={lecture}
-                        onChange={(e) => setLecture(e.target.value)}
+                        value={selectedLectureId}
+                        onChange={(e) => setSelectedLectureId(e.target.value)}
                         select
                         label="Vorlesung"
                     >
-                        {lectureList.map((item) => (
-                            <MenuItem key={item.id} value={item.value}>
-                                {item.label}
+                        {lectureData?.map((item) => (
+                            <MenuItem key={item.id} value={item.id}>
+                                {item.title}
                             </MenuItem>
                         ))}
                     </TextField>
-                    <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
-                        <DatePicker label="Tag"/>
-                        <TimePicker label="Beginn"/>
-                        <TimePicker label="Ende"/>
+                    <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 1 }}>
+                        <DatePicker label="Tag" />
+                        <TimePicker label="Beginn" />
+                        <TimePicker label="Ende" />
                     </Stack>
-                    <Stack direction="row" >
+                    <Stack direction="row">
                         <TextField
                             margin="dense"
-                            select 
+                            select
                             fullWidth
                             defaultValue={serialList[0].value}
                             value={selectedValue}
-                            onChange={handleSelectChange}
-                            >
-                            {serialList.map((item) => (
-                                <MenuItem key={item.id} value={item.value}>
-                                {item.label}
+                            onChange={(event) =>
+                                setSelectedValue(event.target.value)
+                            }
+                        >
+                            {serialList.map((item, index) => (
+                                <MenuItem key={index} value={item.value}>
+                                    {item.label}
                                 </MenuItem>
                             ))}
                         </TextField>
-                        <DatePicker label="Serienende" sx={{ml:2, mt: 1, mb: 1}} disabled={selectedValue===serialList[0].value}/>
+                        <DatePicker
+                            label="Serienende"
+                            sx={{ ml: 2, mt: 1, mb: 1 }}
+                            disabled={selectedValue === serialList[0].value}
+                        />
                     </Stack>
                     <TextField
                         margin="dense"
@@ -122,8 +129,18 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleDialogClose}>Abbrechen</Button>
-                <Button onClick={() => console.log('')}>Hinzufügen</Button>
+                <Button onClick={handleClose}>Abbrechen</Button>
+                <Button
+                    onClick={() =>
+                        console.log(
+                            selectedCalendarId,
+                            selectedLectureId,
+                            selectedValue
+                        )
+                    }
+                >
+                    Hinzufügen
+                </Button>
             </DialogActions>
         </Dialog>
     )

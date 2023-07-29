@@ -13,7 +13,8 @@ export const useEnvironment = (): EnvConfig => {
         OIDC_CLIENT_SECRET: import.meta.env.VITE_OIDC_CLIENT_SECRET as string,
         OIDC_REDIRECT_URL: import.meta.env.VITE_OIDC_REDIRECT_URL as string,
         BASE_URL: import.meta.env.BASE_URL,
-        QUERY_USE_DEVTOOL: (import.meta.env.VITE_QUERY_USE_DEVTOOL ?? false) as boolean,
+        QUERY_USE_DEVTOOL: (import.meta.env.VITE_QUERY_USE_DEVTOOL ??
+            false) as boolean,
     }
 }
 

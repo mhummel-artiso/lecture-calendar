@@ -14,7 +14,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import 'dayjs/locale/de'
 import { queryClient } from './utils/queryClient'
 import { NavBar } from './components/NavBar'
-import { Box } from "@mui/material";
+import { Box } from '@mui/material'
 
 function App() {
     const envConfig = useEnvironment()

@@ -2,29 +2,24 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    Avatar,
     Box,
     Fab,
     Grid,
     IconButton,
     List,
     ListItem,
-    ListItemAvatar,
     ListItemText,
     Typography,
 } from '@mui/material'
-import { NavBar } from '../components/NavBar'
 import React, { useState } from 'react'
-import FolderIcon from '@mui/icons-material/Folder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
-import axios from 'axios'
-import { Lecture } from '../models/lecture'
 import AddIcon from '@mui/icons-material/Add'
 import { LectureDialog } from '../components/LectureDialog'
-import { Calendar } from '../models/calendar'
+import { fetchCalendars } from '../services/CalendarService'
+import { fetchLectures } from '../services/LectureService'
 
 export const AdminPage = () => {
     const [expanded, setExpanded] = useState('')
@@ -38,35 +33,35 @@ export const AdminPage = () => {
             setExpanded(name)
         }
     }
-    
-    const fetchLectures = async (): Promise<Lecture[]> => {
-        const response = await axiosInstance.get<Lecture[]>('Lecture');
-        return Promise.resolve(response.data);
-    }
 
     const lectureQuery = useQuery({
         queryKey: ['lectures'],
         queryFn: fetchLectures,
     })
 
-    const fetchCalendars = async (): Promise<Calendar[]> => {
-        const response = await axiosInstance.get<Calendar[]>('Calendar');
-        return Promise.resolve(response.data);
-    }
-
     const calendarQuery = useQuery({
         queryKey: ['calendars'],
         queryFn: fetchCalendars,
     })
 
-    const deleteLecture = useMutation({mutationFn:(lectureId: string) => {
-        return axiosInstance.delete(`Lecture/${lectureId}`);
-    }, onSuccess:(data) => {lectureQuery.refetch()}});
-    
-    const deleteCalendar = useMutation({mutationFn:(calendarId: string) => {
-        return axiosInstance.delete(`Calendar/${calendarId}`);
-    }, onSuccess:(data) => {calendarQuery.refetch()}});
-    
+    const deleteLecture = useMutation({
+        mutationFn: (lectureId: string) => {
+            return axiosInstance.delete(`Lecture/${lectureId}`)
+        },
+        onSuccess: (data) => {
+            lectureQuery.refetch()
+        },
+    })
+
+    const deleteCalendar = useMutation({
+        mutationFn: (calendarId: string) => {
+            return axiosInstance.delete(`Calendar/${calendarId}`)
+        },
+        onSuccess: (data) => {
+            calendarQuery.refetch()
+        },
+    })
+
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
@@ -95,25 +90,32 @@ export const AdminPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
-                                    {calendarQuery.data?.map((calendar, index) => {
-                                        return (
-                                            <ListItem
-                                                divider
-                                                key={index}
-                                                secondaryAction={
-                                                    <IconButton
-                                                        edge="end"
-                                                        aria-label="delete"
-                                                        onClick={() => deleteCalendar.mutate(calendar.id!)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                }
-                                            >
-                                                <ListItemText primary={calendar.name}/>
-                                            </ListItem>
-                                        )
-                                    }
+                                    {calendarQuery.data?.map(
+                                        (calendar, index) => {
+                                            return (
+                                                <ListItem
+                                                    divider
+                                                    key={index}
+                                                    secondaryAction={
+                                                        <IconButton
+                                                            edge="end"
+                                                            aria-label="delete"
+                                                            onClick={() =>
+                                                                deleteCalendar.mutate(
+                                                                    calendar.id!
+                                                                )
+                                                            }
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    }
+                                                >
+                                                    <ListItemText
+                                                        primary={calendar.name}
+                                                    />
+                                                </ListItem>
+                                            )
+                                        }
                                     )}
                                 </List>
                             </AccordionDetails>
@@ -127,26 +129,33 @@ export const AdminPage = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <List>
-                                {lectureQuery.data?.map((lecture, index) => {
-                                    return (
-                                        <ListItem
-                                            divider
-                                            key={index}
-                                            secondaryAction={
-                                                <IconButton
-                                                    edge="end"
-                                                    aria-label="delete"
-                                                    onClick={() => deleteLecture.mutate(lecture.id!)}
+                                    {lectureQuery.data?.map(
+                                        (lecture, index) => {
+                                            return (
+                                                <ListItem
+                                                    divider
+                                                    key={index}
+                                                    secondaryAction={
+                                                        <IconButton
+                                                            edge="end"
+                                                            aria-label="delete"
+                                                            onClick={() =>
+                                                                deleteLecture.mutate(
+                                                                    lecture.id!
+                                                                )
+                                                            }
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    }
                                                 >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            }
-                                        >
-                                            <ListItemText primary={lecture.title}/>
-                                        </ListItem>
-                                    )
-                                }
-                                )}
+                                                    <ListItemText
+                                                        primary={lecture.title}
+                                                    />
+                                                </ListItem>
+                                            )
+                                        }
+                                    )}
                                 </List>
                             </AccordionDetails>
                         </Accordion>

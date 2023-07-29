@@ -20,16 +20,14 @@ export const NavBar = () => {
         : undefined
 
     const displayText = () => {
-
         let displayName = 'Kalender'
         // TODO: Check if user is authorized
-        if(location.pathname.startsWith('/administration')){
-            displayName = "Übersicht"
+        if (location.pathname.startsWith('/administration')) {
+            displayName = 'Übersicht'
+        } else if (location.pathname.startsWith('/calendar/')) {
+            displayName = state ? `Kalender: ${state.name}` : 'Kalender'
         }
-        else if(location.pathname.startsWith('/calendar/')){
-            displayName = state ? `Kalender: ${state.name}`: 'Kalender'
-        }
-        return displayName;
+        return displayName
     }
 
     const isEditor = true

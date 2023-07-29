@@ -4,12 +4,11 @@ import {
     Grid,
     Typography,
     Fab,
-    Box,
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ViewState } from '@devexpress/dx-react-scheduler'
 import {
     Scheduler,
@@ -18,13 +17,7 @@ import {
     Appointments,
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
-import { NavBar } from '../components/NavBar'
 import { EventDialog } from '../components/EventDialog'
-import { useQuery } from '@tanstack/react-query'
-import axios, { AxiosResponse } from 'axios'
-import { Calendar } from '../models/calendar'
-import { queryKey } from '@tanstack/react-query/build/lib/__tests__/utils'
-import { axiosInstance } from '../utils/axiosInstance'
 
 export const CalendarPage = () => {
     const [calendarView, setCalendarView] = useState('Month')
