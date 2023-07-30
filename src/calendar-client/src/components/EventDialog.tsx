@@ -44,7 +44,7 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
     const [selectedCalendarId, setSelectedCalendarId] = React.useState('') // Change to use course that Person is currently on its calendar
     const [selectedLectureId, setSelectedLectureId] = React.useState('')
 
-    const { mutate : addEvent } = useAddEvent()
+    const { mutate : addEvent, isSuccess } = useAddEvent()
 
     const eventStartRef = useRef<Date>()
     const eventEndRef = useRef<Date>()
@@ -89,6 +89,9 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
         }
 
         addEvent({event: eventToAdd, calendarId: selectedCalendarId} as AddEventType)
+        if(isSuccess){
+            handleClose()
+        }
     }
 
     return (
