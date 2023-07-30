@@ -57,7 +57,7 @@ namespace Calendar.Api.Services
             calendarEvent.Start = calendarEvent.Start.ToUniversalTime();
             calendarEvent.End = calendarEvent.End.ToUniversalTime();
             calendarEvent.StartSeries = calendarEvent.StartSeries?.ToUniversalTime();
-            calendarEvent.EndSeries = calendarEvent.StartSeries?.ToUniversalTime();
+            calendarEvent.EndSeries = calendarEvent.EndSeries?.ToUniversalTime();
             calendarEvent.Id = ObjectId.GenerateNewId();
             var update = new UpdateDefinitionBuilder<UserCalendar>()
                 .AddToSet(x => x.Events, calendarEvent);

@@ -8,13 +8,15 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { fetchCalendars } from '../services/CalendarService'
 import { useQuery } from '@tanstack/react-query'
 import { fetchLectures } from '../services/LectureService'
 import { DateTimePicker } from '@mui/x-date-pickers'
+import { AddEventType, useAddEvent } from "../hooks/useEventData";
+import { CreateCalendarEvent } from "../models/calendarEvent";
+
 
 interface Props {
     isDialogOpen: boolean
@@ -42,16 +44,51 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
     const [selectedCalendarId, setSelectedCalendarId] = React.useState('') // Change to use course that Person is currently on its calendar
     const [selectedLectureId, setSelectedLectureId] = React.useState('')
 
-    const eventStart = useRef<Date>()
-    const eventEnd = useRef<Date>()
-    const eventLocation = useRef<string>()
-    const eventDescription = useRef<string>()
-    const eventSerieEnd = useRef<Date>()
+    const { mutate : addEvent } = useAddEvent()
+
+    const eventStartRef = useRef<Date>()
+    const eventEndRef = useRef<Date>()
+    const eventLocationRef = useRef<string>()
+    const eventDescriptionRef = useRef<string>()
+    const eventSerieEndRef = useRef<Date>()
 
     const handleClose = () => {
+        handleDialogClose()
+
+        eventStartRef.current = undefined
+        eventEndRef.current = undefined
+        eventLocationRef.current = undefined
+        eventDescriptionRef.current = undefined
+        eventSerieEndRef.current = undefined
+
+        setSelectedValue(serialList[0].value)
         setSelectedCalendarId('')
         setSelectedLectureId('')
-        handleDialogClose()
+    }
+
+    const handleAddEvent = () => {
+        const location = eventLocationRef.current;
+        const start = eventStartRef.current;
+        const end = eventEndRef.current;
+        const endSeries = eventSerieEndRef.current;
+
+        // Check if undefined
+        if(!selectedCalendarId) return;
+        if(!selectedLectureId) return;
+        if(!location) return;
+        if(!start) return;
+        if(!end) return;
+
+        const eventToAdd : CreateCalendarEvent = {
+            lectureId: selectedLectureId,
+            end: end.toISOString(),
+            start: start.toISOString(),
+            description: eventDescriptionRef.current,
+            location: location,
+            endSeries: endSeries?.toISOString()
+        }
+
+        addEvent({event: eventToAdd, calendarId: selectedCalendarId} as AddEventType)
     }
 
     return (
@@ -87,11 +124,11 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                     </TextField>
                     <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 1 }}>
                         <DateTimePicker
-                            onChange={(value) => (eventStart.current = value)}
+                            onChange={(value) => (eventStartRef.current = value)}
                             label="Start"
                         />
                         <DateTimePicker
-                            onChange={(value) => (eventEnd.current = value)}
+                            onChange={(value) => (eventEndRef.current = value)}
                             label="Ende"
                         />
                     </Stack>
@@ -117,7 +154,7 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                             sx={{ ml: 2, mt: 1, mb: 1 }}
                             disabled={selectedValue === serialList[0].value}
                             onChange={(value) =>
-                                (eventSerieEnd.current = value)
+                                (eventSerieEndRef.current = value)
                             }
                         />
                     </Stack>
@@ -127,7 +164,7 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         label="Vorlesungsort"
                         type="text"
                         onChange={(value) =>
-                            (eventLocation.current = value.target.value)
+                            (eventLocationRef.current = value.target.value)
                         }
                     />
                     <TextField
@@ -138,7 +175,7 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
                         label="Zusätzliche Infos"
                         maxRows={4}
                         onChange={(value) =>
-                            (eventDescription.current = value.target.value)
+                            (eventDescriptionRef.current = value.target.value)
                         }
                     />
                 </Stack>
@@ -146,19 +183,7 @@ export const EventDialog = ({ isDialogOpen, handleDialogClose }: Props) => {
             <DialogActions>
                 <Button onClick={handleClose}>Abbrechen</Button>
                 <Button
-                    type="submit"
-                    onClick={() =>
-                        console.log(
-                            selectedCalendarId,
-                            selectedLectureId,
-                            selectedValue,
-                            eventLocation.current,
-                            eventDescription.current,
-                            eventStart.current?.toISOString(),
-                            eventEnd.current?.toISOString(),
-                            eventSerieEnd.current?.toISOString()
-                        )
-                    }
+                    onClick={handleAddEvent}
                 >
                     Hinzufügen
                 </Button>

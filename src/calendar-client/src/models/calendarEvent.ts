@@ -1,13 +1,22 @@
 import { Lecture } from './lecture'
 
 export interface CalendarEvent {
-    id?: string
+    id: string
     location: string
-    start: Date
-    end: Date
-    startSeries?: Date
-    endSeries?: Date
-    createdDate?: Date
-    lastUpdateDate?: Date
-    lecture?: Lecture
+    description?: string
+    start: string
+    end: string
+    endSeries?: string | undefined
+    createdDate?: string
+    lastUpdateDate?: string
+    lecture: Lecture
 }
+export interface CreateCalendarEvent {
+    location: string
+    description?: string | undefined
+    start: string
+    end: string
+    endSeries?: string | undefined
+    lectureId: string
+}
+
