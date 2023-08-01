@@ -38,7 +38,7 @@ public class CalendarController : ControllerBase
     #region UserCalendar
 
     [HttpPost]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<UserCalendarDTO>> AddCalendar([FromBody] CreateUserCalendarDTO? calendar)
     {
         if (calendar == null)
@@ -57,10 +57,11 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet]
-    //[Authorize(Roles = "calendar-viewer,calendar-editor")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
-        var groups = base.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
+        var claims = base.HttpContext.User.Claims.ToList();
+        var g = claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
         var testdata = new List<string>
         {
             "TINF21AI"
@@ -71,7 +72,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}")]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<UserCalendarDTO>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
     {
         var calendar = await calendarService.GetCalendarByIdAsync(calendarId, includeEvents);

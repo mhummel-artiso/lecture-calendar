@@ -81,7 +81,7 @@ services:
         - "5432:5432"
       volumes:
         - postgress-data:/var/lib/postgresql/data
-        # - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        - ./config/postgres/:/docker-entrypoint-initdb.d/:wr
         # - ./config/postgres/logs:/var/log/postgresql:rw
   # seq logging
   seq:

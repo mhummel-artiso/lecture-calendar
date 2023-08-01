@@ -1453,31 +1453,6 @@ ALTER TABLE public.web_origins OWNER TO postgres;
 --
 
 COPY public.admin_event_entity (id, admin_event_time, realm_id, operation_type, auth_realm_id, auth_client_id, auth_user_id, ip_address, resource_path, representation, error, resource_type) FROM stdin;
-246c6cc0-92c4-479d-a26a-d635d6b3deac	1690441009726	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a	{"id":"623a8856-4bb3-4103-94a1-7ed974a1a14a","name":"Students"}	\N	GROUP
-2906b599-7b06-4618-b8e5-81bc644bc7a2	1690441075707	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	groups/a12bd244-8ddf-4220-a9f1-b530891a5ec9	{"id":"a12bd244-8ddf-4220-a9f1-b530891a5ec9","name":"Instructors"}	\N	GROUP
-174475fc-8bd9-40cf-8fd8-209b829c9a1a	1690441094091	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a/children	{"id":"269072d2-19a8-4ea8-a367-fc85b6af1c53","name":"TINF2021AI","path":"/TINF2021AI","attributes":{},"realmRoles":["calendar-viewer"],"clientRoles":{},"subGroups":[]}	\N	GROUP
-18ffe5c2-0668-46c5-b1ce-d55eff8e7065	1690441168267	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a	{"id":"623a8856-4bb3-4103-94a1-7ed974a1a14a","name":"Semester","path":"/Students","attributes":{},"realmRoles":[],"clientRoles":{},"subGroups":[{"id":"269072d2-19a8-4ea8-a367-fc85b6af1c53","name":"TINF2021AI","path":"/Students/TINF2021AI","attributes":{},"realmRoles":["calendar-viewer"],"clientRoles":{},"subGroups":[]}]}	\N	GROUP
-1b15d27f-9ece-41f2-b4b2-37723428d7b7	1690441174370	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a	{"id":"623a8856-4bb3-4103-94a1-7ed974a1a14a","name":"Semesters","path":"/Semester","attributes":{},"realmRoles":[],"clientRoles":{},"subGroups":[{"id":"269072d2-19a8-4ea8-a367-fc85b6af1c53","name":"TINF2021AI","path":"/Semester/TINF2021AI","attributes":{},"realmRoles":["calendar-viewer"],"clientRoles":{},"subGroups":[]}]}	\N	GROUP
-04e7a61b-60bd-4f8f-9a6d-7baa1d36ddf8	1690441246769	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/e735b777-a13e-4f04-81ee-92edc3068449	{"username":"Dozent","enabled":true,"emailVerified":true,"firstName":"Dozent","lastName":"","email":"dozent@test.com","requiredActions":[],"groups":["/Instructors"]}	\N	USER
-f7df3829-215a-405a-a158-34cf02748c02	1690441250137	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/e735b777-a13e-4f04-81ee-92edc3068449	{"id":"e735b777-a13e-4f04-81ee-92edc3068449","createdTimestamp":1690441246760,"username":"dozent","enabled":true,"totp":false,"emailVerified":true,"firstName":"Dozent","lastName":"","email":"dozent@test.com","attributes":{},"disableableCredentialTypes":[],"requiredActions":[],"notBefore":0,"access":{"manageGroupMembership":true,"view":true,"mapRoles":true,"impersonate":true,"manage":true}}	\N	USER
-f0331576-bf83-430b-97db-41dda2611001	1690441251986	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/e735b777-a13e-4f04-81ee-92edc3068449	{"id":"e735b777-a13e-4f04-81ee-92edc3068449","createdTimestamp":1690441246760,"username":"dozent","enabled":true,"totp":false,"emailVerified":true,"firstName":"Dozent","lastName":"","email":"dozent@test.com","attributes":{},"disableableCredentialTypes":[],"requiredActions":[],"notBefore":0,"access":{"manageGroupMembership":true,"view":true,"mapRoles":true,"impersonate":true,"manage":true}}	\N	USER
-3666e788-8b62-4093-a664-516e55cddd5b	1690441299389	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/45171f94-33bb-439c-8765-7a69d0d6d79e	{"username":"Student1","enabled":true,"emailVerified":true,"firstName":"Test","lastName":"Student","email":"student@test.test","requiredActions":[],"groups":["/Semesters/TINF2021AI"]}	\N	USER
-332fbf05-f4b5-46ed-adb1-6cdb3b8a5ce3	1690441322769	d4932c90-8454-4b23-b96a-05444067272e	ACTION	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/45171f94-33bb-439c-8765-7a69d0d6d79e/reset-password	\N	\N	USER
-d0323e9c-08bf-49ea-b279-45961cb7e30e	1690441357419	d4932c90-8454-4b23-b96a-05444067272e	ACTION	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/e735b777-a13e-4f04-81ee-92edc3068449/reset-password	\N	\N	USER
-b5f7fa6b-fc25-4d8a-908c-3228201019b0	1690441399790	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/4f95e562-3f21-416c-aba8-98d10d65a744	{"username":"Sekreteriat","enabled":true,"emailVerified":true,"firstName":"Sekreteriat","lastName":"","email":"ske@test.test","requiredActions":[],"groups":["/Verwaltung"]}	\N	USER
-2dc2d852-4858-4f05-9241-000668ddf0d7	1690441421888	d4932c90-8454-4b23-b96a-05444067272e	ACTION	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.1	users/4f95e562-3f21-416c-aba8-98d10d65a744/reset-password	\N	\N	USER
-399bcab6-4a73-4d44-898b-3d3ac410f315	1690442102897	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	users/e735b777-a13e-4f04-81ee-92edc3068449/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","description":"","composite":false,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-ca2cd32b-864c-479f-ada3-900f2479d30b	1690442116457	d4932c90-8454-4b23-b96a-05444067272e	DELETE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	users/e735b777-a13e-4f04-81ee-92edc3068449/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","composite":false}]	\N	REALM_ROLE_MAPPING
-41027ec1-6501-484a-bccb-11fc682fd1a2	1690442137545	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/a12bd244-8ddf-4220-a9f1-b530891a5ec9/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","description":"","composite":false,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-481e2a73-b84b-46ba-a62c-6db06784bace	1690442155483	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/19bb2450-039d-4780-a347-f686e9af8769/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","description":"","composite":false,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-6f3fd02e-10d9-4594-8766-77a30f737d56	1690442173174	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","description":"","composite":false,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-6bc7199b-16e7-4b97-82cc-4cb001a48464	1690442180266	d4932c90-8454-4b23-b96a-05444067272e	DELETE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/269072d2-19a8-4ea8-a367-fc85b6af1c53/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","composite":false}]	\N	REALM_ROLE_MAPPING
-4ca7c2ee-b0bd-48b3-ade2-66a5e18d272a	1690442204354	d4932c90-8454-4b23-b96a-05444067272e	DELETE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","composite":false}]	\N	REALM_ROLE_MAPPING
-21811a13-9c09-485a-a51b-c7f7f03739f3	1690442210834	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/623a8856-4bb3-4103-94a1-7ed974a1a14a/role-mappings/realm	[{"id":"92521f28-439b-49fd-9f69-aaad96d123d3","name":"calendar-viewer","description":"","composite":false,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-972310b5-13e3-4448-a670-1c9a956e6bfb	1690442222295	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	groups/269072d2-19a8-4ea8-a367-fc85b6af1c53/role-mappings/realm	[{"id":"f8287ef9-36e5-4a8c-a160-a4f30f694375","name":"default-roles-calendar","description":"${role_default-roles}","composite":true,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"}]	\N	REALM_ROLE_MAPPING
-fd17a396-0eb3-435f-aa83-8a2eac148a5c	1690442280887	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	users/ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	{"username":"Student2","enabled":true,"emailVerified":true,"firstName":"Student","lastName":"1","email":"student2@test.test","requiredActions":[],"groups":["/Semesters/TINF2021AI"]}	\N	USER
-68a1fcfa-71c4-428f-bbe6-753b4efc1673	1690442355835	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	users/ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	{"id":"ceb1ed29-4339-4fbd-bab7-ad1ac16429b6","createdTimestamp":1690442280867,"username":"student2","enabled":true,"totp":false,"emailVerified":true,"firstName":"Student","lastName":"1","email":"student2@test.test","attributes":{},"disableableCredentialTypes":[],"requiredActions":[],"notBefore":0,"access":{"manageGroupMembership":true,"view":true,"mapRoles":true,"impersonate":true,"manage":true}}	\N	USER
-2b19639f-9f64-4def-8a7b-e7191270945f	1690442387510	d4932c90-8454-4b23-b96a-05444067272e	ACTION	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.80.1	users/ceb1ed29-4339-4fbd-bab7-ad1ac16429b6/reset-password	\N	\N	USER
 \.
 
 
@@ -1486,6 +1461,7 @@ fd17a396-0eb3-435f-aa83-8a2eac148a5c	1690442280887	d4932c90-8454-4b23-b96a-05444
 --
 
 COPY public.associated_policy (policy_id, associated_policy_id) FROM stdin;
+b8d5227d-c91e-4fed-b5ce-cf15a4197f45	2ea30141-5e9b-4044-b4fe-9053cfc4fc33
 \.
 
 
@@ -1674,10 +1650,11 @@ e0670881-cb89-4f1a-9b84-4d54e5efbeb1	t	f	Calendar-realm	0	f	\N	\N	t	\N	f	e09f66b
 93709245-2824-46cb-a48c-32cc8a45d4cc	t	f	account-console	0	t	\N	/realms/Calendar/account/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
 f576fa8c-c2b5-4121-9936-0bbd993aa559	t	f	admin-cli	0	t	\N	\N	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
 d9a8b9bf-ff5c-46f7-895a-f06aaae0a1dc	t	f	broker	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f
-77d24d30-2ec1-47f9-a758-0826b164cacd	t	t	calendar-api-swagger	0	f	hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Swagger Calendar Api	t	client-secret			\N	t	t	t	t
 43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	t	calendar-client	0	f	Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA		f	http://localhost:3000	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Calendar Client	t	client-secret	http://localhost:3000		\N	t	t	t	t
 0df0a01c-66ef-4e56-bcd6-53211c3965b5	t	f	realm-management	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_realm-management}	f	client-secret	\N	\N	\N	t	f	f	f
 a39f7d32-3924-49d0-8904-bd9e4409411c	t	f	security-admin-console	0	t	\N	/admin/Calendar/console/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
+77d24d30-2ec1-47f9-a758-0826b164cacd	t	t	calendar-api-swagger	0	f	hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Swagger Calendar Api	t	client-secret	http://localhost:4000		\N	t	f	t	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	t	calendar-api	0	f	vTtq8mz0OKiUGLaQWpkNZdpdjLhYPsZ5		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	${client_calendar-api}	t	client-secret	http://localhost:4000		\N	t	f	t	t
 \.
 
 
@@ -1712,6 +1689,13 @@ d9a8b9bf-ff5c-46f7-895a-f06aaae0a1dc	post.logout.redirect.uris	+
 0df0a01c-66ef-4e56-bcd6-53211c3965b5	post.logout.redirect.uris	+
 a39f7d32-3924-49d0-8904-bd9e4409411c	post.logout.redirect.uris	+
 a39f7d32-3924-49d0-8904-bd9e4409411c	pkce.code.challenge.method	S256
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	client.secret.creation.time	1690447778
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	oauth2.device.authorization.grant.enabled	false
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	oidc.ciba.grant.enabled	false
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	backchannel.logout.session.required	true
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	backchannel.logout.revoke.offline.tokens	false
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	display.on.consent.screen	false
+77d24d30-2ec1-47f9-a758-0826b164cacd	display.on.consent.screen	false
 \.
 
 
@@ -1809,7 +1793,6 @@ f219789b-cb94-422d-94c7-4463bd111d9e	true	include.in.token.scope
 90129970-b394-4de3-915b-1a3f36d15fee	${emailScopeConsentText}	consent.screen.text
 ce8950ef-7393-432d-bfec-530811975037	${offlineAccessScopeConsentText}	consent.screen.text
 ce8950ef-7393-432d-bfec-530811975037	true	display.on.consent.screen
-8f8bd907-7a70-4f0c-8301-2706005267e6	false	include.in.token.scope
 8f8bd907-7a70-4f0c-8301-2706005267e6	true	display.on.consent.screen
 8f8bd907-7a70-4f0c-8301-2706005267e6	${rolesScopeConsentText}	consent.screen.text
 0159a26c-8659-4a5f-942d-674d075adcad	true	include.in.token.scope
@@ -1824,6 +1807,8 @@ f62f28ab-12f7-40af-89ac-54530348e79c	true	display.on.consent.screen
 f62f28ab-12f7-40af-89ac-54530348e79c	${phoneScopeConsentText}	consent.screen.text
 b7b454b7-2cf3-4336-af6e-a3ced9539c70	${samlRoleListScopeConsentText}	consent.screen.text
 b7b454b7-2cf3-4336-af6e-a3ced9539c70	true	display.on.consent.screen
+8f8bd907-7a70-4f0c-8301-2706005267e6		gui.order
+8f8bd907-7a70-4f0c-8301-2706005267e6	false	include.in.token.scope
 \.
 
 
@@ -1886,6 +1871,15 @@ b18471e0-3804-4b98-b391-bf56dd4dc923	f219789b-cb94-422d-94c7-4463bd111d9e	f
 b18471e0-3804-4b98-b391-bf56dd4dc923	3f5ecfed-446a-4a5f-b6d6-6af6fd3a8d9c	f
 b18471e0-3804-4b98-b391-bf56dd4dc923	1c5436b6-bdff-48b6-83f1-765a07732981	f
 b18471e0-3804-4b98-b391-bf56dd4dc923	1e6d5d5e-2134-4fe3-81f2-52d636691235	f
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	305e297a-f075-4140-b9bb-76cd6a18fc70	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	2fa54bc7-079f-44a4-af94-ee9a942a9d36	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	90129970-b394-4de3-915b-1a3f36d15fee	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	8f8bd907-7a70-4f0c-8301-2706005267e6	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	cadae9cb-c07d-4eab-bfe1-2b8ce939cd9d	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	ce8950ef-7393-432d-bfec-530811975037	f
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	0159a26c-8659-4a5f-942d-674d075adcad	f
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	34667733-3773-424d-aa8d-d23d6573eba8	f
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	f62f28ab-12f7-40af-89ac-54530348e79c	f
 6eae40bd-bf2a-4118-9659-5673c2ca655e	305e297a-f075-4140-b9bb-76cd6a18fc70	t
 6eae40bd-bf2a-4118-9659-5673c2ca655e	cadae9cb-c07d-4eab-bfe1-2b8ce939cd9d	t
 6eae40bd-bf2a-4118-9659-5673c2ca655e	2fa54bc7-079f-44a4-af94-ee9a942a9d36	t
@@ -2225,6 +2219,8 @@ d9ec84db-c10e-4faa-abf4-dc6e8d7dd9e1	\N	password	45171f94-33bb-439c-8765-7a69d0d
 1979473c-c882-42d9-8788-6550cd533db3	\N	password	e735b777-a13e-4f04-81ee-92edc3068449	1690441357417	My password	{"value":"aOMSe9dERr6Us9wWYrc8rYrl8D0g+/Wu06tV9rm1Rgs=","salt":"SvDAZIdWEXbcarFv/CTrjw==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 5e66fa19-e277-4259-a2e2-e61defa5d805	\N	password	4f95e562-3f21-416c-aba8-98d10d65a744	1690441421886	My password	{"value":"FzUp5JO6dTQ8xQXQKFR8iVl79CEDMyJGDHcKTlrqAOk=","salt":"DSy6/NBJ7KNKv+k2t5Aj4Q==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 4224abee-0e6f-4232-a1d2-ff6b07817d97	\N	password	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	1690442387505	My password	{"value":"qLxY+ftkXgwN4i1gNjxlb8RnyvG8OapeYY/qHNMLLVA=","salt":"vzZSECaacFpn/eKr8tyaVA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+0b62d654-d21a-420d-80d1-6298677ce766	\N	password	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b	1690444976465	My password	{"value":"zKm2mDPn0+/PibVaqXr2Y2NhEMP/X4On0F4Mw6hr+64=","salt":"5VYXap7HPIN9dPPyJ5yL4A==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+846574d2-ed85-4153-915d-7a3c987f5c1a	\N	password	3d13b017-9494-4164-9a3a-9d4d6c534614	1690810677136	My password	{"value":"/PEh29Qs2VF3BSYbaY+lGXuD1mi8dK0tTPC+siqqNgU=","salt":"8YGBDHCy9y/NtIYefo9mMw==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 \.
 
 
@@ -2379,13 +2375,13 @@ e09f66b1-fa27-4fd8-affd-235a04a06fba	88ca1fa4-1955-465e-992c-d65d7270cf38	t
 d4932c90-8454-4b23-b96a-05444067272e	b7b454b7-2cf3-4336-af6e-a3ced9539c70	t
 d4932c90-8454-4b23-b96a-05444067272e	2fa54bc7-079f-44a4-af94-ee9a942a9d36	t
 d4932c90-8454-4b23-b96a-05444067272e	90129970-b394-4de3-915b-1a3f36d15fee	t
-d4932c90-8454-4b23-b96a-05444067272e	8f8bd907-7a70-4f0c-8301-2706005267e6	t
 d4932c90-8454-4b23-b96a-05444067272e	305e297a-f075-4140-b9bb-76cd6a18fc70	t
 d4932c90-8454-4b23-b96a-05444067272e	cadae9cb-c07d-4eab-bfe1-2b8ce939cd9d	t
 d4932c90-8454-4b23-b96a-05444067272e	ce8950ef-7393-432d-bfec-530811975037	f
 d4932c90-8454-4b23-b96a-05444067272e	34667733-3773-424d-aa8d-d23d6573eba8	f
 d4932c90-8454-4b23-b96a-05444067272e	f62f28ab-12f7-40af-89ac-54530348e79c	f
 d4932c90-8454-4b23-b96a-05444067272e	0159a26c-8659-4a5f-942d-674d075adcad	f
+d4932c90-8454-4b23-b96a-05444067272e	8f8bd907-7a70-4f0c-8301-2706005267e6	t
 \.
 
 
@@ -2624,6 +2620,9 @@ f0d1ba3e-d6de-4f83-9805-814635c0551e	6eae40bd-bf2a-4118-9659-5673c2ca655e	t	${ro
 e40dffb6-47ed-482a-892e-9f561ea50c20	6eae40bd-bf2a-4118-9659-5673c2ca655e	t	${role_view-applications}	view-applications	d4932c90-8454-4b23-b96a-05444067272e	6eae40bd-bf2a-4118-9659-5673c2ca655e	\N
 3d456e06-9b0c-4b40-8830-9e7fcedb570b	43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	\N	uma_protection	d4932c90-8454-4b23-b96a-05444067272e	43022b0a-4e08-4d60-ad6c-8a872d5e2f59	\N
 25182d86-79f1-4016-862a-b07db1d4f23e	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	t	${role_impersonation}	impersonation	e09f66b1-fa27-4fd8-affd-235a04a06fba	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	\N
+569bdab3-c50b-4188-a27e-fb1a4c685a1f	d4932c90-8454-4b23-b96a-05444067272e	f		admin	d4932c90-8454-4b23-b96a-05444067272e	\N	\N
+ccdbd4ff-553d-44af-8b5d-a634908f4d9b	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	\N	uma_protection	d4932c90-8454-4b23-b96a-05444067272e	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
+b99b074b-753e-4bb9-81cb-17ff4b1f0b24	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t		admin	d4932c90-8454-4b23-b96a-05444067272e	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
 \.
 
 
@@ -2657,6 +2656,8 @@ COPY public.offline_user_session (user_session_id, user_id, realm_id, created_on
 --
 
 COPY public.policy_config (policy_id, name, value) FROM stdin;
+2ea30141-5e9b-4044-b4fe-9053cfc4fc33	code	// by default, grants any permission associated with this policy\n$evaluation.grant();\n
+b8d5227d-c91e-4fed-b5ce-cf15a4197f45	defaultResourceType	urn:calendar-api:resources:default
 \.
 
 
@@ -2729,6 +2730,9 @@ d338ef80-868b-4dc7-bc0d-3894efae7ccf	Client ID	openid-connect	oidc-usersessionmo
 daf9bff2-ffe3-4765-aa02-11fdc0f7b30b	Client ID	openid-connect	oidc-usersessionmodel-note-mapper	43022b0a-4e08-4d60-ad6c-8a872d5e2f59	\N
 8e3563cd-ef1e-4c06-8baa-8b7700c2b957	Client Host	openid-connect	oidc-usersessionmodel-note-mapper	43022b0a-4e08-4d60-ad6c-8a872d5e2f59	\N
 1da6a0a3-522f-4a5d-aec5-b23f8a2b5382	locale	openid-connect	oidc-usermodel-attribute-mapper	a39f7d32-3924-49d0-8904-bd9e4409411c	\N
+27716c8f-cabb-49d3-b821-c24f6650cbd0	Client ID	openid-connect	oidc-usersessionmodel-note-mapper	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
+f9e1b117-22de-4107-ad0f-585be5351262	Client Host	openid-connect	oidc-usersessionmodel-note-mapper	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
+2a75c508-cd7f-4536-bb72-22b333cfade7	Client IP Address	openid-connect	oidc-usersessionmodel-note-mapper	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
 \.
 
 
@@ -3069,6 +3073,25 @@ daf9bff2-ffe3-4765-aa02-11fdc0f7b30b	String	jsonType.label
 1da6a0a3-522f-4a5d-aec5-b23f8a2b5382	true	access.token.claim
 1da6a0a3-522f-4a5d-aec5-b23f8a2b5382	locale	claim.name
 1da6a0a3-522f-4a5d-aec5-b23f8a2b5382	String	jsonType.label
+1518e926-6909-47cc-b908-5a310b46c0df	true	id.token.claim
+d9fd6056-c26b-4367-b63c-f8e6d658e7ab	true	userinfo.token.claim
+d9fd6056-c26b-4367-b63c-f8e6d658e7ab	true	id.token.claim
+27716c8f-cabb-49d3-b821-c24f6650cbd0	client_id	user.session.note
+27716c8f-cabb-49d3-b821-c24f6650cbd0	true	id.token.claim
+27716c8f-cabb-49d3-b821-c24f6650cbd0	true	access.token.claim
+27716c8f-cabb-49d3-b821-c24f6650cbd0	client_id	claim.name
+27716c8f-cabb-49d3-b821-c24f6650cbd0	String	jsonType.label
+2a75c508-cd7f-4536-bb72-22b333cfade7	clientAddress	user.session.note
+2a75c508-cd7f-4536-bb72-22b333cfade7	true	id.token.claim
+2a75c508-cd7f-4536-bb72-22b333cfade7	true	access.token.claim
+2a75c508-cd7f-4536-bb72-22b333cfade7	clientAddress	claim.name
+2a75c508-cd7f-4536-bb72-22b333cfade7	String	jsonType.label
+f9e1b117-22de-4107-ad0f-585be5351262	clientHost	user.session.note
+f9e1b117-22de-4107-ad0f-585be5351262	true	id.token.claim
+f9e1b117-22de-4107-ad0f-585be5351262	true	access.token.claim
+f9e1b117-22de-4107-ad0f-585be5351262	clientHost	claim.name
+f9e1b117-22de-4107-ad0f-585be5351262	String	jsonType.label
+1518e926-6909-47cc-b908-5a310b46c0df	true	userinfo.token.claim
 \.
 
 
@@ -3326,11 +3349,13 @@ b32b8e24-6c0c-415c-92de-6602b7e4d1a8	/realms/master/account/*
 b18471e0-3804-4b98-b391-bf56dd4dc923	/admin/master/console/*
 6eae40bd-bf2a-4118-9659-5673c2ca655e	/realms/Calendar/account/*
 93709245-2824-46cb-a48c-32cc8a45d4cc	/realms/Calendar/account/*
-77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:5057/swagger/index.html
-77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:5057/swagger
 43022b0a-4e08-4d60-ad6c-8a872d5e2f59	/*
 43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	/admin/Calendar/console/*
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
+77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger
+77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger/index.html
 \.
 
 
@@ -3398,7 +3423,7 @@ COPY public.resource_scope (resource_id, scope_id) FROM stdin;
 
 COPY public.resource_server (id, allow_rs_remote_mgmt, policy_enforce_mode, decision_strategy) FROM stdin;
 43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	0	1
-77d24d30-2ec1-47f9-a758-0826b164cacd	t	0	1
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	0	1
 \.
 
 
@@ -3415,6 +3440,8 @@ COPY public.resource_server_perm_ticket (id, owner, requester, created_timestamp
 --
 
 COPY public.resource_server_policy (id, name, description, type, decision_strategy, logic, resource_server_id, owner) FROM stdin;
+2ea30141-5e9b-4044-b4fe-9053cfc4fc33	Default Policy	A policy that grants access only for users within this realm	js	0	0	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
+b8d5227d-c91e-4fed-b5ce-cf15a4197f45	Default Permission	A permission that applies to the default resource type	resource	1	0	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	\N
 \.
 
 
@@ -3423,6 +3450,7 @@ COPY public.resource_server_policy (id, name, description, type, decision_strate
 --
 
 COPY public.resource_server_resource (id, name, type, icon_uri, owner, resource_server_id, owner_managed_access, display_name) FROM stdin;
+3ed3f0a1-65c2-409e-91f5-5a99f4dc0f6e	Default Resource	urn:calendar-api:resources:default	\N	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	f	\N
 \.
 
 
@@ -3439,6 +3467,7 @@ COPY public.resource_server_scope (id, name, icon_uri, resource_server_id, displ
 --
 
 COPY public.resource_uris (resource_id, value) FROM stdin;
+3ed3f0a1-65c2-409e-91f5-5a99f4dc0f6e	/*
 \.
 
 
@@ -3506,6 +3535,9 @@ e735b777-a13e-4f04-81ee-92edc3068449	dozent@test.com	dozent@test.com	t	t	\N	Doze
 45171f94-33bb-439c-8765-7a69d0d6d79e	student@test.test	student@test.test	t	t	\N	Test	Student	d4932c90-8454-4b23-b96a-05444067272e	student1	1690441299386	\N	0
 4f95e562-3f21-416c-aba8-98d10d65a744	ske@test.test	ske@test.test	t	t	\N	Sekreteriat		d4932c90-8454-4b23-b96a-05444067272e	sekreteriat	1690441399786	\N	0
 ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	student2@test.test	student2@test.test	t	t	\N	Student	1	d4932c90-8454-4b23-b96a-05444067272e	student2	1690442280867	\N	0
+6fe6034a-5015-4bf6-b0cb-d8314f38ac0b	\N	1306dfcd-fc65-4371-ba69-65e870321228	f	t	\N	Admin	Admin	d4932c90-8454-4b23-b96a-05444067272e	admin	1690444964015	\N	0
+2826dab2-8cc4-482d-9e20-f3309ea1e19a	\N	3f298ce7-4f1d-4750-bd59-b47d84b88488	f	t	\N	\N	\N	d4932c90-8454-4b23-b96a-05444067272e	service-account-calendar-api	1690810018508	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	0
+3d13b017-9494-4164-9a3a-9d4d6c534614	\N	0002ba22-00df-4e97-b3a8-465d94b98206	t	t	\N	Dev	dev	d4932c90-8454-4b23-b96a-05444067272e	dev	1690810616537	\N	0
 \.
 
 
@@ -3550,6 +3582,9 @@ a12bd244-8ddf-4220-a9f1-b530891a5ec9	e735b777-a13e-4f04-81ee-92edc3068449
 269072d2-19a8-4ea8-a367-fc85b6af1c53	45171f94-33bb-439c-8765-7a69d0d6d79e
 19bb2450-039d-4780-a347-f686e9af8769	4f95e562-3f21-416c-aba8-98d10d65a744
 269072d2-19a8-4ea8-a367-fc85b6af1c53	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6
+19bb2450-039d-4780-a347-f686e9af8769	3d13b017-9494-4164-9a3a-9d4d6c534614
+623a8856-4bb3-4103-94a1-7ed974a1a14a	3d13b017-9494-4164-9a3a-9d4d6c534614
+a12bd244-8ddf-4220-a9f1-b530891a5ec9	3d13b017-9494-4164-9a3a-9d4d6c534614
 \.
 
 
@@ -3584,6 +3619,11 @@ f8287ef9-36e5-4a8c-a160-a4f30f694375	e735b777-a13e-4f04-81ee-92edc3068449
 f8287ef9-36e5-4a8c-a160-a4f30f694375	45171f94-33bb-439c-8765-7a69d0d6d79e
 f8287ef9-36e5-4a8c-a160-a4f30f694375	4f95e562-3f21-416c-aba8-98d10d65a744
 f8287ef9-36e5-4a8c-a160-a4f30f694375	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6
+f8287ef9-36e5-4a8c-a160-a4f30f694375	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b
+569bdab3-c50b-4188-a27e-fb1a4c685a1f	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b
+f8287ef9-36e5-4a8c-a160-a4f30f694375	2826dab2-8cc4-482d-9e20-f3309ea1e19a
+ccdbd4ff-553d-44af-8b5d-a634908f4d9b	2826dab2-8cc4-482d-9e20-f3309ea1e19a
+f8287ef9-36e5-4a8c-a160-a4f30f694375	3d13b017-9494-4164-9a3a-9d4d6c534614
 \.
 
 
@@ -3617,9 +3657,10 @@ COPY public.username_login_failure (realm_id, username, failed_login_not_before,
 
 COPY public.web_origins (client_id, value) FROM stdin;
 b18471e0-3804-4b98-b391-bf56dd4dc923	+
-77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:5057
 43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	+
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
+77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:4000
 \.
 
 
