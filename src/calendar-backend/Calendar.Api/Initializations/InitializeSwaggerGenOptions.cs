@@ -1,15 +1,19 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Calendar.Api.Configurations;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Calendar.Api.Configurations;
+namespace Calendar.Api.Initializations;
 
-public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
+public class InitializeSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
 {
     private readonly SwaggerEnvironmentConfiguration swaggerConfig;
-    public ConfigureSwaggerGenOptions(IOptions<SwaggerEnvironmentConfiguration> options)
+    private readonly OidcEnvironmentConfiguration oidcConfig;
+
+    public InitializeSwaggerGenOptions(IOptions<SwaggerEnvironmentConfiguration> options, IOptions<OidcEnvironmentConfiguration> oidcOptions)
     {
         this.swaggerConfig = options.Value.Validate();
+        this.oidcConfig = oidcOptions.Value.Validate();
     }
 
     public void Configure(SwaggerGenOptions options)
@@ -41,15 +45,15 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
         });
         options.AddSecurityDefinition(auth, new OpenApiSecurityScheme
         {
-            Flows =
+            Flows = new OpenApiOAuthFlows()
             {
                 Password = new OpenApiOAuthFlow()
                 {
-                    AuthorizationUrl = swaggerConfig.GetOidcSwaggerAuthorizationUrl(),
-                    TokenUrl = swaggerConfig.GetOidcSwaggerTokenUrl(),
+                    AuthorizationUrl = swaggerConfig.GetOidcSwaggerAuthorizationUrl(oidcConfig.OIDC_URL),
+                    TokenUrl = swaggerConfig.GetOidcSwaggerTokenUrl(oidcConfig.OIDC_URL),
                 }
             },
-            OpenIdConnectUrl = new Uri($"{swaggerConfig.SWAGGER_OIDC_URL}/.well-known/openid-configuration"),
+            OpenIdConnectUrl = new Uri($"{oidcConfig.OIDC_URL}/.well-known/openid-configuration"),
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.OpenIdConnect,
             Description = "OAuht2 Server OpenId Security Scheme",

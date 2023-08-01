@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="12.0.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
         <PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.5.2" />
         <PackageReference Include="Keycloak.AuthServices.Authorization" Version="1.5.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
@@ -41,10 +42,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Calendar.Mongo.Db\Calendar.Mongo.Db.csproj" />
       <ProjectReference Include="..\Calendar.PostgreSQL.Db\Calendar.PostgreSQL.Db.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Authorization\" />
     </ItemGroup>
 
 </Project>

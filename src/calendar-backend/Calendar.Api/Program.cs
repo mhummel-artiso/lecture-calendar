@@ -1,12 +1,13 @@
 using Amazon.Runtime.Internal.Transform;
-using Calendar.Api.Authorization;
 using Calendar.Api.Configurations;
+using Calendar.Api.Initializations;
 using Calendar.Api.Models;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
 using Calendar.PostgreSQL.Db;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
+using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +33,6 @@ try
     builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
-    // builder.Services.Configure<KeycloakEnvironmentConfiguration>(configuration);
 
     #endregion
 
@@ -53,14 +53,10 @@ try
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(mongoConfig);
     builder.Services.AddSingleton<IMongoClient>(x =>
-    {
-        return new MongoClient(mongoConfig.MONGODB_SERVER);
-    });
+        new MongoClient(mongoConfig.MONGODB_SERVER));
     builder.Services.AddScoped<IMongoDatabase>(x =>
-    {
-        var client = x.GetRequiredService<IMongoClient>();
-        return client.GetDatabase(mongoConfig.MONGODB_DB_NAME);
-    });
+        x.GetRequiredService<IMongoClient>()
+            .GetDatabase(mongoConfig.MONGODB_DB_NAME));
 
     #endregion
 
@@ -125,12 +121,14 @@ try
     #region Services and automapper
 
     builder.Services
+        .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()
-        .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>()
-        .AddSingleton<IKeyGenerator, KeyGenerator>()
-        .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        .AddTransient<IConfigureOptions<SwaggerGenOptions>, InitializeSwaggerGenOptions>()
+        .AddTransient<IKeycloakService, KeycloakService>()
+        .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+        .AddKeycloakAdminHttpClient(configuration);
 
     #endregion
 
@@ -140,7 +138,6 @@ try
     builder.Services.AddHealthChecks();
 
     #endregion
-
 
     var app = builder.Build();
 
@@ -166,11 +163,12 @@ try
     app.UseAuthorization();
 
     app.MapControllers();
-    app.MapGet("/", (ClaimsPrincipal user) =>
-    {
-        app.Logger.LogInformation(user.Identity?.Name);
-        return user.Identity?.Name ?? "NULL";
-    }).RequireAuthorization("IsAdmin");
+    if (app.Environment.IsDevelopment())
+        app.MapGet("/", (ClaimsPrincipal user) =>
+        {
+            app.Logger.LogInformation(user.Identity?.Name);
+            return user.Identity?.Name ?? "NULL";
+        }).RequireAuthorization("IsAdmin");
     app.Run();
 }
 catch (ArgumentException ex)

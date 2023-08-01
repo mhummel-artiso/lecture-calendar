@@ -5,6 +5,8 @@ using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
+using Keycloak.AuthServices.Sdk.Admin;
+using Keycloak.AuthServices.Sdk.AuthZ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -19,18 +21,22 @@ public class CalendarController : ControllerBase
     private readonly ICalendarService calendarService;
     private readonly IEventService eventService;
     private readonly ILectureService lectureService;
+    private readonly IKeycloakService keycloakService;
     private readonly IMapper mapper;
     private readonly ILogger<CalendarController> logger;
+    private readonly IKeycloakUserClient keycloakUserClient;
 
     public CalendarController(ICalendarService calendarService,
         IEventService eventService,
         ILectureService lectureService,
+        IKeycloakService keycloakService,
         IMapper mapper,
         ILogger<CalendarController> logger)
     {
         this.calendarService = calendarService;
         this.eventService = eventService;
         this.lectureService = lectureService;
+        this.keycloakService = keycloakService;
         this.mapper = mapper;
         this.logger = logger;
     }
@@ -57,16 +63,18 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(AuthPolicies.EDITOR_VIEWER)]
+    [Authorize(AuthPolicies.VIEWER)]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
-        var claims = base.HttpContext.User.Claims.ToList();
-        var g = claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid);
-        var testdata = new List<string>
-        {
-            "TINF21AI"
-        }; // TODO: use groups from claim 
-        var calendar = await calendarService.GetCalendarsByNamesAsync(testdata);
+        var nameIdentifier = base.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
+            return BadRequest("invalid user id");
+        var groups = await keycloakService.GetGroupsForUserAsync(nameIdentifier.Value);
+        // var testdata = new List<string>
+        // {
+        //     "TINF21AI"
+        // }; // TODO: use groups from claim 
+        var calendar = await calendarService.GetCalendarsByNamesAsync(groups);
 
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
     }
@@ -82,6 +90,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPut("{calendarId}")]
+    [Authorize(AuthPolicies.EDITOR)]
     // [Authorize(Roles = "editor")]
     public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO? calendar)
     {
@@ -97,6 +106,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpDelete("{calendarId}")]
+    [Authorize(AuthPolicies.EDITOR)]
     // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteCalendar(string calendarId)
     {
@@ -109,7 +119,7 @@ public class CalendarController : ControllerBase
     #region CalendarEvents
 
     [HttpPost("{calendarId}/event")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO? calendarEvent)
     {
         if (calendarEvent == null)
@@ -127,7 +137,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}/event")]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.VIEWER)]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId)
     {
         var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
@@ -142,7 +152,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.VIEWER)]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId, DateTimeOffset date, string viewType)
     {
         try
@@ -164,7 +174,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpGet("{calendarId}/event/{eventId}")]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
     {
         var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
@@ -177,7 +187,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO? calendarEvent)
     {
         if (calendarEvent == null)
@@ -195,7 +205,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpDelete("{calendarId}/event/{eventId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<bool>> DeleteEvent(string calendarId, string eventId)
     {
         var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
