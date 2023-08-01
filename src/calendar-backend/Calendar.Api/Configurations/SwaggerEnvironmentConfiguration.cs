@@ -1,4 +1,6 @@
-﻿namespace Calendar.Api.Configurations;
+﻿using Calendar.Api.Models;
+
+namespace Calendar.Api.Configurations;
 
 public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<SwaggerEnvironmentConfiguration>
 {
@@ -14,11 +16,12 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
     public Uri GetOidcSwaggerTokenUrl(string oidcUrl) => new($"{oidcUrl.TrimEnd('/')}/{SWAGGER_OIDC_TOKEN_URL.TrimStart('/')}");
     public SwaggerEnvironmentConfiguration Validate()
     {
-        ArgumentException.ThrowIfNullOrEmpty(SWAGGER_REDIRECT_URL);
-        ArgumentException.ThrowIfNullOrEmpty(SWAGGER_CLIENT_SECRET);
-        ArgumentException.ThrowIfNullOrEmpty(SWAGGER_CLIENT_ID);
-        ArgumentException.ThrowIfNullOrEmpty(SWAGGER_AUTHORIZATION_URL);
-        ArgumentException.ThrowIfNullOrEmpty(SWAGGER_OIDC_TOKEN_URL);
+        new EnvironmentConfigurationValidator()
+            .CheckEnvironment(SWAGGER_REDIRECT_URL)
+            .CheckEnvironment(SWAGGER_CLIENT_SECRET)
+            .CheckEnvironment(SWAGGER_CLIENT_ID)
+            .CheckEnvironment(SWAGGER_AUTHORIZATION_URL)
+            .CheckEnvironment(SWAGGER_OIDC_TOKEN_URL);
         return this;
     }
 }

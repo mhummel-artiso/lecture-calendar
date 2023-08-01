@@ -1,4 +1,6 @@
-﻿namespace Calendar.Api.Configurations;
+﻿using Calendar.Api.Models;
+
+namespace Calendar.Api.Configurations;
 
 public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnvironmentConfiguration>
 {
@@ -9,9 +11,10 @@ public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnviro
     /// <inheritdoc/>
     public OidcEnvironmentConfiguration Validate()
     {
-        ArgumentException.ThrowIfNullOrEmpty(OIDC_URL);
-        ArgumentException.ThrowIfNullOrEmpty(OIDC_ROLE_EDITOR);
-        ArgumentException.ThrowIfNullOrEmpty(OIDC_ROLE_VIEWER);
+        new EnvironmentConfigurationValidator()
+            .CheckEnvironment(OIDC_URL)
+            .CheckEnvironment(OIDC_ROLE_EDITOR)
+            .CheckEnvironment(OIDC_ROLE_VIEWER);
         return this;
     }
 }
