@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -168,7 +169,7 @@ try
         {
             app.Logger.LogInformation(user.Identity?.Name);
             return user.Identity?.Name ?? "NULL";
-        }).RequireAuthorization("IsAdmin");
+        }).RequireAuthorization(AuthPolicies.EDITOR_VIEWER);
     app.Run();
 }
 catch (ArgumentException ex)

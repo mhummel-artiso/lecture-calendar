@@ -45,14 +45,6 @@ public class InitializeSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
         });
         options.AddSecurityDefinition(auth, new OpenApiSecurityScheme
         {
-            Flows = new OpenApiOAuthFlows()
-            {
-                Password = new OpenApiOAuthFlow()
-                {
-                    AuthorizationUrl = swaggerConfig.GetOidcSwaggerAuthorizationUrl(oidcConfig.OIDC_URL),
-                    TokenUrl = swaggerConfig.GetOidcSwaggerTokenUrl(oidcConfig.OIDC_URL),
-                }
-            },
             OpenIdConnectUrl = new Uri($"{oidcConfig.OIDC_URL}/.well-known/openid-configuration"),
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.OpenIdConnect,

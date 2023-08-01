@@ -1,8 +1,8 @@
-﻿using Keycloak.AuthServices.Authorization;
+﻿using Calendar.Api.Services.Interfaces;
+using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
-using Microsoft.Extensions.Options;
 
-namespace Calendar.Api.Services.Interfaces;
+namespace Calendar.Api.Services;
 
 public class KeycloakService : IKeycloakService
 {
@@ -13,9 +13,11 @@ public class KeycloakService : IKeycloakService
         this.client = client;
         this.options = options;
     }
+    // TODO fix implementation
     public async Task<IEnumerable<string>> GetGroupsForUserAsync(string userId)
     {
         var user = await client.GetUser(options.Realm, userId);
         return user?.Groups ?? Array.Empty<string>();
     }
+
 }

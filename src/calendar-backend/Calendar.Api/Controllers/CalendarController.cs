@@ -70,10 +70,11 @@ public class CalendarController : ControllerBase
         if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
             return BadRequest("invalid user id");
         var groups = await keycloakService.GetGroupsForUserAsync(nameIdentifier.Value);
-        // var testdata = new List<string>
-        // {
-        //     "TINF21AI"
-        // }; // TODO: use groups from claim 
+        // TODO: use groups from claim 
+        groups = new List<string>
+        {
+            "TINF21AI"
+        };
         var calendar = await calendarService.GetCalendarsByNamesAsync(groups);
 
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
