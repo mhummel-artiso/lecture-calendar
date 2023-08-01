@@ -18,7 +18,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
 import { fetchLectures } from '../services/LectureService'
 import { Lecture } from '../models/lecture'
-import { Calendar } from '../models/calendar'
 import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
 

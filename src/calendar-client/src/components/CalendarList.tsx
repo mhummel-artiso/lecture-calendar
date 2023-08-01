@@ -3,6 +3,7 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
+    Button,
     Fab,
     Grid,
     IconButton,
@@ -19,12 +20,17 @@ import { axiosInstance } from '../utils/axiosInstance'
 import { fetchCalendars } from '../services/CalendarService'
 import { Lecture } from '../models/lecture'
 import { Calendar } from '../models/calendar'
+import AddIcon from '@mui/icons-material/Add'
+import { CalendarDialog } from './CalendarDialog'
+
 
 interface ComponentProps{
 }
 
 export const CalendarList:FC<ComponentProps> = (props) => {
     const [expanded, setExpanded] = useState('')
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedCalendar, setSelectedCalendar] = useState<Calendar|null>(null);
 
     const handleExpanded = (name: string) => {
         if (name === expanded) {
@@ -49,6 +55,7 @@ export const CalendarList:FC<ComponentProps> = (props) => {
     })
 
     return (
+        <>
         <Accordion
             expanded={expanded === 'calendar'}
             onChange={() => handleExpanded('calendar')}
@@ -57,6 +64,7 @@ export const CalendarList:FC<ComponentProps> = (props) => {
                 <Typography>Kalender</Typography>
             </AccordionSummary>
             <AccordionDetails>
+            <Button variant="outlined" startIcon={<AddIcon />} onClick= {()=> {setSelectedCalendar(null); setIsDialogOpen(true)}}>Kalender hinzufügen</Button>
                 <List>
                     {calendarQuery.data?.map(
                         (calendar, index) => {
@@ -77,7 +85,7 @@ export const CalendarList:FC<ComponentProps> = (props) => {
                                             <DeleteIcon />
                                         </IconButton>
                                     }
-                                    onClick={() => props.onCalendarClick(calendar)}
+                                    onClick={() => {setIsDialogOpen(true); setSelectedCalendar(calendar)}}
                                 >
                                     <ListItemText
                                         primary={calendar.name}
@@ -89,6 +97,12 @@ export const CalendarList:FC<ComponentProps> = (props) => {
                 </List>
             </AccordionDetails>
         </Accordion>
+        <CalendarDialog
+                isDialogOpen={isDialogOpen}
+                handleDialogAbort={() => setIsDialogOpen(false)}
+                currentCalendar={selectedCalendar}
+        />
+        </>
     )
 }
 
