@@ -11,14 +11,19 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
 import { fetchCalendars } from '../services/CalendarService'
+import { Lecture } from '../models/lecture'
+import { Calendar } from '../models/calendar'
 
-export const CalendarList = () => {
+interface ComponentProps{
+}
+
+export const CalendarList:FC<ComponentProps> = (props) => {
     const [expanded, setExpanded] = useState('')
 
     const handleExpanded = (name: string) => {
@@ -72,6 +77,7 @@ export const CalendarList = () => {
                                             <DeleteIcon />
                                         </IconButton>
                                     }
+                                    onClick={() => props.onCalendarClick(calendar)}
                                 >
                                     <ListItemText
                                         primary={calendar.name}

@@ -2,21 +2,35 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Button,
+    Fab,
+    Grid,
     IconButton,
     List,
     ListItem,
     ListItemText,
     Typography,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '../utils/axiosInstance'
 import { fetchLectures } from '../services/LectureService'
+import { Lecture } from '../models/lecture'
+import { Calendar } from '../models/calendar'
+import { LectureDialog } from './LectureDialog'
+import AddIcon from '@mui/icons-material/Add'
 
-export const LectureList = () => {
+interface ComponentProps{
+
+}
+
+export const LectureList:FC<ComponentProps> = (props) => {
     const [expanded, setExpanded] = useState('')
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedLecture, setSelectedLecture] = useState<Lecture|null>(null);
+
 
     const handleExpanded = (name: string) => {
         if (name === expanded) {
@@ -40,15 +54,21 @@ export const LectureList = () => {
         },
     })
 
-    return (
+    return ( 
+        <>
+
         <Accordion
             expanded={expanded === 'lecture'}
             onChange={() => handleExpanded('lecture')}
         >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Grid>
                 <Typography>Fächer</Typography>
+                </Grid>
             </AccordionSummary>
             <AccordionDetails>
+                
+                <Button variant="outlined" startIcon={<AddIcon />} onClick= {()=> {setSelectedLecture(null); setIsDialogOpen(true)}}>Vorlesung hinzufügen</Button>
                 <List>
                     {lectureQuery.data?.map(
                         (lecture, index) => {
@@ -69,6 +89,7 @@ export const LectureList = () => {
                                             <DeleteIcon />
                                         </IconButton>
                                     }
+                                    onClick={() => {setIsDialogOpen(true); setSelectedLecture(lecture)}}
                                 >
                                     <ListItemText
                                         primary={lecture.title}
@@ -80,5 +101,11 @@ export const LectureList = () => {
                 </List>
             </AccordionDetails>
         </Accordion>
+        <LectureDialog
+                isDialogOpen={isDialogOpen}
+                handleDialogAbort={() => setIsDialogOpen(false)}
+                currentLecture={selectedLecture}
+        />
+        </>
     )
 }

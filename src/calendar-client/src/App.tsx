@@ -2,7 +2,7 @@ import { Routes, Route, Link, BrowserRouter } from 'react-router-dom'
 
 import React from 'react'
 import { CalendarPage } from './pages/CalendarPage'
-import { AdminPage } from './pages/AdminPage'
+import { AdminPage } from './pages/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { AuthProvider, AuthProviderProps, User } from 'oidc-react'
 import { useEnvironment } from './hooks/useEnvironment.tsx'
