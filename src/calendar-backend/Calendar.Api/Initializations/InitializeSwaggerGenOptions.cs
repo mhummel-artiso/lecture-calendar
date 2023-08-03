@@ -45,7 +45,7 @@ public class InitializeSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
         });
         options.AddSecurityDefinition(auth, new OpenApiSecurityScheme
         {
-            OpenIdConnectUrl = new Uri($"{oidcConfig.OIDC_URL}/.well-known/openid-configuration"),
+            OpenIdConnectUrl = new Uri($"{swaggerConfig.SWAGGER_OIDC_URL}/.well-known/openid-configuration"),
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.OpenIdConnect,
             Description = "OAuht2 Server OpenId Security Scheme",

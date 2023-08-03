@@ -24,4 +24,11 @@ public class EnvironmentConfigurationValidator
             throw new EnvironmentConfigurationException(prefix + paramName);
         return this;
     }
+    public EnvironmentConfigurationValidator CheckEnvironmentValue([NotNull] bool? argument,
+        [CallerArgumentExpression("argument")] string? paramName = null)
+    {
+        if (argument == null)
+            throw new EnvironmentConfigurationException(prefix + paramName);
+        return this;
+    }
 }

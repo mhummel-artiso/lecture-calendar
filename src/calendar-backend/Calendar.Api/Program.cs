@@ -13,9 +13,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using Serilog;
+using Serilog.Enrichers.AspNetCore;
+using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
 
@@ -25,6 +29,8 @@ try
 {
 
     #region Configuration
+
+    IdentityModelEventSource.ShowPII = true;
 
     var configuration = builder.Configuration;
     configuration.AddEnvironmentVariables(prefix: "API_");
@@ -43,9 +49,10 @@ try
         config
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentName()
+            .Enrich.WithExceptionDetails()
+            .Enrich.WithMachineName()
     );
-
-    //builder.Services.AddSerilog();
 
     #endregion
 
@@ -142,6 +149,9 @@ try
 
     var app = builder.Build();
 
+    app.UseHttpLogging();
+    // app.UseW3CLogging();
+
     // Configure the HTTP request pipeline.
     if (swaggerConfig.USE_SWAGGER)
     {
@@ -160,16 +170,21 @@ try
 
     app.UseSerilogRequestLogging();
 
+    app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
-
     app.MapControllers();
-    if (app.Environment.IsDevelopment())
-        app.MapGet("/", (ClaimsPrincipal user) =>
+    // if (app.Environment.IsDevelopment())
+    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
+    ArgumentNullException.ThrowIfNull(debugConf);
+    if (debugConf.DEBUG_TEST_ENDPOINT_ENABELD)
+    {
+        app.MapGet("test", (ClaimsPrincipal user) =>
         {
             app.Logger.LogInformation(user.Identity?.Name);
             return user.Identity?.Name ?? "NULL";
-        }).RequireAuthorization(AuthPolicies.EDITOR_VIEWER);
+        }).RequireAuthorization(debugConf.DEBUG_TEST_ENDPOINT_POLICY);
+    }
     app.Run();
 }
 catch (ArgumentException ex)

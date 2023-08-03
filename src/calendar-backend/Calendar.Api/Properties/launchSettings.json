@@ -16,6 +16,7 @@
         "API_USE_SWAGGER": "true",
         "API_SWAGGER_CLIENT_SECRET": "hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR",
         "API_SWAGGER_REDIRECT_URL": "http://localhost:4000/swagger/index.html",
+        "API_SWAGGER_OIDC_URL": "http://localhost:8080/realms/Calendar",
         "API_JWT_AUDIENCE": "http://localhost:8080/realms/Calendar",
         "API_JWT_AUTHORITY": "http://localhost:8080/realms/Calendar",
         "API_JWT_METADATA_ADDRESS": "http://localhost:8080/realms/Calendar"
