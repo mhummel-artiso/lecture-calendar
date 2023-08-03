@@ -1,13 +1,32 @@
-﻿namespace Calendar.Api.DTOs.Create
+﻿using Calendar.Mongo.Db.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace Calendar.Api.DTOs.Create
 {
     public class CreateCalendarEventDTO
     {
-        public string Location { get; set; }
-        public string LectureId { get; set; }
+        [Required()]
+        [StringLength(50)]
+        public string? Location { get; set; }
+
+        [StringLength(100)]
         public string? Description { get; set; }
+        
+        [Required()]
         public DateTimeOffset Start { get; set; }
+
+        [Required()]
         public DateTimeOffset End { get; set; }
-        public DateTimeOffset? StartSeries { get; set; }
+
+        public List<string>? InstructorsIds { get; set; }
+
+        [Range(0, 2)]
+        public EventRotation? Rotation { get; set; }
+
         public DateTimeOffset? EndSeries { get; set; }
+
+        [Required()]
+        [StringLength(24, MinimumLength =24)]
+        public string? LectureId { get; set; }
     }
 }

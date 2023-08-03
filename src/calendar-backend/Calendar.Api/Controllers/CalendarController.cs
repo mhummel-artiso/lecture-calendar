@@ -4,10 +4,13 @@ using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
+using Calendar.Api.Services.Validation;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Servers;
 using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
@@ -120,35 +123,61 @@ public class CalendarController : ControllerBase
 
     [HttpPost("{calendarId}/event")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO? calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> AddEvent(string calendarId, [FromBody] CreateCalendarEventDTO calendarEvent)
     {
-        if (calendarEvent == null)
+        try
         {
-            return BadRequest();
-        }
+            var mappedCalendarEvent = mapper.Map<CalendarEvent>(calendarEvent);
 
-        var result = await eventService.AddEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        var mappedResult = mapper.Map<CalendarEventDTO>(result);
-        if (!string.IsNullOrWhiteSpace(calendarEvent.LectureId))
+            var result = await eventService.AddEventAsync(calendarId, mappedCalendarEvent ,calendarEvent.EndSeries);
+            
+            if (result == null)
+            {
+                return BadRequest("Error at inserting");
+            }
+
+            var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
+            
+            AddStartAndEndSeriesDate(mappedResult);
+
+            foreach (var mappedDto in mappedResult)
+            {
+                await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            }
+
+            return CreatedAtAction(nameof(AddEvent), mappedResult);
+
+        } catch (Exception ex)
         {
-            await AddLectureToEventAsync(mappedResult);
+            return BadRequest(ex.Message);
         }
-        return CreatedAtAction(nameof(AddEvent), mappedResult);
     }
 
     [HttpGet("{calendarId}/event")]
     // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId)
     {
-        var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
-        if (calendarEvents is null)
-            return BadRequest("Calendar not Found");
-        var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
-        foreach (var mappedDto in mappedDtos)
+        try
         {
-            await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
+            if (calendarEvents is null)
+                return BadRequest("Calendar not Found");
+
+            var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
+
+            AddStartAndEndSeriesDate(mappedDtos);
+
+            foreach (var mappedDto in mappedDtos)
+            {
+                await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            }
+            return Ok(mappedDtos);
+        } 
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
-        return Ok(mappedDtos);
+        
     }
 
     [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
@@ -177,13 +206,21 @@ public class CalendarController : ControllerBase
     // [Authorize(Roles = "viewer,editor")]
     public async Task<ActionResult<UserCalendarDTO>> GetEvent(string calendarId, string eventId)
     {
-        var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
+        try
+        {
+            var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
 
-        if (calendarEvent == null)
-            return NotFound();
-        var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
-        await AddLectureToEventAsync(mappedDto);
-        return Ok(mappedDto);
+            if (calendarEvent == null)
+                return NotFound();
+            var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
+            await AddLectureToEventAsync(mappedDto);
+            return Ok(mappedDto);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
@@ -208,8 +245,31 @@ public class CalendarController : ControllerBase
     // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteEvent(string calendarId, string eventId)
     {
-        var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
-        return Ok(success);
+        try
+        {
+            var success = await eventService.DeleteEventByIdAsync(calendarId, eventId);
+            return Ok(success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        
+    }
+
+    [HttpDelete("{calendarId}/event/serie/{serieId}")]
+    // [Authorize(Roles = "editor")]
+    public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, string serieId)
+    {
+        try
+        {
+            var success = await eventService.DeleteEventSerieByIdAsync(calendarId, serieId);
+            return Ok(success);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     private async Task AddLectureToEventAsync(CalendarEventDTO eventDto)
@@ -222,4 +282,23 @@ public class CalendarController : ControllerBase
 
     #endregion
 
+    private void AddStartAndEndSeriesDate(IEnumerable<CalendarEventDTO> calendarEvents)
+    {
+        if (calendarEvents == null) return;
+
+        IEnumerable<string?> seriesIds = calendarEvents.Select(x => x.SerieId).Distinct();
+
+        foreach (var seriesId in seriesIds)
+        {
+            if (seriesId == null) continue;
+            var seriesEvents = calendarEvents.Where(x => seriesId.Equals(x.SerieId));
+            var startSerie = seriesEvents.Min(x => x.Start);
+            var endSerie = seriesEvents.Max(x => x.End);
+            foreach (var seriesEvent in seriesEvents)
+            {
+                seriesEvent.StartSeries = startSerie;
+                seriesEvent.EndSeries = endSerie;
+            }
+        }
+    }
 }
