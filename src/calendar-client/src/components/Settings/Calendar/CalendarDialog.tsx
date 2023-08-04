@@ -8,7 +8,7 @@ import {
     TextField,
 } from '@mui/material'
 import React, { FC, useEffect, useState } from 'react'
-import { Calendar } from '../models/calendar'
+import { Calendar } from '../../../models/calendar'
 
 interface Props {
     isDialogOpen: boolean

@@ -2,7 +2,6 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    Box,
     Button,
     Fab,
     Grid,
@@ -16,21 +15,21 @@ import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { axiosInstance } from '../utils/axiosInstance'
-import { fetchCalendars } from '../services/CalendarService'
-import { Lecture } from '../models/lecture'
-import { Calendar } from '../models/calendar'
+import { axiosInstance } from '../../../utils/axiosInstance'
+import { fetchLectures } from '../../../services/LectureService'
+import { Lecture } from '../../../models/lecture'
+import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
-import { CalendarDialog } from './CalendarDialog'
-
 
 interface ComponentProps{
+
 }
 
-export const CalendarList:FC<ComponentProps> = (props) => {
+export const LectureList:FC<ComponentProps> = (props) => {
     const [expanded, setExpanded] = useState('')
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedCalendar, setSelectedCalendar] = useState<Calendar|null>(null);
+    const [selectedLecture, setSelectedLecture] = useState<Lecture|null>(null);
+
 
     const handleExpanded = (name: string) => {
         if (name === expanded) {
@@ -40,34 +39,38 @@ export const CalendarList:FC<ComponentProps> = (props) => {
         }
     }
 
-    const calendarQuery = useQuery({
-        queryKey: ['calendars'],
-        queryFn: fetchCalendars,
+    const lectureQuery = useQuery({
+        queryKey: ['lectures'],
+        queryFn: fetchLectures,
     })
 
-    const deleteCalendar = useMutation({
-        mutationFn: (calendarId: string) => {
-            return axiosInstance.delete(`Calendar/${calendarId}`)
+    const deleteLecture = useMutation({
+        mutationFn: (lectureId: string) => {
+            return axiosInstance.delete(`Lecture/${lectureId}`)
         },
         onSuccess: (data) => {
-            calendarQuery.refetch()
+            lectureQuery.refetch()
         },
     })
 
-    return (
+    return ( 
         <>
+
         <Accordion
-            expanded={expanded === 'calendar'}
-            onChange={() => handleExpanded('calendar')}
+            expanded={expanded === 'lecture'}
+            onChange={() => handleExpanded('lecture')}
         >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Kalender</Typography>
+                <Grid>
+                <Typography>Fächer</Typography>
+                </Grid>
             </AccordionSummary>
             <AccordionDetails>
-            <Button variant="outlined" startIcon={<AddIcon />} onClick= {()=> {setSelectedCalendar(null); setIsDialogOpen(true)}}>Kalender hinzufügen</Button>
+                
+                <Button variant="outlined" startIcon={<AddIcon />} onClick= {()=> {setSelectedLecture(null); setIsDialogOpen(true)}}>Vorlesung hinzufügen</Button>
                 <List>
-                    {calendarQuery.data?.map(
-                        (calendar, index) => {
+                    {lectureQuery.data?.map(
+                        (lecture, index) => {
                             return (
                                 <ListItem
                                     divider
@@ -77,18 +80,18 @@ export const CalendarList:FC<ComponentProps> = (props) => {
                                             edge="end"
                                             aria-label="delete"
                                             onClick={() =>
-                                                deleteCalendar.mutate(
-                                                    calendar.id!
+                                                deleteLecture.mutate(
+                                                    lecture.id!
                                                 )
                                             }
                                         >
                                             <DeleteIcon />
                                         </IconButton>
                                     }
-                                    onClick={() => {setIsDialogOpen(true); setSelectedCalendar(calendar)}}
+                                    onClick={() => {setIsDialogOpen(true); setSelectedLecture(lecture)}}
                                 >
                                     <ListItemText
-                                        primary={calendar.name}
+                                        primary={lecture.title}
                                     />
                                 </ListItem>
                             )
@@ -97,12 +100,11 @@ export const CalendarList:FC<ComponentProps> = (props) => {
                 </List>
             </AccordionDetails>
         </Accordion>
-        <CalendarDialog
+        <LectureDialog
                 isDialogOpen={isDialogOpen}
                 handleDialogAbort={() => setIsDialogOpen(false)}
-                currentCalendar={selectedCalendar}
+                currentLecture={selectedLecture}
         />
         </>
     )
 }
-

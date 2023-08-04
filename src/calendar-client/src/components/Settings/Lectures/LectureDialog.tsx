@@ -8,7 +8,7 @@ import {
     TextField,
 } from '@mui/material'
 import React, { FC, useEffect, useState } from 'react'
-import { Lecture } from '../models/lecture'
+import { Lecture } from '../../../models/lecture'
 
 interface Props {
     isDialogOpen: boolean

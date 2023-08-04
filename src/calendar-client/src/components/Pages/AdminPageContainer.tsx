@@ -1,8 +1,8 @@
 import {
     Box,
 } from '@mui/material'
-import { CalendarList } from '../components/CalendarList'
-import { LectureList } from '../components/LectureList'
+import { CalendarList } from '../Settings/Calendar/CalendarList'
+import { LectureList } from '../Settings/Lectures/LectureList'
 
 
 export const AdminPage = () => {

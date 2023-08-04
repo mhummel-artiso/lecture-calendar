@@ -17,7 +17,7 @@ import {
     Appointments,
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
-import { EventDialog } from '../components/EventDialog'
+import { EventDialog } from '../Overview/EventDialog'
 
 export const CalendarPage = () => {
     const [calendarView, setCalendarView] = useState('Month')

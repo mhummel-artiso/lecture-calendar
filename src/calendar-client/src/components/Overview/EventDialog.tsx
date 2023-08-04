@@ -10,12 +10,12 @@ import {
 } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { fetchCalendars } from '../services/CalendarService'
+import { fetchCalendars } from '../../services/CalendarService'
 import { useQuery } from '@tanstack/react-query'
-import { fetchLectures } from '../services/LectureService'
+import { fetchLectures } from '../../services/LectureService'
 import { DateTimePicker } from '@mui/x-date-pickers'
-import { AddEventType, useAddEvent } from '../hooks/useEventData'
-import { CreateCalendarEvent } from '../models/calendarEvent'
+import { AddEventType, useAddEvent } from '../../hooks/useEventData'
+import { CreateCalendarEvent } from '../../models/calendarEvent'
 
 interface Props {
     isDialogOpen: boolean
