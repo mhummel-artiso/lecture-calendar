@@ -6,7 +6,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MONGODB_SERVER": "mongodb://root:74RuqICjDPQEFREmhIFaqRf6H@localhost:27017",
+        "MONGODB_SERVER": "mongodb://localhost:27017",
         "MONGODB_DB_NAME": "lecture-calendar",
         "POSTGRESQL_HOST": "localhost",
         "POSTGRESQL_PORT": "5432",
@@ -20,7 +20,7 @@
         "JWT_METADATA_ADDRESS": "http://localhost:8080/realms/Calendar"
       },
       "hotReloadEnabled": true,
-      "applicationUrl": "http://localhost:5057",
+      "applicationUrl": "http://localhost:4000",
       "nativeDebugging": true
     },
     "https": {

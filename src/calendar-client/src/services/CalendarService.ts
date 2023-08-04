@@ -4,6 +4,7 @@ import localforage from 'localforage'
 import { axiosInstance } from '../utils/axiosInstance'
 
 // export const CalendarService = () => {
+// TODO: write in English !!
 //     // // TODO: Mus noch angepasst werden
 //     // const getYear = async (
 //     //     calendarId: string,
@@ -36,6 +37,7 @@ import { axiosInstance } from '../utils/axiosInstance'
 //     //     return calendar
 //     // }
 //     //
+// TODO: write in English !!
 //     // // TODO: Mus noch angepasst werden
 //     // const getMonth = async (
 //     //     calendarId: string,
@@ -76,7 +78,20 @@ import { axiosInstance } from '../utils/axiosInstance'
 //     // return { getYear, getMonth, fetchCalendars }
 //     return { fetchCalendars }
 // }
+const endPointName = 'Calendar';
+export const addCalendar = async (calendar: Calendar): Promise<Calendar> => {
+    const response = await axiosInstance.post<Calendar>(endPointName, calendar)
+    return Promise.resolve(response.data);
+}
 export const fetchCalendars = async (): Promise<Calendar[]> => {
-    const response = await axiosInstance.get<Calendar[]>('Calendar')
+    const response = await axiosInstance.get<Calendar[]>(endPointName)
     return Promise.resolve(response.data)
+}
+export const editCalendar = async (calendarId: string, calendar: Calendar): Promise<Calendar> => {
+    const response = await axiosInstance.put<Calendar>(`${endPointName}/${calendarId}`, calendar);
+    return Promise.resolve(response.data)
+}
+export const deleteCalendar = async (calendarId: string): Promise<boolean> => {
+    const response = await axiosInstance.delete<boolean>(`${endPointName}/${calendarId}`);
+    return Promise.resolve(response.data);
 }

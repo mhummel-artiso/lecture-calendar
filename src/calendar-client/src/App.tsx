@@ -15,10 +15,13 @@ import 'dayjs/locale/de'
 import { queryClient } from './utils/queryClient'
 import { NavBar } from './components/NavBar'
 import { Box } from '@mui/material'
+import { useAccount } from "./hooks/useAccount";
+import { HelloPage } from "./components/Pages/HelloPage";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorPage } from "./components/Pages/ErrorPage";
 
 function App() {
     const envConfig = useEnvironment()
-
     const oidcConfig: AuthProviderProps = {
         onSignIn: (user) => {
             // Redirect?
@@ -38,42 +41,46 @@ function App() {
     }
 
     return (
-        <AuthProvider {...oidcConfig}>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-            <QueryClientProvider client={queryClient}>
-                <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale="de"
-                >
-                    <BrowserRouter>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                height: '100%',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            <NavBar />
-                            <Routes>
-                                <Route path="/" element={<CalendarPage />} />
-                                {/* This page is only for administrator to see specific calendars.*/}
-                                <Route
-                                    path="/calendar/:calendarName"
-                                    element={<CalendarPage />}
-                                />
-                                {/* Only for administrator.*/}
-                                <Route
-                                    path="/administration"
-                                    element={<AdminPage />}
-                                />
-                                <Route path="*" element={<NotFoundPage />} />
-                            </Routes>
-                        </Box>
-                    </BrowserRouter>
-                </LocalizationProvider>
-                {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools />}
-            </QueryClientProvider>
-        </AuthProvider>
+
+            <AuthProvider {...oidcConfig}>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+                <QueryClientProvider client={queryClient}>
+                    <LocalizationProvider
+                        dateAdapter={AdapterDayjs}
+                        adapterLocale="de"
+                    >
+                        <BrowserRouter>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    height: '100%',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <NavBar/>
+                                <ErrorBoundary FallbackComponent={ErrorPage} >
+                                <Routes>
+                                    <Route path="/" element={<HelloPage/>}/>
+                                    <Route path="/calendar" element={<HelloPage/>}/>
+                                    {/* This page is only for administrator to see specific calendars.*/}
+                                    <Route
+                                        path="/calendar/:calendarName"
+                                        element={<CalendarPage/>}
+                                    />
+                                    {/* Only for administrator.*/}
+                                    <Route
+                                        path="/administration"
+                                        element={<AdminPage/>}
+                                    />
+                                    <Route path="*" element={<NotFoundPage/>}/>
+                                </Routes>
+                                </ErrorBoundary>
+                            </Box>
+                        </BrowserRouter>
+                    </LocalizationProvider>
+                    {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
+                </QueryClientProvider>
+            </AuthProvider>
     )
 }
 

@@ -8,7 +8,7 @@ export interface AddEventType {
     calendarId: string
 }
 
-const addEvent = async ({
+export const addEvent = async ({
     event,
     calendarId,
 }: AddEventType): Promise<CalendarEvent> => {

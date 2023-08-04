@@ -5,7 +5,7 @@ const buildAxiosInstance = () => {
     const instance = axios.create()
     instance.defaults.baseURL = getGlobalEnv().VITE_API_URL
     instance.defaults.headers.common['Content-Type'] = 'application/json'
-    return instance
+    return instance;
 }
 
 export const axiosInstance = buildAxiosInstance()

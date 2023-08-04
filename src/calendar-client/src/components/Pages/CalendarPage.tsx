@@ -62,6 +62,7 @@ export const CalendarPage = () => {
                     year: 'numeric',
                 })
             case 'Week':
+            {
                 const firstDayOfWeek = new Date(currentDate)
                 const lastDayOfWeek = new Date(currentDate)
                 const firstDay =
@@ -77,6 +78,7 @@ export const CalendarPage = () => {
                     month: 'long',
                     year: 'numeric',
                 })}`
+            }
             case 'Month':
                 return currentDate.toLocaleDateString('de-DE', {
                     month: 'long',
