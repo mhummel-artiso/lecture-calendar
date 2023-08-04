@@ -16,7 +16,7 @@ import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { addCalendar, deleteCalendar, editCalendar, fetchCalendars } from '../../../services/CalendarService'
+import { addCalendar, deleteCalendar, editCalendar, getCalendars } from '../../../services/CalendarService'
 import { Calendar } from '../../../models/calendar'
 import AddIcon from '@mui/icons-material/Add'
 import { CalendarDialog } from './CalendarDialog'
@@ -36,7 +36,7 @@ export const CalendarList: FC = () => {
 
     const calendarQuery = useQuery({
         queryKey: ['calendars'],
-        queryFn: fetchCalendars,
+        queryFn: getCalendars,
     })
 
     const deleteCalendarMutation = useMutation({
@@ -119,15 +119,15 @@ export const CalendarList: FC = () => {
                 </AccordionDetails>
             </Accordion>
             {isDialogOpen &&
-            <CalendarDialog
-                isDialogOpen={isDialogOpen}
-                handleDialogAbort={() => setIsDialogOpen(false)}
-                currentCalendar={selectedCalendar}
-                handleDialogAdd={addCalendarMutation.mutate}
-                handleDialogEdit={editCalendarMutation.mutate}
+                <CalendarDialog
+                    isDialogOpen={isDialogOpen}
+                    handleDialogAbort={() => setIsDialogOpen(false)}
+                    currentValue={selectedCalendar}
+                    handleDialogAdd={addCalendarMutation.mutate}
+                    handleDialogEdit={editCalendarMutation.mutate}
 
-            />
-        }
+                />
+            }
 
         </>
     )

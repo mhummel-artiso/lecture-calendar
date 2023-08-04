@@ -7,41 +7,42 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
-import * as dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { Calendar } from '../../../models/calendar'
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Dayjs } from "dayjs";
+import { Moment } from "moment/moment"
+import moment from "moment";
+import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
 interface Props {
     isDialogOpen: boolean
     handleDialogAbort?: () => void
     handleDialogAdd?: (calendar: Calendar) => void
     handleDialogEdit?: (calendar: Calendar) => void
-    currentCalendar: Calendar | null
+    currentCalendar: Calendar | null | undefined
 }
 
-export const CalendarDialog: FC<Props> = ({
-                                              isDialogOpen,
-                                              handleDialogAbort,
-                                              handleDialogAdd,
-                                              handleDialogEdit,
-                                              currentCalendar
-                                          }) => {
+export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
+                                                                       isDialogOpen,
+                                                                       handleDialogAbort,
+                                                                       handleDialogAdd,
+                                                                       handleDialogEdit,
+                                                                       currentValue: currentCalendar
+                                                                   }) => {
     const [name, setName] = useState<string | null>(null);
-    const [startDate, setStartDate] = useState<Dayjs | null>(null);
+    const [startDate, setStartDate] = useState<Moment | null>(null);
 
     useEffect(() => {
         console.log("currentCalendar", currentCalendar)
         setName(currentCalendar?.name ?? "")
-        const str = dayjs(currentCalendar?.startDate)
+        const str = moment(currentCalendar?.startDate)
         setStartDate(str)
     }, [currentCalendar])
 
     const canAddOrEdit = (): boolean => !!name && !!startDate
 
     const handleSubmitClick = () => {
-        const c: Calendar = {name: name!, startDate: dayjs(startDate)};
+        const c: Calendar = {name: name!, startDate: moment(startDate)};
         if(currentCalendar == null && handleDialogAdd) {
             handleDialogAdd(c)
         } else if(handleDialogEdit) {

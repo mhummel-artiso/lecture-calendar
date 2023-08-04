@@ -9,31 +9,30 @@ import {
 } from '@mui/material'
 import React, { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
+import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
-interface Props {
-    isDialogOpen: boolean
-    handleDialogAbort?: () => void
-    handleDialogAdd?:(lecture:Lecture) => void
-    handleDialogEdit?:(lecture:Lecture) => void
-    currentLecture: Lecture | null
-}
-
-export const LectureDialog:FC<Props> = ({ isDialogOpen, handleDialogAbort, handleDialogAdd, handleDialogEdit, currentLecture}) => {
+export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
+                                                                     isDialogOpen,
+                                                                     handleDialogAbort,
+                                                                     handleDialogAdd,
+                                                                     handleDialogEdit,
+                                                                     currentValue: currentLecture
+                                                                 }) => {
     console.log("lecture ", currentLecture);
-    const [title, setTitle]=useState("");
-    const [dozent, setDozent]=useState("");
-    const [comments, setComments]=useState("");
+    const [title, setTitle] = useState("");
+    const [dozent, setDozent] = useState("");
+    const [comments, setComments] = useState("");
 
     useEffect(() => {
-        setTitle(currentLecture?.title??"")
-        setDozent(currentLecture?.professor??"")
-        setComments(currentLecture?.comment??"")
+        setTitle(currentLecture?.title ?? "")
+        setDozent(currentLecture?.professor ?? "")
+        setComments(currentLecture?.comment ?? "")
     }, [currentLecture])
 
     return (
         <Dialog open={isDialogOpen} onClose={handleDialogAbort}>
-            <DialogTitle>Vorlesung {currentLecture==null? "hinzufügen":"bearbeiten"}</DialogTitle>
-            <DialogContent sx={{ width: '500px' }}>
+            <DialogTitle>Vorlesung {currentLecture == null ? "hinzufügen" : "bearbeiten"}</DialogTitle>
+            <DialogContent sx={{width: '500px'}}>
                 <Stack>
                     <TextField
                         margin="dense"
@@ -41,7 +40,7 @@ export const LectureDialog:FC<Props> = ({ isDialogOpen, handleDialogAbort, handl
                         type="text"
                         label="Name"
                         value={title}
-                        onChange={(e)=>setTitle(e.target.value)}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                     <TextField
                         margin="dense"
@@ -49,7 +48,7 @@ export const LectureDialog:FC<Props> = ({ isDialogOpen, handleDialogAbort, handl
                         label="Dozent"
                         type="text"
                         value={dozent}
-                        onChange={(e)=>setDozent(e.target.value)}
+                        onChange={(e) => setDozent(e.target.value)}
                     />
                     <TextField
                         multiline
@@ -59,20 +58,21 @@ export const LectureDialog:FC<Props> = ({ isDialogOpen, handleDialogAbort, handl
                         label="Zusätzliche Infos"
                         maxRows={4}
                         value={comments}
-                        onChange={(e)=>setComments(e.target.value)}
+                        onChange={(e) => setComments(e.target.value)}
                     />
                 </Stack>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDialogAbort}>Abbrechen</Button>
                 <Button onClick={() => {
-                    const l:Lecture ={title:""};
-                    
-                    if (currentLecture==null && handleDialogAdd)
+                    const l: Lecture = {title: ""};
+
+                    if(currentLecture == null && handleDialogAdd) {
                         handleDialogAdd(l)
-                    else if (handleDialogEdit)
+                    } else if(handleDialogEdit) {
                         handleDialogEdit(l)
-                }}>{currentLecture==null? "Hinzufügen":"Bearbeiten"}</Button>
+                    }
+                }}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>
         </Dialog>
     )

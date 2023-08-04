@@ -1,10 +1,10 @@
-import { Dayjs } from "dayjs";
+import { Moment } from "moment/moment"
 
 export interface Lecture {
     id?: string
     title: string
     comment?: string
     professor?: string
-    createdDate?: Dayjs
-    lastUpdateDate?: Dayjs
+    createdDate?: Moment
+    lastUpdateDate?: Moment
 }

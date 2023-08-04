@@ -1,22 +1,22 @@
 import { Lecture } from './lecture'
-import { Dayjs } from "dayjs";
+import { Moment } from "moment/moment"
 
 export interface CalendarEvent {
     id: string
     location: string
     description?: string
-    start: Dayjs
-    end: Dayjs
+    start: Moment
+    end: Moment
     endSeries?: string | undefined
-    createdDate?: Dayjs
-    lastUpdateDate?: Dayjs
+    createdDate?: Moment
+    lastUpdateDate?: Moment
     lecture: Lecture
 }
 export interface CreateCalendarEvent {
     location: string
     description?: string | undefined
-    start: Dayjs
-    end: Dayjs
-    endSeries?: Dayjs | undefined
+    start: Moment
+    end: Moment
+    endSeries?: Moment | undefined
     lectureId: string
 }

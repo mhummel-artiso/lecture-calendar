@@ -6,19 +6,14 @@ import { AdminPage } from './components/Pages/AdminPageContainer'
 import { NotFoundPage } from './components/Pages/NotFoundPage'
 import { AuthProvider, AuthProviderProps, User } from 'oidc-react'
 import { useEnvironment } from './hooks/useEnvironment'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import 'moment/locale/de';
 
-import 'dayjs/locale/de'
 import { queryClient } from './utils/queryClient'
-import { NavBar } from './components/NavBar'
-import { Box } from '@mui/material'
-import { useAccount } from "./hooks/useAccount";
-import { HelloPage } from "./components/Pages/HelloPage";
-import { ErrorBoundary } from "react-error-boundary";
-import { ErrorPage } from "./components/Pages/ErrorPage";
+import { RouterComponent } from "./components/RouterComponent";
 
 function App() {
     const envConfig = useEnvironment()
@@ -41,46 +36,18 @@ function App() {
     }
 
     return (
-
-            <AuthProvider {...oidcConfig}>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-                <QueryClientProvider client={queryClient}>
-                    <LocalizationProvider
-                        dateAdapter={AdapterDayjs}
-                        adapterLocale="de"
-                    >
-                        <BrowserRouter>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    height: '100%',
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <NavBar/>
-                                <ErrorBoundary FallbackComponent={ErrorPage} >
-                                <Routes>
-                                    <Route path="/" element={<HelloPage/>}/>
-                                    <Route path="/calendar" element={<HelloPage/>}/>
-                                    {/* This page is only for administrator to see specific calendars.*/}
-                                    <Route
-                                        path="/calendar/:calendarName"
-                                        element={<CalendarPage/>}
-                                    />
-                                    {/* Only for administrator.*/}
-                                    <Route
-                                        path="/administration"
-                                        element={<AdminPage/>}
-                                    />
-                                    <Route path="*" element={<NotFoundPage/>}/>
-                                </Routes>
-                                </ErrorBoundary>
-                            </Box>
-                        </BrowserRouter>
-                    </LocalizationProvider>
-                    {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
-                </QueryClientProvider>
-            </AuthProvider>
+        <AuthProvider {...oidcConfig}>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+            <QueryClientProvider client={queryClient}>
+                <LocalizationProvider
+                    dateAdapter={AdapterMoment}
+                    adapterLocale="de"
+                >
+                    <RouterComponent/>
+                </LocalizationProvider>
+                {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
+            </QueryClientProvider>
+        </AuthProvider>
     )
 }
 

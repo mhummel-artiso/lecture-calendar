@@ -1,13 +1,10 @@
 import { CalendarEvent } from './calendarEvent'
-import { Dayjs } from "dayjs";
+import { Moment } from "moment/moment";
 
 export interface Calendar {
     id?: string
     name: string
-    startDate: Dayjs
+    startDate: Moment
     events?: CalendarEvent[]
-    createdDate?: Dayjs
-}
-export interface CombinedCalendar extends Calendar{
-    calendarIds: string[]
+    createdDate?: Moment
 }

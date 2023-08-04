@@ -11,8 +11,11 @@ export const useAccount = (accountChanged: ((user: User | null | undefined) => v
             accountChanged(userData);
         }
     }, [userData])
+
     const isLoggedIn = () => userData != null
+
     const canEdit = () => true;
+
     return {
         account: userData,
         signOut,
