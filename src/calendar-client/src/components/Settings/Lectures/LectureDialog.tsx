@@ -28,7 +28,15 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setDozent(currentLecture?.professor ?? "")
         setComments(currentLecture?.comment ?? "")
     }, [currentLecture])
-
+    
+    const handleSubmitClick = () => {
+        const l: Lecture = {title: title, professor: dozent, comment: comments};
+        if(currentLecture == null && handleDialogAdd) {
+            handleDialogAdd(l)
+        } else if(handleDialogEdit) {
+            handleDialogEdit(l)
+        }
+    }
     return (
         <Dialog open={isDialogOpen} onClose={handleDialogAbort}>
             <DialogTitle>Vorlesung {currentLecture == null ? "hinzufügen" : "bearbeiten"}</DialogTitle>
@@ -64,15 +72,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDialogAbort}>Abbrechen</Button>
-                <Button onClick={() => {
-                    const l: Lecture = {title: ""};
-
-                    if(currentLecture == null && handleDialogAdd) {
-                        handleDialogAdd(l)
-                    } else if(handleDialogEdit) {
-                        handleDialogEdit(l)
-                    }
-                }}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
+                <Button onClick={handleSubmitClick}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>
         </Dialog>
     )
