@@ -33,7 +33,7 @@ const serialList = [
 interface Props {
     isDialogOpen: boolean
     onDialogClose: () => void
-    calendarId: string
+    calendarId: string 
 }
 
 export const EventDialog = ({

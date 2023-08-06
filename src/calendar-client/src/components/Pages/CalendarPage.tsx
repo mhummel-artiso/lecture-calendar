@@ -172,7 +172,8 @@ export const CalendarPage = () => {
             )}
             <EventDialog
                 isDialogOpen={isDialogOpen}
-                handleDialogClose={() => setIsDialogOpen(false)}
+                onDialogClose={() => setIsDialogOpen(false)}
+                calendarId={""}
             />
         </>
     )
