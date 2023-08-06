@@ -6,19 +6,23 @@ volumes:
 services:
   calendar.api:
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Docker
       #               protocol://user:password@host:port
-      MONGODB_SERVER: mongodb://root:${MASTER_PW}@localhost:27017
-      MONGODB_DB_NAME: lecture-calendar
-      POSTGRESQL_HOST: localhost      
-      POSTGRESQL_USER_NAME: ${POSTGRES_USER}
-      POSTGRESQL_USER_PASSWORD: 74RuqICjDPQEFREmhIFaqRf6H
-      OIDC_URL: http://localhost:8080/realms/Calendar
-      OIDC_SWAGGER_CLIENT_SECRET: hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR
-      OIDC_SWAGGER_REDIRECT_URL: http://localhost:5057/swagger/index.html
-      JWT_AUDIENCE: http://localhost:8080/realms/Calendar
-      JWT_AUTHORITY: http://localhost:8080/realms/Calendar
-      JWT_METADATA_ADDRESS: http://localhost:8080/realms/Calenda
+      API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@localhost:27017
+      API_MONGODB_DB_NAME: lecture-calendar
+      API_POSTGRESQL_HOST: localhost      
+      API_POSTGRESQL_USER_NAME: ${POSTGRES_USER}
+      API_POSTGRESQL_USER_PASSWORD: 74RuqICjDPQEFREmhIFaqRf6H
+      API_OIDC_URL: http://localhost:8080/realms/Calendar
+      API_USE_SWAGGER: true
+      API_SWAGGER_CLIENT_SECRET: hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR
+      API_SWAGGER_REDIRECT_URL: http://localhost:4000/swagger/index.html
+      API_SWAGGER_OIDC_URL: http://localhost:8080/realms/Calendar
+      API_JWT_AUDIENCE: http://localhost:8080/realms/Calendar
+      API_JWT_AUTHORITY: http://localhost:8080/realms/Calendar
+      API_JWT_METADATA_ADDRESS: http://localhost:8080/realms/Calenda
+      API_DEBUG_TEST_ENDPOINT_ENABELD: true
+      API_DEBUG_TEST_ENDPOINT_POLICY: EDITOR_VIEWER
       TZ: Europe/Berlin
 
   client:
@@ -42,10 +46,11 @@ services:
     command:
       - "--verbose"
       - "start-dev"
+      # - "--hostname-admin-url=http://${localhost}:8080"
+      # - "--hostname=${localhost}"
+      # - "--hostname-url=http://localhost:8080"
       - "--import-realm"
       - "--features=token-exchange"
-      # - "--https-key-store-file=/etc/x509/https/tls.jks"
-      # - "--https-key-store-password=${MASTER_PW}"
     environment:
       TZ: Europe/Berlin
       KEYCLOAK_ADMIN: admin

@@ -2,6 +2,7 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +26,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpPost]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<LectureDTO>> AddLecture([FromBody] CreateLectureDTO? lecture)
     {
         if (lecture == null)
@@ -39,7 +40,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpGet]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<IEnumerable<LectureDTO>>> GetLectures()
     {
         var lecture = await service.GetLecturesAsync();
@@ -47,7 +48,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpGet("{lectureId}")]
-    // [Authorize(Roles = "viewer,editor")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<LectureDTO>> GetLectureById(string lectureId)
     {
         var lecture = await service.GetLectureByIdAsync(lectureId);
@@ -61,7 +62,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpPut("{lectureId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<LectureDTO>> EditLecture(string lectureId, [FromBody] UpdateLectureDTO lecture)
     {
         if (lecture == null)
@@ -75,7 +76,7 @@ public class LectureController : ControllerBase
     }
 
     [HttpDelete("{lectureId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<bool>> DeleteLecture(string lectureId)
     {
         var success = await service.DeleteLectureByIdAsync(lectureId);

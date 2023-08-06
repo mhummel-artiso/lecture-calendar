@@ -32,7 +32,7 @@ function App() {
         clientId: "calendar-client",
         clientSecret:  envConfig.VITE_OIDC_CLIENT_SECRET,
         redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
-        postLogoutRedirectUri: "http://localhost:3000/logedout"
+        postLogoutRedirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
     };
 
     return (

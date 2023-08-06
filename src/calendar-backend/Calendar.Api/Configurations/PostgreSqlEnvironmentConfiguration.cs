@@ -1,4 +1,6 @@
-﻿namespace Calendar.Api.Configurations
+﻿using Calendar.Api.Models;
+
+namespace Calendar.Api.Configurations
 {
     public class PostgreSqlEnvironmentConfiguration : IEnvironmentConfiguration<PostgreSqlEnvironmentConfiguration>
     {
@@ -16,11 +18,11 @@
         /// <inheritdoc/>
         public PostgreSqlEnvironmentConfiguration Validate()
         {
-            ArgumentException.ThrowIfNullOrEmpty(POSTGRESQL_HOST);
-            ArgumentNullException.ThrowIfNull(POSTGRESQL_PORT);
-            ArgumentException.ThrowIfNullOrEmpty(POSTGRESQL_DATABASE);
-            ArgumentException.ThrowIfNullOrEmpty(POSTGRESQL_USER_NAME);
-            ArgumentException.ThrowIfNullOrEmpty(POSTGRESQL_USER_PASSWORD);
+            new EnvironmentConfigurationValidator()
+                .CheckEnvironment(POSTGRESQL_HOST)
+                .CheckEnvironmentValue(POSTGRESQL_PORT)
+                .CheckEnvironment(POSTGRESQL_DATABASE)
+                .CheckEnvironment(POSTGRESQL_USER_NAME).CheckEnvironment(POSTGRESQL_USER_PASSWORD);
             return this;
         }
     }
