@@ -1,16 +1,27 @@
 using Amazon.Runtime.Internal.Transform;
 using Calendar.Api.Configurations;
+using Calendar.Api.Initializations;
+using Calendar.Api.Models;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
 using Calendar.PostgreSQL.Db;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
+using Keycloak.AuthServices.Sdk.Admin;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using Serilog;
+using Serilog.Enrichers.AspNetCore;
+using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +30,16 @@ try
 
     #region Configuration
 
+    IdentityModelEventSource.ShowPII = true;
+
     var configuration = builder.Configuration;
+    configuration.AddEnvironmentVariables(prefix: "API_");
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
     builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
     builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
+    builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
 
     #endregion
 
@@ -34,25 +49,22 @@ try
         config
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentName()
+            .Enrich.WithExceptionDetails()
+            .Enrich.WithMachineName()
     );
 
-    //builder.Services.AddSerilog();
-
     #endregion
-
+    
     #region Mongo db
 
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(mongoConfig);
     builder.Services.AddSingleton<IMongoClient>(x =>
-    {
-        return new MongoClient(mongoConfig.MONGODB_SERVER);
-    });
+        new MongoClient(mongoConfig.MONGODB_SERVER));
     builder.Services.AddScoped<IMongoDatabase>(x =>
-    {
-        var client = x.GetRequiredService<IMongoClient>();
-        return client.GetDatabase(mongoConfig.MONGODB_DB_NAME);
-    });
+        x.GetRequiredService<IMongoClient>()
+            .GetDatabase(mongoConfig.MONGODB_DB_NAME));
 
     #endregion
 
@@ -73,51 +85,58 @@ try
 
     #endregion
 
+    #region Swagger
+
+    var swaggerConfig = configuration.Get<SwaggerEnvironmentConfiguration>()?.Validate();
+    ArgumentNullException.ThrowIfNull(swaggerConfig);
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services
+        .AddEndpointsApiExplorer()
+        .AddSwaggerGen(); // configured by configurator (IConfigureOptions<SwaggerGenOptions>)
+
+    #endregion
+
     #region Authentication and authorization
 
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            var isDebug = builder.Environment.IsDevelopment();
-            var jwtConfig = configuration.Get<JwtEnvironmentConfiguration>()?.Validate();
-            ArgumentNullException.ThrowIfNull(jwtConfig);
-            // see: https://dev.to/kayesislam/integrating-openid-connect-to-your-application-stack-25ch
-            options.IncludeErrorDetails = isDebug;
-            options.RequireHttpsMetadata = !isDebug;
-            options.MetadataAddress = jwtConfig.JWT_METADATA_ADDRESS;
-            options.Authority = jwtConfig.JWT_AUTHORITY;
-            options.TokenValidationParameters = new()
-            {
-                ValidAudience = jwtConfig.JWT_AUDIENCE,
-                // ValidIssuer = jwtConfig.JWT_ISSUER,
-                // IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.JWT_KEY)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true
-            };
-        });
+    builder.Services.AddKeycloakAuthentication(configuration);
 
     // TODO configure correctly
     builder.Services.AddAuthorization(options =>
     {
-        options.DefaultPolicy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .RequireClaim("roles")
-            .Build();
-    });
+        var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
+        ArgumentNullException.ThrowIfNull(oidcConfig);
+        var roleViewer = oidcConfig.OIDC_ROLE_VIEWER;
+        var roleEditor = oidcConfig.OIDC_ROLE_EDITOR;
+        options.AddPolicy(AuthPolicies.VIEWER, p =>
+            p.RequireRealmRoles(roleViewer)
+                .RequireRole(roleViewer));
+        options.AddPolicy(AuthPolicies.EDITOR, p =>
+            p.RequireRealmRoles(roleEditor)
+                .RequireRole(roleEditor));
+        options.AddPolicy(AuthPolicies.EDITOR_VIEWER, p =>
+            p.RequireRealmRoles(roleEditor, roleViewer)
+                .RequireRole(roleEditor, roleViewer));
+        // test policy
+        options.AddPolicy("IsAdmin", b =>
+        {
+            b.RequireRealmRoles("admin")
+                .RequireRole("admin");
+        });
+    }).AddKeycloakAuthorization(configuration);
 
     #endregion
 
     #region Services and automapper
 
     builder.Services
+        .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()
-        .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>()
-        .AddSingleton<IKeyGenerator,KeyGenerator>()
-        .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        .AddTransient<IConfigureOptions<SwaggerGenOptions>, InitializeSwaggerGenOptions>()
+        .AddTransient<IKeycloakService, KeycloakService>()
+        .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+        .AddKeycloakAdminHttpClient(configuration);
 
     #endregion
 
@@ -128,42 +147,43 @@ try
 
     #endregion
 
-    #region Swagger
-
-    var swaggerConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
-    ArgumentNullException.ThrowIfNull(swaggerConfig);
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(); // configured by configurator (IConfigureOptions<SwaggerGenOptions>)
-
-    #endregion
-
     var app = builder.Build();
 
+    app.UseHttpLogging();
+    // app.UseW3CLogging();
+
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    if (swaggerConfig.USE_SWAGGER)
     {
-        app.UseSwagger();
         // https://www.camiloterevinto.com/post/oauth-pkce-flow-for-asp-net-core-with-swagger
-        app.UseSwaggerUI(options =>
-        {
-            options.OAuthClientId("calendar-api-swagger");
-            options.OAuthClientSecret(swaggerConfig.OIDC_SWAGGER_CLIENT_SECRET);
-            options.OAuthScopes("profile", "openid", "roles");
-            options.OAuth2RedirectUrl(swaggerConfig.OIDC_SWAGGER_REDIRECT_URL);
-            options.OAuthUsePkce();
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        });
+        app.UseSwagger()
+            .UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.OAuthClientId(swaggerConfig.SWAGGER_CLIENT_ID);
+                options.OAuthClientSecret(swaggerConfig.SWAGGER_CLIENT_SECRET);
+                options.OAuth2RedirectUrl(swaggerConfig.SWAGGER_REDIRECT_URL);
+                options.OAuthScopes("profile", "openid", "roles");
+                options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+            });
     }
 
     app.UseSerilogRequestLogging();
-    // app.UseHttpsRedirection();
-    app.UseCors(config => config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+    app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
-
     app.MapControllers();
+    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
+    ArgumentNullException.ThrowIfNull(debugConf);
+    if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
+    {
+        app.MapGet("test", (ClaimsPrincipal user) =>
+        {
+            app.Logger.LogInformation(user.Identity?.Name);
+            return user.Identity?.Name ?? "NULL";
+        }).RequireAuthorization(debugConf.DEBUG_TEST_ENDPOINT_POLICY);
+    }
     app.Run();
 }
 catch (ArgumentException ex)

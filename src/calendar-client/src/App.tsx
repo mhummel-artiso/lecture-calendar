@@ -28,12 +28,12 @@ function App() {
         },
         loadUserInfo: true,
         autoSignIn: false,
-        authority: envConfig.OIDC_AUTHORITY,
-        clientId: 'calendar-client',
-        clientSecret: envConfig.OIDC_CLIENT_SECRET,
-        redirectUri: envConfig.OIDC_REDIRECT_URL,
-        postLogoutRedirectUri: 'http://localhost:3000',
-    }
+        authority: envConfig.VITE_OIDC_AUTHORITY,
+        clientId: "calendar-client",
+        clientSecret:  envConfig.VITE_OIDC_CLIENT_SECRET,
+        redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
+        postLogoutRedirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
+    };
 
     return (
         <AuthProvider {...oidcConfig}>
