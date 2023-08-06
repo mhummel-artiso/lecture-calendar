@@ -154,18 +154,9 @@ namespace Calendar.Api.Services
             
             if (isSerie)
             {
-                var eventsToDeleteSerieId = calendar.Events.Where(x => x.SerieId == calendarEvent.SerieId && x.Id != calendarEvent.Id).ToList();
-                eventsToDeleteSerieId.ForEach(x => { x.SerieId = null; x.Rotation = null; });
-
-                var updateSetDef = new UpdateDefinitionBuilder<UserCalendar>().Set(x => x.Events, eventsToDeleteSerieId);
-                var result0 = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), updateSetDef);
                 var updatePullDef = new UpdateDefinitionBuilder<UserCalendar>().Pull(x => x.Events, calendarEvent);
-
-                //var updateDef = new UpdateDefinitionBuilder<UserCalendar>().Combine(updateSetDef, updatePullDef);
-
                 var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), updatePullDef);
-                //var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), updateDef);
-                return result.ModifiedCount > 0 || result0.ModifiedCount > 0;
+                return result.ModifiedCount > 0;
             }
             else
             {
