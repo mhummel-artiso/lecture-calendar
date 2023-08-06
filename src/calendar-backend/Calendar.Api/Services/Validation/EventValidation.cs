@@ -5,15 +5,14 @@ namespace Calendar.Api.Services.Validation
 {
     public static class EventValidationService
     {
-        public static void ValidateAddEvent(CalendarEvent calendarEvent, DateTimeOffset? serieEnd)
+        public static void ValidateAddEvent(CalendarEvent calendarEvent)
         {
-            if (calendarEvent.End <  calendarEvent.Start) throw new ArgumentException("The end of the event is before the start of the event.");
 
-            if((serieEnd.HasValue && !calendarEvent.Rotation.HasValue) || (!serieEnd.HasValue && calendarEvent.Rotation.HasValue)) throw new ArgumentException("If serieEnd is given, rotation must also be given, and also the other way around.");
+            if((calendarEvent.EndSeries.HasValue && !calendarEvent.Rotation.HasValue) || (!calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)) throw new ArgumentException("If serieEnd is given, rotation must also be given, and also the other way around.");
 
-            if(serieEnd.HasValue && calendarEvent.Rotation.HasValue)
+            if(calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
             {
-                var serieEndDate = new DateTimeOffset(serieEnd.Value.Year, serieEnd.Value.Month, serieEnd.Value.Day, calendarEvent.End.Hour, calendarEvent.End.Minute, calendarEvent.End.Second, TimeSpan.Zero);
+                var serieEndDate = new DateTimeOffset(calendarEvent.EndSeries.Value.Year, calendarEvent.EndSeries.Value.Month, calendarEvent.EndSeries.Value.Day, (calendarEvent.Start + calendarEvent.Duration).Hour, (calendarEvent.Start + calendarEvent.Duration).Minute, (calendarEvent.Start + calendarEvent.Duration).Second, TimeSpan.Zero);
 
                 if (serieEndDate < calendarEvent.Start) throw new ArgumentException("SerieEnd must be bigger than the start from the event.");
 

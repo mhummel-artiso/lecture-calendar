@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 
 namespace Calendar.Mongo.Db.Models
 {
@@ -18,17 +19,21 @@ namespace Calendar.Mongo.Db.Models
         public DateTimeOffset Start { get; set; }
 
         [BsonRequired]
-        public DateTimeOffset End { get; set; }
+        public TimeSpan Duration { get; set; }
 
         public ObjectId? SerieId { get; set; }
 
         public EventRotation? Rotation { get; set; }
 
-        [BsonRequired]
-        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset? StartSeries { get; set; }
+
+        public DateTimeOffset? EndSeries { get; set; }
 
         [BsonRequired]
-        public DateTimeOffset LastUpdateDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
+
+        [BsonRequired]
+        public DateTimeOffset LastUpdateDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
 
         public List<string>? InstructorsIds { get; set; }
 
@@ -44,29 +49,16 @@ namespace Calendar.Mongo.Db.Models
             Location = calendarEvent.Location;
             Description = calendarEvent.Description;
             Start = calendarEvent.Start.ToUniversalTime();
-            End = calendarEvent.End.ToUniversalTime();
+            Duration = calendarEvent.Duration;
             LastUpdateDate = calendarEvent.LastUpdateDate.ToUniversalTime();
             CreatedDate = calendarEvent.CreatedDate.ToUniversalTime();
             LectureId = calendarEvent.LectureId;
             Rotation = calendarEvent.Rotation;
             SerieId = serieId;
-        }
-
-        public CalendarEvent ToUTC()
-        {
-            Start = Start.ToUniversalTime();
-            End = End.ToUniversalTime();
-            LastUpdateDate = End.ToUniversalTime();
-            CreatedDate = CreatedDate.ToUniversalTime();
-            return this;
-        }
-
-        public CalendarEvent CreateMetaData()
-        {
-            Id = ObjectId.GenerateNewId();
-            CreatedDate = DateTimeOffset.UtcNow;
-            LastUpdateDate = DateTimeOffset.UtcNow;
-            return this;
+            StartSeries = calendarEvent.StartSeries;
+            EndSeries = calendarEvent.EndSeries;
+            InstructorsIds = calendarEvent.InstructorsIds;
+            
         }
     }
 }

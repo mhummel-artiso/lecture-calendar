@@ -9,11 +9,12 @@ namespace Calendar.Api.Services.Interfaces
         Task<CalendarEvent> GetEventAsync(string calendarId, string eventId);
         Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date);
         Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId);
-        Task<IEnumerable<CalendarEvent>> GetSeriesEventsAsync(string calendarId, ObjectId serieId);
+        Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, ObjectId serieId);
 
-        Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent, DateTimeOffset? serieEnd);
+        Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent);
 
         Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent);
+        Task<IEnumerable<CalendarEvent>?> UpdateEventSerieAsync(string calendarId, CalendarEvent calendarEvent);
 
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
         Task<bool> DeleteEventSerieByIdAsync(string calendarId, string serieId);

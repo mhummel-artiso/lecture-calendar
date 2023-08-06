@@ -129,7 +129,7 @@ public class CalendarController : ControllerBase
         {
             var mappedCalendarEvent = mapper.Map<CalendarEvent>(calendarEvent);
 
-            var result = await eventService.AddEventAsync(calendarId, mappedCalendarEvent ,calendarEvent.EndSeries);
+            var result = await eventService.AddEventAsync(calendarId, mappedCalendarEvent);
             
             if (result == null)
             {
@@ -138,7 +138,6 @@ public class CalendarController : ControllerBase
 
             var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
             
-            AddStartAndEndSeriesDate(mappedResult);
 
             foreach (var mappedDto in mappedResult)
             {
@@ -164,8 +163,6 @@ public class CalendarController : ControllerBase
                 return BadRequest("Calendar not Found");
 
             var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
-
-            AddStartAndEndSeriesDate(mappedDtos);
 
             foreach (var mappedDto in mappedDtos)
             {
@@ -247,19 +244,24 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}/event/serie/{serieId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> EditSerie(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSerieDTO calendarEvent)
     {
 
-        if (eventId != calendarEvent.Id)
-            return BadRequest("event id not the same");
+        if (serieId != calendarEvent.SerieId)
+            return BadRequest("serie id not the same");
 
 
-        var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+        var result = await eventService.UpdateEventSerieAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         if (result == null)
             return NotFound();
-        var mappedDto = mapper.Map<CalendarEventDTO>(result);
-        await AddLectureToEventAsync(mappedDto);
-        return Ok(mappedDto);
+
+        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
+
+        foreach (var mappedDto in mappedResult)
+        {
+            await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+        }
+        return Ok(mappedResult);
     }
 
     [HttpDelete("{calendarId}/event/{eventId}")]
@@ -302,24 +304,4 @@ public class CalendarController : ControllerBase
     }
 
     #endregion
-
-    private void AddStartAndEndSeriesDate(IEnumerable<CalendarEventDTO> calendarEvents)
-    {
-        if (calendarEvents == null) return;
-
-        IEnumerable<string?> seriesIds = calendarEvents.Select(x => x.SerieId).Distinct();
-
-        foreach (var seriesId in seriesIds)
-        {
-            if (seriesId == null) continue;
-            var seriesEvents = calendarEvents.Where(x => seriesId.Equals(x.SerieId));
-            var startSerie = seriesEvents.Min(x => x.Start);
-            var endSerie = seriesEvents.Max(x => x.End);
-            foreach (var seriesEvent in seriesEvents)
-            {
-                seriesEvent.StartSeries = startSerie;
-                seriesEvent.EndSeries = endSerie;
-            }
-        }
-    }
 }
