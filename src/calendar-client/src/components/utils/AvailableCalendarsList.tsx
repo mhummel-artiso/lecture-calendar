@@ -18,11 +18,12 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     const {isLoading, data, isError, error, isFetching} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
+        useErrorBoundary: true,
     })
     useEffect(() => {
         setCalendars(data ?? []);
     }, [data])
-    return (
+    return  (
         <List>
             {/*Display text if no calendars available*/}
             {!calendars || data?.length == 0 && (

@@ -13,9 +13,9 @@ import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
 export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                                                                      isDialogOpen,
-                                                                     handleDialogAbort,
-                                                                     handleDialogAdd,
-                                                                     handleDialogEdit,
+                                                                     onDialogClose,
+                                                                     onDialogAdd,
+                                                                     onDialogEdit,
                                                                      currentValue: currentLecture
                                                                  }) => {
     const [title, setTitle] = useState<string>("");
@@ -27,19 +27,20 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setDozent(currentLecture?.professor ?? "")
         setComments(currentLecture?.comment ?? "")
     }, [currentLecture])
-    
+
     const canAddOrEdit = (): boolean => !!title && !!dozent
-    
+
     const handleSubmitClick = () => {
-        const l: Lecture = {id: currentLecture?.id, title: title!, professor: dozent!, comment: comments!};
-        if(currentLecture == null && handleDialogAdd) {
-            handleDialogAdd(l)
-        } else if(handleDialogEdit) {
-            handleDialogEdit(l)
+        const l: Lecture = {id: currentLecture?.id, title: title, professor: dozent, comment: comments};
+        if(currentLecture == null && onDialogAdd) {
+            onDialogAdd(l)
+        } else if(onDialogEdit) {
+            onDialogEdit(l)
         }
+        onDialogClose()
     }
     return (
-        <Dialog open={isDialogOpen} onClose={handleDialogAbort}>
+        <Dialog open={isDialogOpen} onClose={onDialogClose}>
             <DialogTitle>Vorlesung {currentLecture == null ? "hinzufügen" : "bearbeiten"}</DialogTitle>
             <DialogContent sx={{width: '500px'}}>
                 <Stack>
@@ -74,7 +75,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleDialogAbort}>Abbrechen</Button>
+                <Button onClick={onDialogClose}>Abbrechen</Button>
                 <Button disabled={!canAddOrEdit()}
                         onClick={handleSubmitClick}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>

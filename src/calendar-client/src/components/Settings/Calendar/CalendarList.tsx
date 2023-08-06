@@ -44,8 +44,7 @@ export const CalendarList: FC = () => {
     const deleteCalendarMutation = useMutation({
         mutationFn: async (calendarId: string) => {
             return await deleteCalendar(calendarId)
-        }
-        ,
+        },
         onSuccess: async (_) => {
             await calendarQuery.refetch()
         },
@@ -56,7 +55,6 @@ export const CalendarList: FC = () => {
         },
         onSuccess: async (_) => {
             await calendarQuery.refetch();
-            setIsDialogOpen(false)
         }
     })
     const editCalendarMutation = useMutation({
@@ -121,10 +119,10 @@ export const CalendarList: FC = () => {
             {isDialogOpen &&
                 <CalendarDialog
                     isDialogOpen={isDialogOpen}
-                    handleDialogAbort={() => setIsDialogOpen(false)}
+                    onDialogClose={() => setIsDialogOpen(false)}
                     currentValue={selectedCalendar}
-                    handleDialogAdd={addCalendarMutation.mutate}
-                    handleDialogEdit={editCalendarMutation.mutate}
+                    onDialogAdd={addCalendarMutation.mutate}
+                    onDialogEdit={editCalendarMutation.mutate}
 
                 />
             }

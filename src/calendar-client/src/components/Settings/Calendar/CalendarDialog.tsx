@@ -16,32 +16,32 @@ import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
 export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
                                                                        isDialogOpen,
-                                                                       handleDialogAbort,
-                                                                       handleDialogAdd,
-                                                                       handleDialogEdit,
+                                                                       onDialogClose,
+                                                                       onDialogAdd,
+                                                                       onDialogEdit,
                                                                        currentValue: currentCalendar
                                                                    }) => {
-    const [name, setName] = useState<string >("");
-    const [startDate, setStartDate] = useState<Moment >(moment());
+    const [name, setName] = useState<string>("");
+    const [startDate, setStartDate] = useState<Moment>(moment());
 
     useEffect(() => {
         setName(currentCalendar?.name ?? "")
-        const str = moment(currentCalendar?.startDate)
-        setStartDate(str)
+        setStartDate(moment(currentCalendar?.startDate))
     }, [currentCalendar])
 
     const canAddOrEdit = (): boolean => !!name && !!startDate
 
     const handleSubmitClick = () => {
-        const c: Calendar = {id: currentCalendar?.id, name: name!, startDate: moment(startDate)};
-        if(currentCalendar == null && handleDialogAdd) {
-            handleDialogAdd(c)
-        } else if(handleDialogEdit) {
-            handleDialogEdit(c)
+        const c: Calendar = {id: currentCalendar?.id, name: name, startDate: moment(startDate)};
+        if(currentCalendar == null && onDialogAdd) {
+            onDialogAdd(c)
+        } else if(onDialogEdit) {
+            onDialogEdit(c)
         }
+        onDialogClose()
     }
     return (
-        <Dialog open={isDialogOpen} onClose={handleDialogAbort}>
+        <Dialog open={isDialogOpen} onClose={onDialogClose}>
             <DialogTitle>Kalender {currentCalendar == null ? "hinzufügen" : "bearbeiten"}</DialogTitle>
             <DialogContent sx={{width: '500px'}}>
                 <Stack>
@@ -63,7 +63,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleDialogAbort}>Abbrechen</Button>
+                <Button onClick={onDialogClose}>Abbrechen</Button>
                 <Button disabled={!canAddOrEdit()}
                         onClick={handleSubmitClick}>{currentCalendar == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>

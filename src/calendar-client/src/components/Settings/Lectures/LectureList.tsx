@@ -120,10 +120,10 @@ export const LectureList: FC = () => {
             </Accordion>
             <LectureDialog
                 isDialogOpen={isDialogOpen}
-                handleDialogAbort={() => setIsDialogOpen(false)}
+                onDialogClose={() => setIsDialogOpen(false)}
                 currentValue={selectedLecture}
-                handleDialogAdd={addLectureMutation.mutate}
-                handleDialogEdit={editLectureMutation.mutate}
+                onDialogAdd={addLectureMutation.mutate}
+                onDialogEdit={editLectureMutation.mutate}
             />
         </>
     )
