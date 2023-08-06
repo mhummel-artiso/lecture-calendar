@@ -8,6 +8,8 @@ import {
     IconButton,
     List,
     ListItem,
+    ListItemButton,
+    ListItemSecondaryAction,
     ListItemText,
     Typography,
 } from '@mui/material'
@@ -86,32 +88,30 @@ export const LectureList: FC = () => {
                         {lectureQuery.data?.map(
                             (lecture, index) => {
                                 return (
-                                    <ListItem
+                                    <ListItemButton
                                         divider
                                         key={index}
-                                        secondaryAction={
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="delete"
-                                                onClick={(e) =>{
-                                                    e.stopPropagation();
-                                                    deleteLectureMutation.mutate(
-                                                        lecture.id!
-                                                    )
-                                                }}
-                                            >
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        }
                                         onClick={() => {
                                             setIsDialogOpen(true);
                                             setSelectedLecture(lecture)
                                         }}
                                     >
-                                        <ListItemText
-                                            primary={lecture.title}
-                                        />
-                                    </ListItem>
+                                        <ListItemText primary={lecture.title}/>
+                                        <ListItemSecondaryAction>
+                                            <IconButton
+                                                edge="end"
+                                                    aria-label="delete"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteLectureMutation.mutate(
+                                                            lecture.id!
+                                                        )
+                                                    }}
+                                            >
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItemButton>
                                 )
                             }
                         )}

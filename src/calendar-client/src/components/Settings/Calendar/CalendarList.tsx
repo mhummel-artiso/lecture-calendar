@@ -10,6 +10,7 @@ import {
     List,
     ListItem,
     ListItemButton,
+    ListItemSecondaryAction,
     ListItemText,
     Typography,
 } from '@mui/material'
@@ -87,30 +88,30 @@ export const CalendarList: FC = () => {
                     <List>
                         {calendarQuery.data?.map((calendar, index) => {
                                 return (
-                                    <ListItem
+                                    <ListItemButton
                                         divider
                                         key={index}
-                                        secondaryAction={
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="delete"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    deleteCalendarMutation.mutate(
-                                                        calendar.id!
-                                                    )
-                                                }}
-                                            >
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        }
                                         onClick={() => {
                                             setIsDialogOpen(true);
                                             setSelectedCalendar(calendar)
                                         }}
                                     >
-                                        <ListItemText primary={calendar.name}/>
-                                    </ListItem>
+                                        <ListItemText primary ={calendar.name}/>
+                                        <ListItemSecondaryAction>
+                                            <IconButton
+                                                edge="end"
+                                                    aria-label="delete"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteCalendarMutation.mutate(
+                                                            calendar.id!
+                                                        )
+                                                    }}
+                                            >
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItemButton>
                                 )
                             }
                         )}
