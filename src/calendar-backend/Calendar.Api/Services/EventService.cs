@@ -108,27 +108,33 @@ namespace Calendar.Api.Services
         }
         public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
+            var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
             ArgumentNullException.ThrowIfNull(calendarId);
-
-            // Insert new Events, when EndSeries increase
-            // Delete SerieId if Series Start Date, Series End Date, Rotation is empty and update all events in serie and delte there series start date, series end date, rotaition
 
             var itemToUpdate = calendar.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
             ArgumentNullException.ThrowIfNull(itemToUpdate);
+
             itemToUpdate.LastUpdateDate = DateTimeOffset.UtcNow;
             itemToUpdate.Location = calendarEvent.Location;
             itemToUpdate.Description = calendarEvent.Description;
             itemToUpdate.Start = calendarEvent.Start.ToUniversalTime();
             itemToUpdate.End = calendarEvent.End.ToUniversalTime();
-            itemToUpdate.Rotation = calendarEvent.Rotation;
+            itemToUpdate.InstructorsIds = calendarEvent.InstructorsIds;
+            
+            // Can update lecture only, if its no serie.
+            if (!itemToUpdate.SerieId.HasValue)
+            {
+                itemToUpdate.LectureId = calendarEvent.LectureId;
+            }
+            var filterBuilder = Builders<UserCalendar>.Filter;
+            var filter = filterBuilder.Eq(x => x.Id, new ObjectId(calendarId)) &
+                filterBuilder.ElemMatch(x => x.Events, el => el.Id == itemToUpdate.Id);
 
-            var update = new UpdateDefinitionBuilder<UserCalendar>()
-                .Set(x => x.Events.First(x => x.Id == calendarEvent.Id), itemToUpdate);
-            var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
-            // TODO test this method
-            var updatedItem = (await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync())?.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
-            return result.ModifiedCount > 0 ? updatedItem : null;
+            var updateBuilder = Builders<UserCalendar>.Update;
+            var update = updateBuilder.Set(x => x.Events.FirstMatchingElement(), itemToUpdate);
+            var result = await dbCollection.UpdateOneAsync(filter, update);
+            
+            return result.ModifiedCount > 0 ? itemToUpdate : null;
         }
 
         public async Task<bool> DeleteEventSerieByIdAsync(string calendarId, string serieId)

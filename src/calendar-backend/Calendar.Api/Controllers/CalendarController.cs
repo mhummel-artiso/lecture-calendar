@@ -225,14 +225,35 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}/event/{eventId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO? calendarEvent)
+    public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
     {
-        if (calendarEvent == null)
+        if (eventId != calendarEvent.Id)
+            return BadRequest("event id not the same like in body");
+
+        try
         {
-            return BadRequest();
+            var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+            if (result == null)
+                return NotFound();
+            var mappedDto = mapper.Map<CalendarEventDTO>(result);
+            await AddLectureToEventAsync(mappedDto);
+            return Ok(mappedDto);
         }
+        catch(Exception ex) 
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("{calendarId}/event/serie/{serieId}")]
+    // [Authorize(Roles = "editor")]
+    public async Task<ActionResult<CalendarEventDTO>> EditSerie(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
+    {
+
         if (eventId != calendarEvent.Id)
             return BadRequest("event id not the same");
+
+
         var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         if (result == null)
             return NotFound();
