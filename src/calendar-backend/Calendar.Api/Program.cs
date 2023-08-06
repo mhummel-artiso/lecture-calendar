@@ -177,7 +177,7 @@ try
     // if (app.Environment.IsDevelopment())
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
-    if (debugConf.DEBUG_TEST_ENDPOINT_ENABELD)
+    if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
     {
         app.MapGet("test", (ClaimsPrincipal user) =>
         {

@@ -30,12 +30,12 @@ path to configs: ./config/\<container-name\>/
   - `API_SWAGGER_OIDC_TOKEN_URL` : Path to token on OIDC server (`"/protocol/openid-connect/token"`) [*Optional*]
   - `API_SWAGGER_OIDC_REFRESH_TOKEN_URL` : Path to token on OIDC server (`"/protocol/openid-connect/token"`) [*Optional*]
 - JWT Validation
-  - `JWT_AUDIENCE` : [TODO Description] (`TODO DefaultValue`) [**Required**]
-  - `JWT_AUTHORITY` : [TODO Description] (`TODO DefaultValue`) [**Required**]
-  - `JWT_METADATA_ADDRESS` : [TODO Description] (`TODO DefaultValue`) [**Required**]
+  - `API_JWT_AUDIENCE` : [TODO Description] (`TODO DefaultValue`) [**Required**]
+  - `API_JWT_AUTHORITY` : [TODO Description] (`TODO DefaultValue`) [**Required**]
+  - `API_JWT_METADATA_ADDRESS` : [TODO Description] (`TODO DefaultValue`) [**Required**]
 - Debug
-  - `DEBUG_TEST_ENDPOINT_ENABELD` : Enable test endpoint (/test) (`"false"`) [*Optional*]
-  - `DEBUG_TEST_ENDPOINT_POLICY` : The policy for the test endpoint mögliche werte: [`EDITOR` |  `VIEWER` | `EDITOR_VIEWER`] (`""`) [*Optional*]
+  - `API_DEBUG_TEST_ENDPOINT_ENABLED` : Enable test endpoint (/test) (`"false"`) [*Optional*]
+  - `API_DEBUG_TEST_ENDPOINT_POLICY` : The policy for the test endpoint mögliche werte: [`EDITOR` |  `VIEWER` | `EDITOR_VIEWER`] (`""`) [*Optional*]
 
 ### Client
 
