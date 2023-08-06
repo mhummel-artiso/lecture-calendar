@@ -25,6 +25,6 @@ export const editLecture = async (lectureId: string, lecture: Lecture): Promise<
 }
 
 export const deleteLecture = async (lectureId: string): Promise<boolean> => {
-    const response = await axiosInstance.post<boolean>(lectureEndPointName(lectureId));
+    const response = await axiosInstance.delete<boolean>(lectureEndPointName(lectureId));
     return Promise.resolve(response.data)
 }

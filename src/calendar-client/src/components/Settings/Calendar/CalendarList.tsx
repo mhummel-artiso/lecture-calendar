@@ -9,6 +9,7 @@ import {
     IconButton,
     List,
     ListItem,
+    ListItemButton,
     ListItemText,
     Typography,
 } from '@mui/material'
@@ -84,8 +85,7 @@ export const CalendarList: FC = () => {
                         setIsDialogOpen(true)
                     }}>Kalender hinzufügen</Button>
                     <List>
-                        {calendarQuery.data?.map(
-                            (calendar, index) => {
+                        {calendarQuery.data?.map((calendar, index) => {
                                 return (
                                     <ListItem
                                         divider
@@ -94,11 +94,12 @@ export const CalendarList: FC = () => {
                                             <IconButton
                                                 edge="end"
                                                 aria-label="delete"
-                                                onClick={() =>
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
                                                     deleteCalendarMutation.mutate(
                                                         calendar.id!
                                                     )
-                                                }
+                                                }}
                                             >
                                                 <DeleteIcon/>
                                             </IconButton>
@@ -108,9 +109,7 @@ export const CalendarList: FC = () => {
                                             setSelectedCalendar(calendar)
                                         }}
                                     >
-                                        <ListItemText
-                                            primary={calendar.name}
-                                        />
+                                        <ListItemText primary={calendar.name}/>
                                     </ListItem>
                                 )
                             }

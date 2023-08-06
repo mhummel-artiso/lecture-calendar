@@ -15,13 +15,12 @@ import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { axiosInstance } from '../../../utils/axiosInstance'
 import { addLecture, deleteLecture, editLecture, getLectures } from '../../../services/LectureService'
 import { Lecture } from '../../../models/lecture'
 import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
 
-export const LectureList: FC<ComponentProps> = (props) => {
+export const LectureList: FC = () => {
     const [expanded, setExpanded] = useState('')
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
@@ -94,11 +93,12 @@ export const LectureList: FC<ComponentProps> = (props) => {
                                             <IconButton
                                                 edge="end"
                                                 aria-label="delete"
-                                                onClick={() =>
+                                                onClick={(e) =>{
+                                                    e.stopPropagation();
                                                     deleteLectureMutation.mutate(
                                                         lecture.id!
                                                     )
-                                                }
+                                                }}
                                             >
                                                 <DeleteIcon/>
                                             </IconButton>
