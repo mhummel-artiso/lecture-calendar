@@ -55,7 +55,7 @@ try
     );
 
     #endregion
-
+    
     #region Mongo db
 
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();

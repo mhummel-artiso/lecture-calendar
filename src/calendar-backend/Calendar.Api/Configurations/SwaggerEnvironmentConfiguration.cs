@@ -2,20 +2,6 @@
 
 namespace Calendar.Api.Configurations;
 
-public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvironmentConfiguration>
-{
-    public bool DEBUG_TEST_ENDPOINT_ENABELD { get; set; } = false;
-    public string DEBUG_TEST_ENDPOINT_POLICY { get; set; }
-    public DebugEnvironmentConfiguration Validate()
-    {
-        var validator = new EnvironmentConfigurationValidator()
-            .CheckEnvironmentValue(DEBUG_TEST_ENDPOINT_ENABELD);
-        if (DEBUG_TEST_ENDPOINT_ENABELD == true)
-            validator.CheckEnvironment(DEBUG_TEST_ENDPOINT_POLICY);
-        return this;
-    }
-}
-
 public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<SwaggerEnvironmentConfiguration>
 {
     public bool USE_SWAGGER { get; set; } = false;
