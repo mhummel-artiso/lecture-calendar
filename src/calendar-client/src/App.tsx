@@ -1,11 +1,6 @@
-import { Routes, Route, Link, BrowserRouter } from 'react-router-dom'
-
 import React from 'react'
-import { CalendarPage } from './components/Pages/CalendarPage'
-import { AdminPage } from './components/Pages/AdminPageContainer'
-import { NotFoundPage } from './components/Pages/NotFoundPage'
-import { AuthProvider, AuthProviderProps, User } from 'oidc-react'
-import { useEnvironment } from './hooks/useEnvironment'
+import { AuthProvider, AuthProviderProps } from 'oidc-react'
+import { EnvConfig, useEnvironment } from './hooks/useEnvironment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -14,40 +9,38 @@ import 'moment/locale/de';
 
 import { queryClient } from './utils/queryClient'
 import { RouterComponent } from "./components/RouterComponent";
+import { ErrorPage } from "./components/Pages/ErrorPage";
+import { ErrorBoundary } from "react-error-boundary";
 
 function App() {
-    const envConfig = useEnvironment()
+    const envConfig: EnvConfig = useEnvironment()
+    console.log('envConfig', envConfig.OIDC_AUTO_SIGN_IN);
     const oidcConfig: AuthProviderProps = {
-        onSignIn: (user) => {
-            // Redirect?
-            console.log('user', user, window.location)
-        },
-        onSignOut: (props) => {
-            console.log('props', props)
-            window.location.href = envConfig.OIDC_REDIRECT_URL
-        },
         loadUserInfo: true,
-        autoSignIn: false,
-        authority: envConfig.VITE_OIDC_AUTHORITY,
+        autoSignIn: envConfig.OIDC_AUTO_SIGN_IN,
+        authority: envConfig.OIDC_AUTHORITY,
+        automaticSilentRenew:true,
         clientId: "calendar-client",
-        clientSecret:  envConfig.VITE_OIDC_CLIENT_SECRET,
-        redirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
-        postLogoutRedirectUri: envConfig.VITE_OIDC_REDIRECT_URL,
+        scope:"",
+        clientSecret: envConfig.OIDC_CLIENT_SECRET,
+        redirectUri: envConfig.OIDC_REDIRECT_URL,
+        postLogoutRedirectUri: envConfig.OIDC_REDIRECT_URL,
     };
-
     return (
-        <AuthProvider {...oidcConfig}>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-            <QueryClientProvider client={queryClient}>
-                <LocalizationProvider
-                    dateAdapter={AdapterMoment}
-                    adapterLocale="de"
-                >
-                    <RouterComponent/>
-                </LocalizationProvider>
-                {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
-            </QueryClientProvider>
-        </AuthProvider>
+        <ErrorBoundary FallbackComponent={ErrorPage}>
+            <AuthProvider {...oidcConfig}>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+                <QueryClientProvider client={queryClient}>
+                    <LocalizationProvider
+                        dateAdapter={AdapterMoment}
+                        adapterLocale="de"
+                    >
+                        <RouterComponent/>
+                    </LocalizationProvider>
+                    {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
+                </QueryClientProvider>
+            </AuthProvider>
+        </ErrorBoundary>
     )
 }
 

@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import { useAuth, User } from "oidc-react";
+import { useAuth } from "oidc-react";
 import { axiosInstance } from "../utils/axiosInstance";
+import { UserProfile } from "oidc-client-ts";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const useAccount = (accountChanged: ((user: User | null | undefined) => void) | undefined = undefined) => {
-    const {userData, signOut} = useAuth();
-
+export const useAccount = () => {
+    const {userData, signOut, signIn} = useAuth();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [userAccount, setUserAccount] = useState<UserProfile | null>(null);
+    const [canEdit, setCanEdit] = useState<boolean>(false);
     useEffect(() => {
-        axiosInstance.defaults.headers['authorization'] = userData ? "Barer " + userData.access_token : "";
-        if(accountChanged) {
-            accountChanged(userData);
-        }
+        setIsLoggedIn(!!userData)
+        axiosInstance.defaults.headers['Authorization'] = userData ? "Bearer " + userData.access_token : "";
+        setUserAccount(userData?.profile ?? null)
+        setCanEdit(_canEdit())
     }, [userData])
-
-    const isLoggedIn = () => userData != null
-
-    const canEdit = () => true;
+    const _canEdit: boolean = () => {
+        if(userData?.profile?.realm_access) {
+            const t = userData?.profile?.realm_access[0]['roles'] as string[] ?? [];
+            const r = t.findIndex(x => x === 'calendar-editor');
+            return r !== -1;
+        }
+        return false;
+    }
 
     return {
-        account: userData,
+        userAccount,
+        signIn,
         signOut,
         isLoggedIn,
         canEdit

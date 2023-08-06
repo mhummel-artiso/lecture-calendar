@@ -156,7 +156,7 @@ export const CalendarPage = () => {
                     </Scheduler>
                 </Grid>
             </Grid>
-            {canEdit() && (
+            {canEdit && (
                 <Fab
                     color="primary"
                     sx={{

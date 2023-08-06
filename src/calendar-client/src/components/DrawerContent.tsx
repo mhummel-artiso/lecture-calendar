@@ -7,10 +7,9 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useNavigate } from 'react-router-dom'
-import { Calendar } from '../models/calendar'
 import { useAccount } from "../hooks/useAccount";
 import { AvailableCalendarsList } from "./utils/AvailableCalendarsList";
 
@@ -25,7 +24,7 @@ export const DrawerContent = ({handleClose}: props) => {
     return (
         <Box role="presentation" onClick={handleClose} sx={{width: '400px'}}>
             <List>
-                {canEdit() && <>
+                {canEdit && <>
                     <ListItem key="1" disablePadding>
                         <ListItemButton
                             selected

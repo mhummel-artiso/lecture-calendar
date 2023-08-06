@@ -69,18 +69,18 @@ public class CalendarController : ControllerBase
     [Authorize(AuthPolicies.VIEWER)]
     public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetCalendarsByNames()
     {
-        var nameIdentifier = base.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
-            return BadRequest("invalid user id");
-        var groups = await keycloakService.GetGroupsForUserAsync(nameIdentifier.Value);
-        // TODO: use groups from claim 
-        groups = new List<string>
-        {
-            "TINF21AI"
-        };
-        var calendar = await calendarService.GetCalendarsByNamesAsync(groups);
-
-        return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendar));
+        // var nameIdentifier = base.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+        // if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
+        //     return BadRequest("invalid user id");
+        // var groups = await keycloakService.GetGroupsForUserAsync(nameIdentifier.Value);
+        // // TODO: use groups from claim 
+        // groups = new List<string>
+        // {
+        //     "TINF21AI"
+        // };
+        // var calendar = await calendarService.GetCalendarsByNamesAsync(groups);
+        var calendars = await calendarService.GetCalendars();
+        return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendars));
     }
 
 

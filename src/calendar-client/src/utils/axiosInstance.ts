@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { getGlobalEnv } from '../hooks/useEnvironment'
+import { getGlobalEnv, useEnvironment } from '../hooks/useEnvironment'
 
 const buildAxiosInstance = () => {
     const instance = axios.create()
-    instance.defaults.baseURL = getGlobalEnv().VITE_API_URL
+    instance.defaults.baseURL = getGlobalEnv().API_URL
     instance.defaults.headers.common['Content-Type'] = 'application/json'
     return instance;
 }

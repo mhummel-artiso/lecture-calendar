@@ -11,7 +11,8 @@ import { NotFoundPage } from "./Pages/NotFoundPage";
 import { useAccount } from "../hooks/useAccount";
 
 export const RouterComponent: FC = () => {
-    const {canEdit} = useAccount();
+    const {canEdit,isLoggedIn} = useAccount();
+
     return (<BrowserRouter>
         <Box
             sx={{
@@ -21,23 +22,25 @@ export const RouterComponent: FC = () => {
             }}
         >
             <NavBar/>
-            <ErrorBoundary FallbackComponent={ErrorPage}>
                 <Routes>
                     <Route path="/" element={<HelloPage/>}/>
-                    <Route path="/calendar" element={<CalendarPage/>}/>
-                    {/* This page is only for administrator to see specific calendars.*/}
-                    <Route
-                        path="/calendar/:calendarName"
-                        element={<CalendarPage/>}
-                    />
-                    {/* Only for administrator.*/}
-                    {canEdit() && <Route
-                        path="/administration"
-                        element={<AdminPage/>}
-                    />}
+                    {isLoggedIn && (
+                        <>
+                            <Route path="/calendar" element={<CalendarPage/>}/>
+                            {/* This page is only for administrator to see specific calendars.*/}
+                            <Route
+                                path="/calendar/:calendarName"
+                                element={<CalendarPage/>}
+                            />
+                            {/* Only for administrator.*/}
+                            {canEdit && <Route
+                                path="/administration"
+                                element={<AdminPage/>}
+                            />}
+                        </>
+                    )}
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Routes>
-            </ErrorBoundary>
         </Box>
     </BrowserRouter>)
 }

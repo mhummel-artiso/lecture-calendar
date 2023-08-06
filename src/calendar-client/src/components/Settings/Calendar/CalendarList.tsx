@@ -24,16 +24,12 @@ import AddIcon from '@mui/icons-material/Add'
 import { CalendarDialog } from './CalendarDialog'
 
 export const CalendarList: FC = () => {
-    const [expanded, setExpanded] = useState('')
+    const [isOpen, setIsOpen] = useState<boolean>(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedCalendar, setSelectedCalendar] = useState<Calendar | null>(null);
 
-    const handleExpanded = (name: string) => {
-        if(name === expanded) {
-            setExpanded('')
-        } else {
-            setExpanded(name)
-        }
+    const handleExpanded = () => {
+        setIsOpen(prevState => !prevState)
     }
 
     const {isLoading, data, refetch} = useQuery({
@@ -73,8 +69,8 @@ export const CalendarList: FC = () => {
     return (
         <>
             <Accordion
-                expanded={expanded === 'calendar'}
-                onChange={() => handleExpanded('calendar')}
+                expanded={isOpen}
+                onChange={handleExpanded}
             >
                 <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                     <Typography>Kalender</Typography>

@@ -19,7 +19,7 @@ export const NotFoundPage = () => {
             </Grid>
             <Grid>
                 <Button variant="outlined" onClick={() => navigate('/')}>
-                    Zum Kalender
+                    Zur Startseite
                 </Button>
             </Grid>
         </Grid>

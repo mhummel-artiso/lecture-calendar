@@ -13,6 +13,7 @@ public class KeycloakService : IKeycloakService
         this.client = client;
         this.options = options;
     }
+
     // TODO fix implementation
     public async Task<IEnumerable<string>> GetGroupsForUserAsync(string userId)
     {

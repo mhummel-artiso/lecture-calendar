@@ -67,7 +67,7 @@ public class CalendarService : ICalendarService
     }
 
     // FOR TESTING, later use GetCalendarsByNamesAsync
-    public async Task<IEnumerable<UserCalendar>> GetCalendar()
+    public async Task<IEnumerable<UserCalendar>> GetCalendars()
     {
         return await dbCollection.Find(x => true).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
     }

@@ -1,5 +1,5 @@
 import {
-    AppBar,
+    AppBar, Avatar,
     Button,
     Drawer,
     IconButton,
@@ -11,12 +11,12 @@ import React, { useState } from 'react'
 import { DrawerContent } from './DrawerContent'
 import { useLocation } from 'react-router'
 import { Calendar } from '../models/calendar'
-import { useAuth } from "oidc-react";
 import { useAccount } from "../hooks/useAccount";
+import { AccountButton } from "./utils/AccountButton";
 
 export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)
-    const { signOut,canEdit} = useAccount();
+    const {signOut, isLoggedIn, signIn, userAccount} = useAccount();
     const location = useLocation()
     const state: Calendar | undefined = location.state
         ? (location.state as Calendar)
@@ -37,27 +37,33 @@ export const NavBar = () => {
     return (
         <AppBar position="sticky">
             <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{mr: 2}}
-                        onClick={() => setDrawerActive(true)}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
+                <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{mr: 2}}
+                    onClick={() => setDrawerActive(true)}
+                >
+                    <MenuIcon/>
+                </IconButton>
                 <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                     {displayText()}
                 </Typography>
-                <Button color="inherit" onClick={signOut}>Abmelden</Button>
+                {isLoggedIn ? (
+                    <AccountButton onLogoutClick={signOut}></AccountButton>
+                ) : (
+                    <Button onClick={signIn} color="inherit">
+                        Anmelden
+                    </Button>)}
+
             </Toolbar>
-                <Drawer
-                    open={drawerActive}
-                    onClose={() => setDrawerActive(false)}
-                >
-                    <DrawerContent handleClose={() => setDrawerActive(false)}/>
-                </Drawer>
+            <Drawer
+                open={drawerActive}
+                onClose={() => setDrawerActive(false)}
+            >
+                <DrawerContent handleClose={() => setDrawerActive(false)}/>
+            </Drawer>
         </AppBar>
     )
 }
