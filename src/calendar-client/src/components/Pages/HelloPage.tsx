@@ -1,24 +1,14 @@
 import { AvailableCalendarsList } from "../utils/AvailableCalendarsList";
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 
-export const HelloPage=()=>
-{
+export const HelloPage = () => {
     return (
-        <>
-            <Grid container
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center" 
-                  sx={{
-                    minHeight: '90vh',
-                    display: 'flex',
-                  }}>
-                <Typography variant="h3">
-                    Deine Kurse
-                </Typography>
-                <AvailableCalendarsList />
-            </Grid>
-        </>
+        <Container>
+            <Typography variant="h3">
+                Deine Kurse
+            </Typography>
+            <AvailableCalendarsList/>
+        </Container>
     )
 }

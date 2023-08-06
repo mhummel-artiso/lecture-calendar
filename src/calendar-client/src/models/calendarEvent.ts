@@ -11,6 +11,7 @@ export interface CalendarEvent {
     createdDate?: Moment
     lastUpdateDate?: Moment
     lecture: Lecture
+    serieId: string
 }
 export interface CreateCalendarEvent {
     location: string

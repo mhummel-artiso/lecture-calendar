@@ -22,7 +22,7 @@ interface Props {
 
 export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     const navigate = useNavigate()
-    const [calendars, setCalendars] = useState<Calendar[]>([])
+    const [calendars, setCalendars] = useState<Calendar[][]>([])
 
     const {isLoading, data, isError, error, isFetching} = useQuery({
         queryKey: ['calendars'],
@@ -30,6 +30,7 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
         useErrorBoundary: true,
     })
     useEffect(() => {
+
         setCalendars(data ?? []);
     }, [data])
     return isLoading ? (

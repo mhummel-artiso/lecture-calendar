@@ -1,9 +1,9 @@
 import {
-    Button,
+    Button, CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, FormControl, Grid,
+    DialogTitle,
     MenuItem,
     Stack,
     TextField,
@@ -17,6 +17,7 @@ import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
 import { Moment } from "moment/moment";
 import { getLectures } from "../../services/LectureService";
 import { getCalendars } from "../../services/CalendarService";
+import { DialogComponentProps } from "../../models/dialogComponentProps";
 
 
 const serialList = [
@@ -28,28 +29,32 @@ const serialList = [
 
 // Dialog props ist für die verwendung
 // zum erstellen und bearbeiten von events an gepasst, wie in LectureDialog und Calendar Dialog.
-// Ich empfehle das interface mit 'extend DialogComponentProps<Calendar>' zu erweitern,
+// Ich empfehle das interface mit 'extend DialogComponentProps<CalendarEvent>' zu erweitern,
 // das hat schon alles was für ein dialog nützlich und nötig ist und dann ist alles einheitlich
-interface Props {
-    isDialogOpen: boolean
-    onDialogClose: () => void
-    calendarId: string 
+interface Props extends DialogComponentProps<CalendarEvent> {
+    calendarId: string
 }
 
 export const EventDialog = ({
                                 isDialogOpen,
                                 onDialogClose,
+                                onDialogAdd,
+                                onDialogEdit,
+                                currentValue,
                                 calendarId
                             }: Props) => {
-    const {data: calendarsData} = useQuery({
+    const {data: calendarsData, isLoading: isCalendarLoading} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
+        useErrorBoundary: true
     })
 
-    const {data: lectureData} = useQuery({
+    const {data: lectureData, isLoading: isLectureLoading} = useQuery({
         queryKey: ['lectures'],
         queryFn: getLectures,
+        useErrorBoundary: true
     })
+
     const {mutate: addEvent, isSuccess} = useAddEvent()
 
     const [selectedCalendarId, setSelectedCalendarId] = React.useState<string>('') // Change to use course that Person is currently on its calendar
@@ -65,8 +70,17 @@ export const EventDialog = ({
         setSelectedCalendarId(calendarId)
     }, [calendarId])
 
-    const handleClose = () => {
-        onDialogClose()
+    useEffect(() => {
+        if(!currentValue) {
+            resetValues()
+        } else {
+            setStartDate(currentValue.start)
+            setEndDate(currentValue.end)
+            setSerie()
+            setSelectedLectureId(currentValue?.lecture.id)
+        }
+    }, [currentValue])
+    const resetValues = () => {
         setStartDate(null)
         setEndDate(null)
         setSerie(serialList[0].value);
@@ -75,6 +89,10 @@ export const EventDialog = ({
         setSerieEnd(null)
         setSelectedCalendarId('')
         setSelectedLectureId('')
+    }
+    const handleClose = () => {
+        resetValues()
+        onDialogClose()
     }
 
     const handleAddEvent = () => {
@@ -87,7 +105,11 @@ export const EventDialog = ({
             location: location!,
             endSeries: serieEnd ?? undefined,
         }
-
+        if(currentValue) {
+            onDialogEdit({});
+        } else {
+            onDialogAdd({});
+        }
         addEvent({
             event: eventToAdd,
             calendarId: selectedCalendarId,
@@ -123,11 +145,15 @@ export const EventDialog = ({
                             label="Kurs"
                             required
                         >
-                            {(calendarsData ?? []).map((item) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                    {item.name}
-                                </MenuItem>
-                            ))}
+                            {isCalendarLoading ? (
+                                    <MenuItem key={0} value={null}>
+                                        <CircularProgress/>
+                                    </MenuItem>) :
+                                (calendarsData ?? []).map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
                         </TextField>
                         <TextField
                             fullWidth
@@ -136,7 +162,10 @@ export const EventDialog = ({
                             select
                             label="Vorlesung"
                         >
-                            {(lectureData ?? []).map((item) => (
+                            {isLectureLoading ? (
+                                <MenuItem key={0} value={null}>
+                                    <CircularProgress/>
+                                </MenuItem>) : (lectureData ?? []).map((item) => (
                                 <MenuItem key={item.id} value={item.id}>
                                     {item.title}
                                 </MenuItem>

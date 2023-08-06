@@ -174,6 +174,8 @@ export const CalendarPage = () => {
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => setIsDialogOpen(false)}
                 calendarId={""}
+                onDialogAdd={()=>{}}
+                onDialogEdit={()=>{}}
             />
         </>
     )
