@@ -18,10 +18,9 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                                                                      handleDialogEdit,
                                                                      currentValue: currentLecture
                                                                  }) => {
-    console.log("lecture ", currentLecture);
-    const [title, setTitle] = useState("");
-    const [dozent, setDozent] = useState("");
-    const [comments, setComments] = useState("");
+    const [title, setTitle] = useState<string|null>(null);
+    const [dozent, setDozent] = useState<string|null>(null);
+    const [comments, setComments] = useState<string|null>(null);
 
     useEffect(() => {
         setTitle(currentLecture?.title ?? "")
@@ -29,8 +28,10 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setComments(currentLecture?.comment ?? "")
     }, [currentLecture])
     
+    const canAddOrEdit = (): boolean => !!title && !!dozent
+    
     const handleSubmitClick = () => {
-        const l: Lecture = {title: title, professor: dozent, comment: comments};
+        const l: Lecture = {title: title!, professor: dozent!, comment: comments!};
         if(currentLecture == null && handleDialogAdd) {
             handleDialogAdd(l)
         } else if(handleDialogEdit) {
@@ -48,6 +49,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         type="text"
                         label="Name"
                         value={title}
+                        required
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <TextField
@@ -55,6 +57,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         id="dozent"
                         label="Dozent"
                         type="text"
+                        required
                         value={dozent}
                         onChange={(e) => setDozent(e.target.value)}
                     />
@@ -63,7 +66,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         margin="dense"
                         id="comment"
                         type="text"
-                        label="Zusätzliche Infos"
+                        label="Zusätzliche Informationen"
                         maxRows={4}
                         value={comments}
                         onChange={(e) => setComments(e.target.value)}
@@ -72,7 +75,8 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleDialogAbort}>Abbrechen</Button>
-                <Button onClick={handleSubmitClick}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
+                <Button disabled={!canAddOrEdit()}
+                        onClick={handleSubmitClick}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>
         </Dialog>
     )

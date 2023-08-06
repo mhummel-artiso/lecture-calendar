@@ -14,6 +14,7 @@ import { Moment } from "moment/moment"
 import moment from "moment";
 import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
+// TODO: delete?
 interface Props {
     isDialogOpen: boolean
     handleDialogAbort?: () => void
@@ -33,7 +34,6 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
     const [startDate, setStartDate] = useState<Moment | null>(null);
 
     useEffect(() => {
-        console.log("currentCalendar", currentCalendar)
         setName(currentCalendar?.name ?? "")
         const str = moment(currentCalendar?.startDate)
         setStartDate(str)
