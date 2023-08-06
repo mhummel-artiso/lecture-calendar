@@ -1,11 +1,20 @@
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import {
+    Box,
+    CircularProgress,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Typography
+} from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import React, { FC, useEffect, useState } from "react";
-import { Calendar } from "../models/calendar";
-import { axiosInstance } from "../utils/axiosInstance";
+import { Calendar } from "../../models/calendar";
+import { axiosInstance } from "../../utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getCalendars } from "../services/CalendarService";
+import { getCalendars } from "../../services/CalendarService";
 
 interface Props {
     disablePadding?: boolean
@@ -23,7 +32,11 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     useEffect(() => {
         setCalendars(data ?? []);
     }, [data])
-    return  (
+    return isLoading ? (
+        <Box margin={2}>
+            <CircularProgress/>
+        </Box>
+    ) : (
         <List>
             {/*Display text if no calendars available*/}
             {!calendars || data?.length == 0 && (

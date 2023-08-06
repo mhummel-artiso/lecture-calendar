@@ -12,7 +12,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { useNavigate } from 'react-router-dom'
 import { Calendar } from '../models/calendar'
 import { useAccount } from "../hooks/useAccount";
-import { AvailableCalendarsList } from "./AvailableCalendarsList";
+import { AvailableCalendarsList } from "./utils/AvailableCalendarsList";
 
 interface props {
     handleClose: () => void

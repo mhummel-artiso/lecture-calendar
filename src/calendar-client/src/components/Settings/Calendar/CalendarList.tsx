@@ -3,7 +3,7 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
-    Button, drawerClasses,
+    Button, CircularProgress, drawerClasses,
     Fab,
     Grid,
     IconButton,
@@ -36,9 +36,10 @@ export const CalendarList: FC = () => {
         }
     }
 
-    const calendarQuery = useQuery({
+    const {isLoading, data, refetch} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
+        useErrorBoundary: true
     })
 
     const deleteCalendarMutation = useMutation({
@@ -46,7 +47,7 @@ export const CalendarList: FC = () => {
             return await deleteCalendar(calendarId)
         },
         onSuccess: async (_) => {
-            await calendarQuery.refetch()
+            await refetch()
         },
     })
     const addCalendarMutation = useMutation({
@@ -54,7 +55,7 @@ export const CalendarList: FC = () => {
             return await addCalendar(calendar)
         },
         onSuccess: async (_) => {
-            await calendarQuery.refetch();
+            await refetch();
         }
     })
     const editCalendarMutation = useMutation({
@@ -65,7 +66,7 @@ export const CalendarList: FC = () => {
             return await editCalendar(calendar.id, calendar);
         },
         onSuccess: async (_) => {
-            await calendarQuery.refetch()
+            await refetch()
             setIsDialogOpen(false);
         }
     })
@@ -79,44 +80,49 @@ export const CalendarList: FC = () => {
                     <Typography>Kalender</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Button variant="outlined" startIcon={<AddIcon/>} onClick={() => {
-                        setSelectedCalendar(null);
-                        setIsDialogOpen(true)
-                    }}>Kalender hinzufügen</Button>
-                    <List>
-                        {calendarQuery.data?.map((calendar, index) => {
-                                return (
-                                    <ListItemButton
-                                        divider
-                                        key={index}
-                                        onClick={() => {
-                                            setIsDialogOpen(true);
-                                            setSelectedCalendar(calendar)
-                                        }}
-                                    >
-                                        <ListItemText primary ={calendar.name}/>
-                                        <ListItemSecondaryAction>
-                                            <IconButton
-                                                edge="end"
-                                                    aria-label="delete"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        deleteCalendarMutation.mutate(
-                                                            calendar.id!
-                                                        )
-                                                    }}
-                                            >
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItemButton>
-                                )
-                            }
-                        )}
-                    </List>
+                    {isLoading ? (
+                        <Box margin={1}>
+                            <CircularProgress/>
+                        </Box>
+                    ) : (<>
+                        <Button variant="outlined" startIcon={<AddIcon/>} onClick={() => {
+                            setSelectedCalendar(null);
+                            setIsDialogOpen(true)
+                        }}>Kalender hinzufügen</Button>
+                        <List>
+                            {data?.map((calendar, index) =>
+
+                                <ListItemButton
+                                    divider
+                                    key={index}
+                                    onClick={() => {
+                                        setIsDialogOpen(true);
+                                        setSelectedCalendar(calendar)
+                                    }}
+                                >
+                                    <ListItemText primary={calendar.name}/>
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="delete"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteCalendarMutation.mutate(
+                                                    calendar.id!
+                                                )
+                                            }}
+                                        >
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItemButton>
+                            )}
+                        </List>
+                    </>)}
                 </AccordionDetails>
             </Accordion>
-            {isDialogOpen &&
+            {
+                isDialogOpen &&
                 <CalendarDialog
                     isDialogOpen={isDialogOpen}
                     onDialogClose={() => setIsDialogOpen(false)}
@@ -126,8 +132,6 @@ export const CalendarList: FC = () => {
 
                 />
             }
-
-        </>
-    )
+        </>)
 }
 

@@ -1,4 +1,4 @@
-import { AvailableCalendarsList } from "../AvailableCalendarsList";
+import { AvailableCalendarsList } from "../utils/AvailableCalendarsList";
 import React from "react";
 import { Grid, Typography } from "@mui/material";
 

@@ -1,8 +1,8 @@
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary,
-    Button,
+    AccordionSummary, Box,
+    Button, CircularProgress,
     Fab,
     Grid,
     IconButton,
@@ -35,40 +35,43 @@ export const LectureList: FC = () => {
         }
     }
 
-    const lectureQuery = useQuery({
+    const {isLoading, data, refetch} = useQuery({
         queryKey: ['lectures'],
         queryFn: getLectures,
+        useErrorBoundary: true
     })
+
     const addLectureMutation = useMutation({
         mutationFn: async (lecture: Lecture) => {
             return await addLecture(lecture)
         },
-        onSuccess: async (data) => {
-            await lectureQuery.refetch()
+        onSuccess: async (_) => {
+            await refetch()
         },
     });
+
     const editLectureMutation = useMutation({
         mutationFn: async (lecture: Lecture) => {
             if(lecture.id) {
                 return await editLecture(lecture.id, lecture)
             }
         },
-        onSuccess: async (data) => {
-            await lectureQuery.refetch()
+        onSuccess: async (_) => {
+            await refetch()
         },
     });
+
     const deleteLectureMutation = useMutation({
         mutationFn: async (lectureId: string) => {
             return await deleteLecture(lectureId)
         },
         onSuccess: async (data) => {
-            await lectureQuery.refetch()
+            await refetch()
         },
     })
 
     return (
         <>
-
             <Accordion
                 expanded={expanded === 'lecture'}
                 onChange={() => handleExpanded('lecture')}
@@ -78,16 +81,18 @@ export const LectureList: FC = () => {
                         <Typography>Fächer</Typography>
                     </Grid>
                 </AccordionSummary>
-                <AccordionDetails>
-
-                    <Button variant="outlined" startIcon={<AddIcon/>} onClick={() => {
+                <AccordionDetails>{isLoading ? (
+                        <Box margin={1}>
+                            <CircularProgress/>
+                        </Box>
+                    ) :
+                    (<><Button variant="outlined" startIcon={<AddIcon/>} onClick={() => {
                         setSelectedLecture(null);
                         setIsDialogOpen(true)
                     }}>Vorlesung hinzufügen</Button>
-                    <List>
-                        {lectureQuery.data?.map(
-                            (lecture, index) => {
-                                return (
+                        <List>
+                            {data?.map(
+                                (lecture, index) =>
                                     <ListItemButton
                                         divider
                                         key={index}
@@ -100,22 +105,21 @@ export const LectureList: FC = () => {
                                         <ListItemSecondaryAction>
                                             <IconButton
                                                 edge="end"
-                                                    aria-label="delete"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        deleteLectureMutation.mutate(
-                                                            lecture.id!
-                                                        )
-                                                    }}
+                                                aria-label="delete"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteLectureMutation.mutate(
+                                                        lecture.id!
+                                                    )
+                                                }}
                                             >
                                                 <DeleteIcon/>
                                             </IconButton>
                                         </ListItemSecondaryAction>
                                     </ListItemButton>
-                                )
-                            }
-                        )}
-                    </List>
+                            )}
+                        </List>
+                    </>)}
                 </AccordionDetails>
             </Accordion>
             <LectureDialog
