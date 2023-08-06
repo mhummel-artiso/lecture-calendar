@@ -14,15 +14,6 @@ import { Moment } from "moment/moment"
 import moment from "moment";
 import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
-// TODO: delete?
-interface Props {
-    isDialogOpen: boolean
-    handleDialogAbort?: () => void
-    handleDialogAdd?: (calendar: Calendar) => void
-    handleDialogEdit?: (calendar: Calendar) => void
-    currentCalendar: Calendar | null | undefined
-}
-
 export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
                                                                        isDialogOpen,
                                                                        handleDialogAbort,
@@ -30,8 +21,8 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
                                                                        handleDialogEdit,
                                                                        currentValue: currentCalendar
                                                                    }) => {
-    const [name, setName] = useState<string | null>(null);
-    const [startDate, setStartDate] = useState<Moment | null>(null);
+    const [name, setName] = useState<string >("");
+    const [startDate, setStartDate] = useState<Moment >(moment());
 
     useEffect(() => {
         setName(currentCalendar?.name ?? "")
@@ -42,7 +33,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
     const canAddOrEdit = (): boolean => !!name && !!startDate
 
     const handleSubmitClick = () => {
-        const c: Calendar = {name: name!, startDate: moment(startDate)};
+        const c: Calendar = {id: currentCalendar?.id, name: name!, startDate: moment(startDate)};
         if(currentCalendar == null && handleDialogAdd) {
             handleDialogAdd(c)
         } else if(handleDialogEdit) {

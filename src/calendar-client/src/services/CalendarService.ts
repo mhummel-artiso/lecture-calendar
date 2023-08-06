@@ -23,6 +23,7 @@ export const getCalendar = async (calendarId: string): Promise<Calendar> => {
     return Promise.resolve(response.data)
 }
 export const editCalendar = async (calendarId: string, calendar: Calendar): Promise<Calendar> => {
+    console.log(calendarId, calendar);
     const response = await axiosInstance.put<Calendar>(calendarEndPointName(calendarId), calendar);
     return Promise.resolve(response.data)
 }

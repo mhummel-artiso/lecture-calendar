@@ -18,9 +18,9 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                                                                      handleDialogEdit,
                                                                      currentValue: currentLecture
                                                                  }) => {
-    const [title, setTitle] = useState<string|null>(null);
-    const [dozent, setDozent] = useState<string|null>(null);
-    const [comments, setComments] = useState<string|null>(null);
+    const [title, setTitle] = useState<string>("");
+    const [dozent, setDozent] = useState<string>("");
+    const [comments, setComments] = useState<string>("");
 
     useEffect(() => {
         setTitle(currentLecture?.title ?? "")
@@ -31,7 +31,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
     const canAddOrEdit = (): boolean => !!title && !!dozent
     
     const handleSubmitClick = () => {
-        const l: Lecture = {title: title!, professor: dozent!, comment: comments!};
+        const l: Lecture = {id: currentLecture?.id, title: title!, professor: dozent!, comment: comments!};
         if(currentLecture == null && handleDialogAdd) {
             handleDialogAdd(l)
         } else if(handleDialogEdit) {
