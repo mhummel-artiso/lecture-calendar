@@ -47,4 +47,7 @@ public class KeycloakService : IKeycloakService
 
     // NuGET dotnet add package Keycloak.Net --version 1.0.18
 
+    // Authoriaze with client secret
+    //curl -d "client_id=calendar-api" -d "client_secret=vTtq8mz0OKiUGLaQWpkNZdpdjLhYPsZ5" -d "grant_type=client_credentials" "http://localhost:8080/realms/Calendar/protocol/openid-connect/token"
+
 }
