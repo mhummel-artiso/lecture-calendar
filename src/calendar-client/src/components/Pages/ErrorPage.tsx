@@ -4,8 +4,10 @@ import { ErrorBoundaryProps, FallbackProps, withErrorBoundary } from 'react-erro
 import App from "../../App";
 import { Image } from "@mui/icons-material";
 import { AxiosError } from "axios";
+import { queryClient } from "../../utils/queryClient";
 
 export const ErrorPage: FC<FallbackProps> = ({error: err, resetErrorBoundary}) => {
+
     const getError = () => {
         if(err instanceof AxiosError) {
             console.log('err', err);
@@ -39,7 +41,10 @@ export const ErrorPage: FC<FallbackProps> = ({error: err, resetErrorBoundary}) =
                     Ein Fehler ist aufgetreten:
                 </Typography>
                 {getError()}
-                <Button variant={"outlined"} onClick={resetErrorBoundary}>Ok</Button>
+                <Button variant={"outlined"} onClick={()=>{
+                    queryClient.clear()
+                    resetErrorBoundary()
+                }}>Ok</Button>
             </Grid>
         </Container>
     )
