@@ -18,19 +18,19 @@ namespace Calendar.Api.Controllers
             this.logger = logger;
         }
 
-        [HttpGet]
-        [Authorize(AuthPolicies.EDITOR_VIEWER)]
-        public async Task<ActionResult> GetAssignedCalendars()
-        {
-            return Ok();
-        }
+        // [HttpGet]
+        // [Authorize(AuthPolicies.EDITOR_VIEWER)]
+        // public async Task<ActionResult> GetAssignedCalendars()
+        // {
+        //     return Ok();
+        // }
 
-        [HttpGet]
-        [Authorize(AuthPolicies.EDITOR)]
-        public async Task<ActionResult> GetInstructors()
-        {
-            return Ok();
-        }
+        // [HttpGet]
+        // [Authorize(AuthPolicies.EDITOR)]
+        // public async Task<ActionResult> GetInstructors()
+        // {
+        //     return Ok();
+        // }
 
         [HttpGet]
         [Authorize(AuthPolicies.EDITOR)]

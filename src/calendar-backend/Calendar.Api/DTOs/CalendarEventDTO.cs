@@ -12,7 +12,7 @@ namespace Calendar.Api.DTOs
         public string? Description { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
-        public EventRotation? Rotation { get; set; }
+        public EventRepeat? Rotation { get; set; }
         public string? SerieId { get; set; }
         public DateTimeOffset LastUpdateDate { get; set; }
         public DateTimeOffset CreatedDate { get; set; }

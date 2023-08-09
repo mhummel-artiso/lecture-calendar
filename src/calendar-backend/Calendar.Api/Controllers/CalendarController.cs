@@ -4,7 +4,7 @@ using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Services.Validation;
+
 using Calendar.Mongo.Db.Models;
 using Keycloak.AuthServices.Sdk.Admin;
 using Keycloak.AuthServices.Sdk.AuthZ;
@@ -97,7 +97,6 @@ public class CalendarController : ControllerBase
 
     [HttpPut("{calendarId}")]
     [Authorize(AuthPolicies.EDITOR)]
-    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<UserCalendarDTO>> EditCalendar(string calendarId, [FromBody] UpdateUserCalendarDTO? calendar)
     {
         if (calendar == null)
@@ -113,7 +112,6 @@ public class CalendarController : ControllerBase
 
     [HttpDelete("{calendarId}")]
     [Authorize(AuthPolicies.EDITOR)]
-    // [Authorize(Roles = "editor")]
     public async Task<ActionResult<bool>> DeleteCalendar(string calendarId)
     {
         var success = await calendarService.DeleteCalendarByIdAsync(calendarId);
@@ -246,7 +244,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPut("{calendarId}/event/serie/{serieId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSerieDTO calendarEvent)
     {
 
@@ -284,7 +282,7 @@ public class CalendarController : ControllerBase
     }
 
     [HttpDelete("{calendarId}/event/serie/{serieId}")]
-    // [Authorize(Roles = "editor")]
+    [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, string serieId)
     {
         try
