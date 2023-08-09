@@ -23,6 +23,7 @@ import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
 import { Calendar } from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
+import { getEventsFrom } from '../../services/CalendarService'
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -39,19 +40,21 @@ export const CalendarPage = () => {
         // TODO what should happen if the location.state is undefined?
         // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
         // for example the user paste the url .../calendar/123 direct into the browser and press enter.
-        console.log('location', location.state, calendarName);
         const state = location.state as Calendar | Calendar[];
 
         if(calendarName && state) {
+            // TODO load events for current events from location.state
             const calendar = state as Calendar | undefined;
-            // TODO load events for current events from location.state#
-            console.log('load events for calendar: ', calendar);
+            const startDate = getStartDateFromCurrentDate();
+            const events = getEventsFrom(calendar?.id!, startDate, calendarView!).then(result => console.log(result));
+
+            console.log("events", events);
+            
         } else if(!calendarName && state) {
             const calendars = state as Calendar[]
             // TODO load all events for all calendar in state
-            console.log('load events for calendars: ', calendars);
         }
-    }, [calendarName, location.state])
+    }, [calendarName, location.state, calendarView, currentDate])
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -68,25 +71,43 @@ export const CalendarPage = () => {
         setCurrentDate(moment(date));
     }
 
-    const formatCurrentDate = (viewType: CalendarViewType) => {
-        switch(viewType) {
+    // get Start Date for View Type
+    const getStartDateFromCurrentDate = () =>{
+        switch(calendarView){
             case 'day':
-                return currentDate.format('dddd, DD.MMMM.YYYY');
+                return currentDate.clone().format('YYYY-MM-DD');
             case 'week': {
                 // calculate the first day of the week
-                const firstDayOfWeek = moment(currentDate)
-                    .add(-(currentDate.weekday()) + 1, "day")
-                // calculate the last day of the week
-                const lastDayOfWeek = moment(firstDayOfWeek)
-                    .add(6, "day")
+                const firstDayOfWeek =  currentDate.clone().weekday(1).format('YYYY-MM-DD');
+                return firstDayOfWeek;
+            }
+            case 'month':
+                const firstDayOfMonth = currentDate.clone().startOf('month').format('YYYY-MM-DD');
+                return firstDayOfMonth;
+            default:
+                return 'Invalid View Type'
+        }
+    }
+
+    // formats Date for UI-View
+    const formatCurrentDate = () => {
+        switch(calendarView) {
+            case 'day':
+                return currentDate.format('dddd, DD. MMMM YYYY');
+            case 'week': {
+                const firstDayOfWeek =  currentDate.clone().weekday(1);
+                const lastDayOfWeek = currentDate.clone().weekday(7);
+                
                 return `${firstDayOfWeek.format('D.MM')} - ${lastDayOfWeek.format('D.MM.YYYY')}`
             }
             case 'month':
                 return currentDate.format("MM.YYYY")
             default:
-                return ''
+                return 'Invalid View Type'
         }
     }
+
+
     return (
         <>
             <Grid item container sx={{padding: 3}} alignItems="center">
@@ -103,7 +124,7 @@ export const CalendarPage = () => {
                             <KeyboardArrowLeftIcon/>
                         </Fab>
                         <Typography variant="subtitle1">
-                            {formatCurrentDate(calendarView)}
+                            {formatCurrentDate()}
                         </Typography>
                         <Fab
                             color="primary"
@@ -174,9 +195,9 @@ export const CalendarPage = () => {
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => setIsDialogOpen(false)}
                 calendarId={""}
-                onDialogAdd={()=>{}}
-                onDialogEdit={()=>{}}
-            />
+                onDialogAdd={() => { } }
+                onDialogEdit={() => { } } currentValue={null}/>
+                {/* TODO: current value ändern */}
         </>
     )
 }

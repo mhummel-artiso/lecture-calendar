@@ -48,10 +48,9 @@ export const getEvents = async (calendarId: string): Promise<CalendarEvent[]> =>
     const response = await axiosInstance.get<CalendarEvent[]>(eventEndPointName(calendarId));
     return Promise.resolve(response.data);
 }
-export const getEventsFrom = async (calendarId: string, startDate: Moment, viewType: 'Day' | 'Week' | 'Month'): Promise<CalendarEvent[]> => {
+export const getEventsFrom = async (calendarId: string, startDate: string, viewType: 'day' | 'week' | 'month'): Promise<CalendarEvent[]> => {
     const basePath = eventEndPointName(calendarId);
-    const date = startDate.toISOString();
-    const response = await axiosInstance.get<CalendarEvent[]>(`${basePath}/${date}/${viewType}`);
+    const response = await axiosInstance.get<CalendarEvent[]>(`${basePath}/${startDate}/${viewType}`);
     return Promise.resolve(response.data);
 }
 export const getEvent = async (calendarId: string, eventId: string) => {

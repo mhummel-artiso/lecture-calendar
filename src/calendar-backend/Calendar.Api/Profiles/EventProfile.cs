@@ -14,7 +14,7 @@ namespace Calendar.Api.Profiles
             CreateMap<CreateCalendarEventDTO, CalendarEvent>()
                 .ForMember(x => x.Start, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
                 .ForMember(x => x.EndSeries, opt => opt.MapFrom(src => src.EndSeries.HasValue ? src.EndSeries.Value.ToUniversalTime() : src.EndSeries))
-                .ForMember(x => x.Id, opt => opt.NullSubstitute(ObjectId.GenerateNewId()))
+                .ForMember(x => x.Id, opt => { opt.MapFrom(_ => ObjectId.GenerateNewId());})
                 .ForMember(x => x.StartSeries, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
                 .ForMember(x => x.Duration, opt =>
                 {

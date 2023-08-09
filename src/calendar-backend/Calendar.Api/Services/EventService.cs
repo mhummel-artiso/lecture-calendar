@@ -37,9 +37,9 @@ namespace Calendar.Api.Services
             var startDate = date.AddDays(-(int)date.DayOfWeek);
             var endDate = viewType switch
             {
-                ViewType.Day => startDate.AddDays(1),
-                ViewType.Week => startDate.AddDays(5),
-                ViewType.Month => startDate.AddMonths(1),
+                ViewType.day => startDate.AddDays(1),
+                ViewType.week => startDate.AddDays(5),
+                ViewType.month => startDate.AddMonths(1),
                 _ => throw new ArgumentOutOfRangeException(nameof(viewType)),
             };
             return result.Events.Where(x => x.Start >= startDate && (x.Start + x.Duration) <= endDate);
@@ -74,7 +74,7 @@ namespace Calendar.Api.Services
             var eventsToAdd = new List<CalendarEvent>();
             
 
-
+            // TODO: Überarbeiten
             // Creating Events
             if(calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
             {

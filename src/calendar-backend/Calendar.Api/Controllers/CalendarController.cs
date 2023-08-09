@@ -180,7 +180,7 @@ public class CalendarController : ControllerBase
         
     }
 
-    [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
+    [HttpGet("{calendarId}/event/{date}/{viewType}")]
     [Authorize(AuthPolicies.VIEWER)]
     public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> GetAllEventsFromCalendar(string calendarId, DateTimeOffset date, string viewType)
     {
