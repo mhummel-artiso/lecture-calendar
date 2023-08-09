@@ -5,6 +5,7 @@ using Calendar.Api.Models;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
 using Calendar.PostgreSQL.Db;
+using FS.Keycloak.RestApiClient.Client;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk.Admin;
@@ -40,6 +41,7 @@ try
     builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
+    builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
 
     #endregion
 
@@ -147,7 +149,17 @@ try
 
     #endregion
 
+    #region Keycloak Rest
+    var keycloakRestConfig = configuration.Get<KeycloakRestEnvironmentConfiguration>()?.Validate();
+    if (keycloakRestConfig != null)
+    {
+        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER, keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
+    }
+    #endregion
+
     var app = builder.Build();
+
+  
 
     app.UseHttpLogging();
     // app.UseW3CLogging();

@@ -1,25 +1,82 @@
-﻿using Calendar.Api.Services.Interfaces;
-using Keycloak.AuthServices.Authorization;
-using Keycloak.AuthServices.Sdk.Admin;
+﻿using Calendar.Api.Configurations;
+using Calendar.Api.DTOs;
+using Calendar.Api.Models;
+using Calendar.Api.Services.Interfaces;
+using FS.Keycloak.RestApiClient.Api;
+using FS.Keycloak.RestApiClient.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace Calendar.Api.Services;
 
 public class KeycloakService : IKeycloakService
 {
-    private readonly IKeycloakClient client;
-    private readonly KeycloakProtectionClientOptions options;
-    public KeycloakService(IKeycloakClient client, KeycloakProtectionClientOptions options)
+    private readonly KeycloakHttpClient httpClient;
+    private readonly string realm = "Calendar";
+    private readonly string calendarsGroupName = "Semesters";
+    private readonly string instructorGroupName = "Verwaltung";
+   
+    public KeycloakService(KeycloakHttpClient httpClient)
     {
-        this.client = client;
-        this.options = options;
+        this.httpClient = httpClient;
     }
 
-    // TODO fix implementation
-    public async Task<IEnumerable<string>> GetGroupsForUserAsync(string userId)
+    public async Task<IEnumerable<(string, string)>?> GetGroupsForUserAsync(string userId)
     {
-        var user = await client.GetUser(options.Realm, userId);
-        return user?.Groups ?? Array.Empty<string>();
+        using var userApi = ApiClientFactory.Create<UserApi>(httpClient);
+        var assignedGroupsFromUser = await userApi.GetUsersGroupsByIdAsync(realm, userId);
+
+        var result = new List<(string, string)>();
+
+        if (assignedGroupsFromUser == null) return null;
+
+        assignedGroupsFromUser.ForEach(group => result.Add((group.Name, group.Id)));
+
+        return result;
     }
+
+    public async Task<IEnumerable<InstructorDTO>?> GetInstructorsAsync()
+    {
+        using var groupApi = ApiClientFactory.Create<GroupApi>(httpClient);
+        using var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient);
+
+        var groups = await groupsApi.GetGroupsAsync(realm);
+
+        if(groups == null) return null;
+
+        var instructorGroup = groups.FirstOrDefault(x => x.Name.Equals(instructorGroupName));
+
+        if(instructorGroup == null) return null;
+        
+        var groupMembers = await groupApi.GetGroupsMembersByIdAsync(realm, instructorGroup.Id);
+
+        var result = new List<InstructorDTO>();
+
+        if (groupMembers == null) return null;
+
+        groupMembers.ForEach(user => result.Add(new InstructorDTO() { KeycloakUserId = user.Id, Name = $"{user.FirstName} {user.LastName}" }));
+
+        return result;
+    }
+
+    public async Task<IEnumerable<UserCalendarKeycloakDTO>?> GetAllCalendarsAsync()
+    {
+        using var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient);
+        var groups = await groupsApi.GetGroupsAsync(realm);
+        
+        if (groups == null) return null;
+        
+        var semesterGroup = groups.FirstOrDefault(x => x.Name.Equals(calendarsGroupName));
+
+        if (semesterGroup == null) return null;
+        
+        var result = new List<UserCalendarKeycloakDTO>();
+
+        semesterGroup.SubGroups.ForEach(group => result.Add(new UserCalendarKeycloakDTO() { KeycloakGroupId = group.Id, Name = group.Name}));
+        
+        return result;
+    }
+
+
 
     // Get members of a group (id, username, first Name, last name, email, ...)
     //http://localhost:8080/admin/realms/Calendar/groups/269072d2-19a8-4ea8-a367-fc85b6af1c53/members
