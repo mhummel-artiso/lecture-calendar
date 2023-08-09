@@ -1,6 +1,8 @@
 ﻿using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Globalization;
 
 namespace Calendar.Api.Services
 {
@@ -19,11 +21,12 @@ namespace Calendar.Api.Services
         public async Task<IEnumerable<Lecture>> GetLecturesAsync() =>
             await dbCollection.Find(x => true).ToListAsync();
         public async Task<Lecture?> GetLectureByIdAsync(string lectureId) =>
-            await dbCollection.Find(x => x.Id == lectureId).FirstOrDefaultAsync();
+            await dbCollection.Find(x => x.Id == new ObjectId(lectureId)).FirstOrDefaultAsync();
 
         public async Task<Lecture> AddLectureAsync(Lecture lecture)
         {
             lecture.CreatedDate = DateTimeOffset.UtcNow;
+            lecture.LastUpdateDate = DateTimeOffset.UtcNow;
             await dbCollection.InsertOneAsync(lecture);
             return lecture;
         }
@@ -34,16 +37,16 @@ namespace Calendar.Api.Services
                 .Set(x => x.Comment, lecture.Comment)
                 .Set(x => x.Title, lecture.Title)
                 .Set(x => x.LastUpdateDate, DateTimeOffset.UtcNow);
-            var result = await dbCollection.UpdateOneAsync(x => x.Id == lectureId, update);
+            var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(lectureId), update);
             return result.ModifiedCount == 1
                 ? await dbCollection
-                    .Find(x => x.Id == lectureId)
+                    .Find(x => x.Id == new ObjectId(lectureId))
                     .FirstOrDefaultAsync()
                 : null;
         }
         public async Task<bool> DeleteLectureByIdAsync(string lectureId)
         {
-            var result = await dbCollection.DeleteOneAsync(x => x.Id == lectureId);
+            var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(lectureId));
             return result.DeletedCount == 1;
         }
     }

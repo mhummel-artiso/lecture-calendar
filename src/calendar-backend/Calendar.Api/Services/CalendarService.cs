@@ -1,5 +1,6 @@
 ﻿using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Calendar.Api.Services;
@@ -25,7 +26,7 @@ public class CalendarService : ICalendarService
     public async Task<UserCalendar?> GetCalendarByIdAsync(string calendarId, bool includeEvents)
     {
         var query = dbCollection
-            .Find(x => x.Id == calendarId);
+            .Find(x => x.Id == new ObjectId(calendarId));
         if (!includeEvents)
             query = query
                 .Project<UserCalendar>(
@@ -42,6 +43,7 @@ public class CalendarService : ICalendarService
         if (existed != null)
             throw new ApplicationException($"the calendar with the name {calendar.Name} already exists");
         calendar.CreatedDate = DateTimeOffset.UtcNow;
+        calendar.LastUpdateDate = DateTimeOffset.UtcNow;
         await dbCollection.InsertOneAsync(calendar);
         return calendar;
     }
@@ -51,16 +53,22 @@ public class CalendarService : ICalendarService
             .Set(x => x.Name, updateCalendar.Name)
             .Set(x => x.StartDate, updateCalendar.StartDate)
             .Set(x => x.LastUpdateDate, DateTimeOffset.UtcNow);
-        var result = await dbCollection.UpdateOneAsync(x => x.Id == calendarId, updates);
+        var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), updates);
         return result.ModifiedCount == 1
             ? await dbCollection
-                .Find(x => x.Id == calendarId)
+                .Find(x => x.Id == new ObjectId(calendarId))
                 .FirstOrDefaultAsync()
             : null;
     }
     public async Task<bool> DeleteCalendarByIdAsync(string calendarId)
     {
-        var result = await dbCollection.DeleteOneAsync(x => x.Id == calendarId);
+        var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(calendarId));
         return result.DeletedCount == 1;
+    }
+
+    // FOR TESTING, later use GetCalendarsByNamesAsync
+    public async Task<IEnumerable<UserCalendar>> GetCalendars()
+    {
+        return await dbCollection.Find(x => true).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
     }
 }

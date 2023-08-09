@@ -174,7 +174,6 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
-    // if (app.Environment.IsDevelopment())
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
