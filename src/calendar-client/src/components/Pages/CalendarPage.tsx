@@ -188,7 +188,7 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler data={events?.map(c=>{return { startDate: c.start.toDate, endDate: c.end.toDate, title: c.lecture.title } as unknown as AppointmentModel})} locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={events?.map(c=>{return { startDate: moment(c.start), endDate: moment(c.end), title: c.lecture.title, location: c.location } as unknown as AppointmentModel})} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
