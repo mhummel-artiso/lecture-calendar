@@ -18,8 +18,8 @@ export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)
     const {signOut, isLoggedIn, signIn, userAccount} = useAccount();
     const location = useLocation()
-    const state: Calendar | undefined = location.state
-        ? (location.state as Calendar)
+    const state: Calendar[] | undefined = location.state
+        ? (location.state as Calendar[])
         : undefined
 
     const displayText = () => {
@@ -28,7 +28,7 @@ export const NavBar = () => {
         if(location.pathname.startsWith('/administration')) {
             displayName = 'Übersicht'
         } else if(location.pathname.startsWith('/calendar/')) {
-            displayName = state ? `Kalender: ${state.name}` : 'Kalender'
+            displayName = state?.length == 1 ? `Kalender: ${state[0].name}` : 'Kalender'
         }
         return displayName
     }

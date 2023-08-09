@@ -55,22 +55,26 @@ export const CalendarPage = () => {
             console.log(events);
             return events;
         }
+        else {
+            // Fallback, wenn Aufruf des Kalenders über URL
+            // TODO what should happen if the location.state is undefined?
+            // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
+            // for example the user paste the url .../calendar/123 direct into the browser and press enter.
+        }
         return [];
     }
 
-    // get Start Date for View Type
-    const getStartDateFromCurrentDate = () =>{
+    const getStartDateFromCurrentDate = (): string =>{
         switch(calendarView){
             case 'day':
                 return currentDate.clone().format('YYYY-MM-DD');
             case 'week': {
-                // calculate the first day of the week
-                const firstDayOfWeek =  currentDate.clone().weekday(1).format('YYYY-MM-DD');
-                return firstDayOfWeek;
+                // First Day of Week
+                return currentDate.clone().weekday(1).format('YYYY-MM-DD');
             }
             case 'month':
-                const firstDayOfMonth = currentDate.clone().startOf('month').format('YYYY-MM-DD');
-                return firstDayOfMonth;
+                // First Day of Month
+                return currentDate.clone().startOf('month').format('YYYY-MM-DD');
             default:
                 return 'Invalid View Type'
         }
@@ -79,14 +83,11 @@ export const CalendarPage = () => {
     const {isLoading, data: events, refetch} = useQuery({
         queryKey: ['events', calendarName, calendarView],
         queryFn: getEvents,
-        useErrorBoundary: true
+        useErrorBoundary: true,
     })
 
-
+    // Fetcht Daten Neu, wenn sich die Parameter ändern
     useEffect(() => {
-        // TODO what should happen if the location.state is undefined?
-        // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
-        // for example the user paste the url .../calendar/123 direct into the browser and press enter.
        queryClient.invalidateQueries()
     }, [calendarName, location.state, calendarView, currentDate])
 
@@ -106,8 +107,6 @@ export const CalendarPage = () => {
     }
 
 
-
-    // formats Date for UI-View
     const formatCurrentDate = () => {
         switch(calendarView) {
             case 'day':
@@ -124,7 +123,6 @@ export const CalendarPage = () => {
                 return 'Invalid View Type'
         }
     }
-
 
     return (
         <>

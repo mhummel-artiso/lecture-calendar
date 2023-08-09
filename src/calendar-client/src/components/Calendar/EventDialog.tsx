@@ -80,6 +80,7 @@ export const EventDialog = ({
             setSelectedLectureId(currentValue?.lecture.id)
         }
     }, [currentValue])
+    
     const resetValues = () => {
         setStartDate(null)
         setEndDate(null)
