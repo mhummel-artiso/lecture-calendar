@@ -38,7 +38,6 @@ namespace Calendar.Api.Profiles
                 .ForMember(x => x.StartSeries, opt => opt.MapFrom(src => src.Start.ToUniversalTime()));
 
 
-
             CreateMap<UpdateCalendarEventDTO, CalendarEvent>()
                 .ForMember(x => x.Start, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
                 .ForMember(x => x.Duration, opt =>

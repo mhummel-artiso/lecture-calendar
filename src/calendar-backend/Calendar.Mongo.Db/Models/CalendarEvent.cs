@@ -9,7 +9,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonId]
         [BsonRequired]
         public ObjectId Id { get; set; }
-        
+
         [BsonRequired]
         public string? Location { get; set; }
 
@@ -23,7 +23,7 @@ namespace Calendar.Mongo.Db.Models
 
         public ObjectId? SerieId { get; set; }
 
-        public EventRotation? Rotation { get; set; }
+        public EventRepeat Rotation { get; set; }
 
         public DateTimeOffset? StartSeries { get; set; }
 
@@ -41,7 +41,7 @@ namespace Calendar.Mongo.Db.Models
         public string? LectureId { get; set; }
 
 
-        public CalendarEvent(){}
+        public CalendarEvent() { }
 
         public CalendarEvent(CalendarEvent calendarEvent, ObjectId serieId)
         {
@@ -58,7 +58,7 @@ namespace Calendar.Mongo.Db.Models
             StartSeries = calendarEvent.StartSeries;
             EndSeries = calendarEvent.EndSeries;
             InstructorsIds = calendarEvent.InstructorsIds;
-            
+
         }
     }
 }

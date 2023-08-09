@@ -23,8 +23,8 @@ namespace Calendar.Api.DTOs.Update
         public DateTimeOffset End { get; set; }
 
         [Required()]
-        [Range(0, 2)]
-        public EventRotation Rotation { get; set; }
+        [Range(0, 3)]
+        public EventRepeat Rotation { get; set; }
 
         [Required()]
         public DateTimeOffset EndSeries { get; set; }
