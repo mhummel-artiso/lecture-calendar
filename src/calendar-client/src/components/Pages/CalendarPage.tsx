@@ -9,13 +9,15 @@ import AddIcon from '@mui/icons-material/Add'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import React, { useEffect, useState } from 'react'
-import { AppointmentModel, AppointmentTooltip, ViewState } from '@devexpress/dx-react-scheduler'
+import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler'
 import {
     Scheduler,
     DayView,
     WeekView,
     Appointments,
     MonthView,
+    AppointmentForm,
+    AppointmentTooltip,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { EventDialog } from '../Calendar/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
@@ -132,6 +134,19 @@ export const CalendarPage = () => {
         }
     }
 
+
+
+    //TODO: check, ob Timezones zusammenpassen
+    const appointments = events?.map(c => {
+        console.log("Event", c);
+
+        console.log("gemappt: ",moment(c.start), moment(c.end) , c.lecture.title);
+        return { 
+            startDate: moment(c.start), 
+            endDate: moment(c.end), 
+            title: c.lecture.title
+        } as unknown as AppointmentModel});
+
     return (
         <>
             <Grid item container sx={{padding: 3}} alignItems="center">
@@ -188,16 +203,20 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler data={events?.map(c=>{return { startDate: moment(c.start), endDate: moment(c.end), title: c.lecture.title, location: c.location } as unknown as AppointmentModel})} locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={appointments} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
                             defaultCurrentViewName={'month'}
                         />
-                        <DayView name={"day"} startDayHour={6} endDayHour={18}/>
-                        <WeekView name={"week"} startDayHour={6} endDayHour={18}/>
+                        <DayView name={"day"} startDayHour={7} endDayHour={17}/>
+                        <WeekView name={"week"} startDayHour={7} endDayHour={17}/>
                         <MonthView name={"month"}/>
                         <Appointments />
+                        {/* TODO: Open Event Dialog if clicked */}
+                        <AppointmentTooltip
+                            showCloseButton
+                        />
                     </Scheduler>
                 </Grid>
             </Grid>
