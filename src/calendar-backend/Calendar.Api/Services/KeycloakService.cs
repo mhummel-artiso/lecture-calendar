@@ -1,10 +1,7 @@
-﻿using Calendar.Api.Configurations;
-using Calendar.Api.DTOs;
-using Calendar.Api.Models;
+﻿using Calendar.Api.DTOs;
 using Calendar.Api.Services.Interfaces;
 using FS.Keycloak.RestApiClient.Api;
 using FS.Keycloak.RestApiClient.Client;
-using Microsoft.Extensions.Configuration;
 
 namespace Calendar.Api.Services;
 
@@ -20,16 +17,16 @@ public class KeycloakService : IKeycloakService
         this.httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<(string, string)>?> GetGroupsForUserAsync(string userId)
+    public async Task<IEnumerable<string>?> GetGroupsForUserAsync(string userId)
     {
         using var userApi = ApiClientFactory.Create<UserApi>(httpClient);
         var assignedGroupsFromUser = await userApi.GetUsersGroupsByIdAsync(realm, userId);
 
-        var result = new List<(string, string)>();
+        var result = new List<string>();
 
         if (assignedGroupsFromUser == null) return null;
 
-        assignedGroupsFromUser.ForEach(group => result.Add((group.Name, group.Id)));
+        assignedGroupsFromUser.ForEach(group => result.Add(group.Name));
 
         return result;
     }
@@ -53,7 +50,7 @@ public class KeycloakService : IKeycloakService
 
         if (groupMembers == null) return null;
 
-        groupMembers.ForEach(user => result.Add(new InstructorDTO() { KeycloakUserId = user.Id, Name = $"{user.FirstName} {user.LastName}" }));
+        groupMembers.ForEach(user => result.Add(new InstructorDTO() { Id = user.Id, Name = $"{user.FirstName} {user.LastName}" }));
 
         return result;
     }

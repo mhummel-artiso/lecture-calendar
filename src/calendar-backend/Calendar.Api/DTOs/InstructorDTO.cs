@@ -2,7 +2,7 @@
 {
     public class InstructorDTO
     {
-        public string? KeycloakUserId { get; set; }
+        public string? Id { get; set; }
         public string? Name { get; set; }
     }
 }
