@@ -1,9 +1,11 @@
-﻿namespace Calendar.Api.DTOs.Create
+﻿using Calendar.Mongo.Db.Models;
+
+namespace Calendar.Api.DTOs.Create
 {
-    public class CreateLectureDTO
+    public class CreateLectureDTO : ILecture
     {
         public string? Title { get; set; }
-        public string? Comment { get; set; }
-        public string? Professor { get; set; }
+        public string? Description { get; set; }
+        public string? ShortKey { get; set; }
     }
 }

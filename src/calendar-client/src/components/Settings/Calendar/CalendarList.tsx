@@ -87,7 +87,6 @@ export const CalendarList: FC = () => {
                         }}>Kalender hinzufügen</Button>
                         <List>
                             {data?.map((calendar, index) =>
-
                                 <ListItemButton
                                     divider
                                     key={index}

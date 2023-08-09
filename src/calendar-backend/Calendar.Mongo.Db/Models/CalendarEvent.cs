@@ -4,12 +4,12 @@ using MongoDB.Bson.Serialization.Options;
 
 namespace Calendar.Mongo.Db.Models
 {
-    public class CalendarEvent
+    public class CalendarEvent : ICalendarEvent
     {
         [BsonId]
         [BsonRequired]
         public ObjectId Id { get; set; }
-        
+
         [BsonRequired]
         public string? Location { get; set; }
 
@@ -21,7 +21,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonRequired]
         public TimeSpan Duration { get; set; }
 
-        public ObjectId? SerieId { get; set; }
+        public Guid? SerieId { get; set; }
 
         public EventRotation? Rotation { get; set; }
 
@@ -35,15 +35,14 @@ namespace Calendar.Mongo.Db.Models
         [BsonRequired]
         public DateTimeOffset LastUpdateDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<Instructor>? InstructorsIds { get; set; }
 
         [BsonRequired]
         public string? LectureId { get; set; }
 
+        public CalendarEvent() { }
 
-        public CalendarEvent(){}
-
-        public CalendarEvent(CalendarEvent calendarEvent, ObjectId serieId)
+        public CalendarEvent(CalendarEvent calendarEvent, Guid serieId)
         {
             Id = ObjectId.GenerateNewId();
             Location = calendarEvent.Location;
@@ -58,7 +57,7 @@ namespace Calendar.Mongo.Db.Models
             StartSeries = calendarEvent.StartSeries;
             EndSeries = calendarEvent.EndSeries;
             InstructorsIds = calendarEvent.InstructorsIds;
-            
+
         }
     }
 }

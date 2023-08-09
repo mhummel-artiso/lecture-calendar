@@ -19,19 +19,19 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                                                                      currentValue: currentLecture
                                                                  }) => {
     const [title, setTitle] = useState<string>("");
-    const [dozent, setDozent] = useState<string>("");
-    const [comments, setComments] = useState<string>("");
+    const [shortKey, setShortKey] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
 
     useEffect(() => {
         setTitle(currentLecture?.title ?? "")
-        setDozent(currentLecture?.professor ?? "")
-        setComments(currentLecture?.comment ?? "")
+        setShortKey(currentLecture?.shortKey ?? "")
+        setDescription(currentLecture?.description ?? "")
     }, [currentLecture])
 
-    const canAddOrEdit = (): boolean => !!title && !!dozent
+    const canAddOrEdit = (): boolean => !!title && !!shortKey
 
     const handleSubmitClick = () => {
-        const l: Lecture = {id: currentLecture?.id, title: title, professor: dozent, comment: comments};
+        const l: Lecture = {id: currentLecture?.id, title, shortKey, description};
         if(currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
         } else if(onDialogEdit) {
@@ -48,29 +48,30 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         margin="dense"
                         id="name"
                         type="text"
-                        label="Name"
+                        label="Kurs Name"
                         value={title}
                         required
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <TextField
                         margin="dense"
-                        id="dozent"
-                        label="Dozent"
+                        id="shortKey"
+                        label="Kurs Kürzel"
                         type="text"
                         required
-                        value={dozent}
-                        onChange={(e) => setDozent(e.target.value)}
+                        value={shortKey}
+                        onChange={(e) => setShortKey(e.target.value)}
                     />
                     <TextField
                         multiline
                         margin="dense"
-                        id="comment"
+                        id="description"
                         type="text"
-                        label="Zusätzliche Informationen"
+                        label="Kurs beschreibung"
+                        minRows={2}
                         maxRows={4}
-                        value={comments}
-                        onChange={(e) => setComments(e.target.value)}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
                 </Stack>
             </DialogContent>

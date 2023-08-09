@@ -10,7 +10,6 @@ export const ErrorPage: FC<FallbackProps> = ({error: err, resetErrorBoundary}) =
 
     const getError = () => {
         if(err instanceof AxiosError) {
-            console.log('err', err);
             return (<>
                 <Typography sx={{maxWidth: "80%"}}>
                     {err.message} {err.statusText}

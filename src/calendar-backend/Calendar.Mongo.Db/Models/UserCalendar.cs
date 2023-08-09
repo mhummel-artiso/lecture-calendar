@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Calendar.Mongo.Db.Models
 {
-    public class UserCalendar
+    public class UserCalendar:ICalendar
     {
         public UserCalendar()
         {

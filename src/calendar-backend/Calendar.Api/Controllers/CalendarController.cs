@@ -285,7 +285,7 @@ public class CalendarController : ControllerBase
 
     [HttpDelete("{calendarId}/event/serie/{serieId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, string serieId)
+    public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, Guid serieId)
     {
         try
         {
