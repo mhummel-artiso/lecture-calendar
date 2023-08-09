@@ -83,6 +83,16 @@ public class CalendarController : ControllerBase
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendars));
     }
 
+    [HttpGet("name/{calendarName}")]
+    [Authorize(AuthPolicies.EDITOR_VIEWER)]
+    public async Task<ActionResult<UserCalendarDTO>> GetCalendarByName(string calendarName, [FromQuery] bool includeEvents = false)
+    {
+        var calendar = (await calendarService.GetCalendarsByNamesAsync(new List<string>() { calendarName}, includeEvents)).FirstOrDefault();
+        if (calendar == null)
+            return NotFound();
+        var mapped = mapper.Map<UserCalendarDTO>(calendar);
+        return Ok(mapped);
+    }
 
 
     [HttpGet("{calendarId}")]

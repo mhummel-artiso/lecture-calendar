@@ -3,7 +3,7 @@ import { axiosInstance } from '../utils/axiosInstance'
 import { CalendarEvent, CreateCalendarEvent } from "../models/calendarEvent";
 import { Moment } from "moment/moment"
 
-// calendar functions
+// Calendar functions
 const calendarEndPointName = (calendarId: string | null = null) => {
     const path = 'Calendar';
     return calendarId ? path + `/${calendarId}` : path;
@@ -22,6 +22,11 @@ export const getCalendar = async (calendarId: string): Promise<Calendar> => {
     const response = await axiosInstance.get<Calendar>(calendarEndPointName(calendarId))
     return Promise.resolve(response.data)
 }
+export const getCalendarByName = async (calendarName: string): Promise<Calendar> => {
+    const path = calendarEndPointName();
+    const response = await axiosInstance.get<Calendar>(`${path}/name/${calendarName}`)
+    return Promise.resolve(response.data)
+}
 export const editCalendar = async (calendarId: string, calendar: Calendar): Promise<Calendar> => {
     console.log(calendarId, calendar);
     const response = await axiosInstance.put<Calendar>(calendarEndPointName(calendarId), calendar);
@@ -33,7 +38,7 @@ export const deleteCalendar = async (calendarId: string): Promise<boolean> => {
     return Promise.resolve(response.data);
 }
 
-// event calls
+// Event calls
 const eventEndPointName = (calendarId: string, eventId: string | null = null) => {
     const path = `Calendar/${calendarId}/event`;
     return eventId ? path + `/${eventId}` : path;

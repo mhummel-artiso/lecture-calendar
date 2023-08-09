@@ -23,7 +23,7 @@ import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
 import { Calendar } from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
-import { getEventsFrom } from '../../services/CalendarService'
+import { getCalendarByName, getEventsFrom } from '../../services/CalendarService'
 import { useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
 
@@ -39,10 +39,11 @@ export const CalendarPage = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const getEvents = async () => {
-        const state = location.state as Calendar[];
+        const state = location.state as Calendar[] | undefined | null;
 
+        // TODO: Überprüfung, ob state.name das Gleiche ist wie calendarName
+        // außerdem rekursion irgendwo drin 
         if(calendarName && state) {
-            console.log("state:", state);
             const calendar = state as Calendar[];
             
             const startDate = getStartDateFromCurrentDate();
@@ -52,17 +53,24 @@ export const CalendarPage = () => {
                 const result = await getEventsFrom(c?.id!, startDate, calendarView!);
                 events.push(...result);
             }
-            console.log(events);
             return events;
         }
-        else {
-            // Fallback, wenn Aufruf des Kalenders über URL
-            // TODO what should happen if the location.state is undefined?
-            // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
-            // for example the user paste the url .../calendar/123 direct into the browser and press enter.
+        else if(calendarName){
+            const calendar = await getCalendarByName(calendarName);
+            
+            if (calendar==null)
+                return [];
+
+            // if calender returned, redirect to correct calendar site
+            navigate(`/calendar/${calendarName}`, {state: [calendar],})
+            }
+        else{
+            // redirect to hello-page
+            navigate(`/`);
         }
         return [];
     }
+
 
     const getStartDateFromCurrentDate = (): string =>{
         switch(calendarView){
