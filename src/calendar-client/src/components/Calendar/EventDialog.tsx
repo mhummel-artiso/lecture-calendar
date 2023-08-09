@@ -27,7 +27,7 @@ const serialList = [
     {value: 'monthly', label: 'Monatlich wiederholen'},
 ]
 
-// Dialog props ist für die verwendung
+// Dialog Props ist für die Verwendung
 // zum erstellen und bearbeiten von events an gepasst, wie in LectureDialog und Calendar Dialog.
 // Ich empfehle das interface mit 'extend DialogComponentProps<CalendarEvent>' zu erweitern,
 // das hat schon alles was für ein dialog nützlich und nötig ist und dann ist alles einheitlich

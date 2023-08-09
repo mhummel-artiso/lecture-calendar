@@ -67,7 +67,7 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
                     <ListItemButton
                         onClick={() =>
                             navigate(`/calendar/${calendar.name}`, {
-                                state: calendar,
+                                state: [calendar],
                             })
                         }
                     >

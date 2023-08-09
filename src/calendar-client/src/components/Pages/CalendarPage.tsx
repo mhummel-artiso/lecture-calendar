@@ -9,7 +9,7 @@ import AddIcon from '@mui/icons-material/Add'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import React, { useEffect, useState } from 'react'
-import { ViewState } from '@devexpress/dx-react-scheduler'
+import { AppointmentModel, AppointmentTooltip, ViewState } from '@devexpress/dx-react-scheduler'
 import {
     Scheduler,
     DayView,
@@ -24,6 +24,8 @@ import { useLocation, useParams } from "react-router";
 import { Calendar } from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
 import { getEventsFrom } from '../../services/CalendarService'
+import { useQuery } from '@tanstack/react-query'
+import { queryClient } from '../../utils/queryClient'
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -36,39 +38,24 @@ export const CalendarPage = () => {
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-    useEffect(() => {
-        // TODO what should happen if the location.state is undefined?
-        // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
-        // for example the user paste the url .../calendar/123 direct into the browser and press enter.
-        const state = location.state as Calendar | Calendar[];
+    const getEvents = async () => {
+        const state = location.state as Calendar[];
 
         if(calendarName && state) {
-            // TODO load events for current events from location.state
-            const calendar = state as Calendar | undefined;
-            const startDate = getStartDateFromCurrentDate();
-            const events = getEventsFrom(calendar?.id!, startDate, calendarView!).then(result => console.log(result));
-
-            console.log("events", events);
+            console.log("state:", state);
+            const calendar = state as Calendar[];
             
-        } else if(!calendarName && state) {
-            const calendars = state as Calendar[]
-            // TODO load all events for all calendar in state
-        }
-    }, [calendarName, location.state, calendarView, currentDate])
+            const startDate = getStartDateFromCurrentDate();
+            const events = [];
 
-    const handleChange = (
-        event: React.MouseEvent<HTMLElement>,
-        newAlignment: CalendarViewType | null
-    ) => {
-        if(newAlignment) {
-            setCalendarView(newAlignment)
+            for (const c of calendar){
+                const result = await getEventsFrom(c?.id!, startDate, calendarView!);
+                events.push(...result);
+            }
+            console.log(events);
+            return events;
         }
-    }
-
-    const handleNavigate = (date: Moment, isForward: boolean) => {
-        // adds or remove 1 day or week or month
-        date.add(isForward ? 1 : -1, calendarView)
-        setCurrentDate(moment(date));
+        return [];
     }
 
     // get Start Date for View Type
@@ -88,6 +75,37 @@ export const CalendarPage = () => {
                 return 'Invalid View Type'
         }
     }
+
+    const {isLoading, data: events, refetch} = useQuery({
+        queryKey: ['events', calendarName, calendarView],
+        queryFn: getEvents,
+        useErrorBoundary: true
+    })
+
+
+    useEffect(() => {
+        // TODO what should happen if the location.state is undefined?
+        // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
+        // for example the user paste the url .../calendar/123 direct into the browser and press enter.
+       queryClient.invalidateQueries()
+    }, [calendarName, location.state, calendarView, currentDate])
+
+    const handleChange = (
+        event: React.MouseEvent<HTMLElement>,
+        newAlignment: CalendarViewType | null
+    ) => {
+        if(newAlignment) {
+            setCalendarView(newAlignment)
+        }
+    }
+
+    const handleNavigate = (date: Moment, isForward: boolean) => {
+        // adds or remove 1 day or week or month
+        date.add(isForward ? 1 : -1, calendarView)
+        setCurrentDate(moment(date));
+    }
+
+
 
     // formats Date for UI-View
     const formatCurrentDate = () => {
@@ -164,7 +182,7 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={events?.map(c=>{return { startDate: c.start.toDate, endDate: c.end.toDate, title: c.lecture.title } as unknown as AppointmentModel})} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
@@ -173,7 +191,7 @@ export const CalendarPage = () => {
                         <DayView name={"day"} startDayHour={6} endDayHour={18}/>
                         <WeekView name={"week"} startDayHour={6} endDayHour={18}/>
                         <MonthView name={"month"}/>
-                        <Appointments/>
+                        <Appointments />
                     </Scheduler>
                 </Grid>
             </Grid>
