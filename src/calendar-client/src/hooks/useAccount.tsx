@@ -10,18 +10,19 @@ export const useAccount = () => {
     const [userAccount, setUserAccount] = useState<UserProfile | null>(null);
     const [canEdit, setCanEdit] = useState<boolean>(false);
     useEffect(() => {
-        const loggedIn=!!userData
+        const loggedIn = !!userData
         setIsLoggedIn(loggedIn)
         axiosInstance.defaults.headers['Authorization'] = userData ? "Bearer " + userData.access_token : "";
         setUserAccount(userData?.profile ?? null)
         setCanEdit(_canEdit())
-        if(!loggedIn)
-        {
+        if(!loggedIn) {
             queryClient.clear()
         }
     }, [userData])
-    const _canEdit: boolean = () => {
+
+    const _canEdit = (): boolean => {
         if(userData?.profile?.realm_access) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const roles = userData?.profile?.realm_access[0]['roles'] as string[] ?? [];
             const index = roles.findIndex(x => x === 'calendar-editor');
             return index !== -1;

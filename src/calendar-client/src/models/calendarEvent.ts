@@ -1,27 +1,45 @@
 import { Lecture } from './lecture'
-import { Moment }from "moment/moment"
+import { Moment } from "moment/moment"
+interface CalendarEventBase{
+    location:string,
+    description?:string
+    start:Moment
+    end:Moment
+    instructorsIds: []
+    repeat: number
+    calendarId: string
+}
 
-export interface CalendarEvent {
+export interface CalendarEvent extends CalendarEventBase{
     id: string
-    location: string
-    description?: string
-    start: Moment
-    end: Moment
     endSeries?: string | undefined
     createdDate?: Moment
     lastUpdateDate?: Moment
     lecture: Lecture
-    serieId: string
-    rotation: number
-    calendarId: string
+    seriesId: string
 }
-export interface CreateCalendarEvent {
-    location: string
-    description?: string | undefined
-    start: Moment
-    end: Moment
-    rotation: number
+
+export interface CreateCalendarEvent extends CalendarEventBase{
     endSeries?: Moment | undefined
     lectureId: string
     calendarId: string
+}
+
+export interface UpdateCalendarEvent extends CalendarEventBase{
+    id?: string
+    calendarId:string
+    seriesId?: string
+    lectureId:string
+    endSeries:Moment
+    // this dates only necessary for api to check the last edit
+    lastUpdateDate?:Moment
+    createdDate?:Moment
+}
+export interface UpdateCalendarEventSeries extends CalendarEventBase{
+    calendarId:string
+    seriesId: string
+    endSeries:Moment
+    lectureId: string
+    lastUpdateDate?:Moment
+    createdDate?:Moment
 }

@@ -72,8 +72,16 @@ export const deleteEvent = async (calendarId: string, event: CalendarEvent) => {
     const response = await axiosInstance.delete<boolean>(eventEndPointName(calendarId, event.id));
     return Promise.resolve(response.data);
 }
-export const deleteEventSeries = async (calendarId: string, eventSerieId: string) => {
-    const path = eventEndPointName(calendarId);
-    const response = await axiosInstance.delete<boolean>(`${path}/serie/${eventSerieId}`);
+
+const seriesEndPointName = (calendarId: string, seriesId: string) => {
+    return `Calendar/${calendarId}/series/${seriesId}`;
+};
+
+export const editEventSeries = async (calendarId: string, seriesId: string) => {
+    const response = await axiosInstance.put<CalendarEvent[]>(seriesEndPointName(calendarId, seriesId));
+    return Promise.resolve(response.data)
+}
+export const deleteEventSeries = async (calendarId: string, seriesId: string) => {
+    const response = await axiosInstance.delete<boolean>(seriesEndPointName(calendarId, seriesId));
     return Promise.resolve(response.data)
 }

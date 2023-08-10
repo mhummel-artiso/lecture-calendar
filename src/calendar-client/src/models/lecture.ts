@@ -5,6 +5,6 @@ export interface Lecture {
     title: string
     comment?: string
     professor?: string
-    createdDate?: Moment
-    lastUpdateDate?: Moment
+    lastUpdateDate?:Moment
+    createdDate?:Moment
 }

@@ -18,17 +18,17 @@ import {
     AppointmentTooltip,
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
-import { EventDialog } from '../Calendar/EventDialog'
+import { EditEventCallback, EventDialog } from '../Calendar/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
 import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
-import {  Calendar} from "../../models/calendar";
+import { Calendar } from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
 import { getCalendarByName, getEventsFrom } from '../../services/CalendarService'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
 import { CreateCalendarEvent, CalendarEvent } from '../../models/calendarEvent'
-import {addEvent} from "../../services/CalendarService"
+import { addEvent } from "../../services/CalendarService"
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -41,41 +41,38 @@ export const CalendarPage = () => {
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
     const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
-    const [claendarId,setCalendarId] = useState<string>("")
+    const [claendarId, setCalendarId] = useState<string>("")
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null;
 
         if(state) {
             const calendar = state as Calendar[];
-            
+
             const startDate = getStartDateFromCurrentDate();
             const events: CalendarEvent[] = [];
-            if(calendar.length===1)
+            if(calendar.length === 1) {
                 setCalendarId(calendar[0].id!)
-            for (const c of calendar){
+            }
+            for(const c of calendar) {
                 const result = await getEventsFrom(c?.id!, startDate, calendarView!);
-                console.log(result)
                 events.push(...result);
             }
             return events;
-        }
-        else if(calendarName){
-            try{
+        } else if(calendarName) {
+            try {
                 const c = await getCalendarByName(calendarName);
                 setCalendarId(c.id!)
-                navigate(`/calendar/${calendarName}`, { state: [c] });
-            }
-            catch(error){
+                navigate(`/calendar/${calendarName}`, {state: [c]});
+            } catch (error) {
                 navigate(`*`);
             }
-        }
-        else{
+        } else {
             navigate(`/`);
         }
         return [];
     }
 
-    const {data: events,refetch} = useQuery({
+    const {data: events, refetch} = useQuery({
         queryKey: ['events', calendarName, calendarView],
         queryFn: getEvents,
         useErrorBoundary: true,
@@ -83,21 +80,35 @@ export const CalendarPage = () => {
 
     // Invalidates events when parameters change
     useEffect(() => {
-       queryClient.invalidateQueries({queryKey: ['events']})
+        queryClient.invalidateQueries({queryKey: ['events']})
     }, [calendarName, location.state, calendarView, currentDate])
 
     const appointments = events?.map(c => {
-        return {
-            startDate: moment(c.start), 
-            endDate: moment(c.end), 
-            title: c.lecture.title,
-            location: c.location,
-            event: c
-        } as unknown as AppointmentModel}
+            const a: AppointmentModel = {
+                startDate: moment(c.start).toDate(),
+                endDate: moment(c.end).toDate(),
+                title: c.lecture.title,
+                location: c.location,
+                event: c
+            }
+            if(c.repeat > 0) {
+                switch(c.repeat) {
+                    case 1:
+                        a.rRule = "FREQ=DAILY;COUNT=1";
+                        break;
+                    case 2:
+                        a.rRule = "FREQ=WEEKLY;COUNT=1";
+                        break;
+                    case 3:
+                        a.rRule = "FREQ=MONTHLY;COUNT=1";
+                }
+            }
+            return a;
+        }
     );
 
-    const getStartDateFromCurrentDate = (): string =>{
-        switch(calendarView){
+    const getStartDateFromCurrentDate = (): string => {
+        switch(calendarView) {
             case 'day':
                 // Current Day
                 return currentDate.clone().format('YYYY-MM-DD');
@@ -133,9 +144,9 @@ export const CalendarPage = () => {
             case 'day':
                 return currentDate.format('dddd, DD. MMMM YYYY');
             case 'week': {
-                const firstDayOfWeek =  currentDate.clone().weekday(1);
+                const firstDayOfWeek = currentDate.clone().weekday(1);
                 const lastDayOfWeek = currentDate.clone().weekday(7);
-                
+
                 return `${firstDayOfWeek.format('D.MM')} - ${lastDayOfWeek.format('D.MM.YYYY')}`
             }
             case 'month':
@@ -146,27 +157,36 @@ export const CalendarPage = () => {
     }
 
     // Custom Appointments Component
-    const CustomAppointment: React.FC<Appointments.AppointmentProps> = ({ onClick, children, ...restProps}) => {
-        return(
-                <Appointments.Appointment {...restProps} onClick={(e) => {
-                    setIsEventDialogOpen(true);
-                    setSelectedEvent(e.data.event as CalendarEvent)
-                    if(onClick)
+    const CustomAppointment: React.FC<Appointments.AppointmentProps> = ({onClick, children, ...restProps}) => {
+        return (
+            <Appointments.Appointment {...restProps} onClick={(e) => {
+                setIsEventDialogOpen(true);
+                setSelectedEvent(e.data.event as CalendarEvent)
+                if(onClick) {
                     onClick(e)
-                }}>
+                }
+            }}>
                 {children}
-                </Appointments.Appointment>
+            </Appointments.Appointment>
         );
     };
-    const addEventMutation=useMutation({
-        mutationFn: async (event:CreateCalendarEvent) => {
-            addEvent(event.calendarId, event)
+    const handleOnEditEvent = (e: EditEventCallback) => {
+        if(e.event){
+            // TODO implement mutation
+        }else if(e.eventSeries){
+            // TODO implement mutation
+        }
+    }
+    const addEventMutation = useMutation({
+        mutationFn: async (event: CreateCalendarEvent) => {
+            return await addEvent(event.calendarId, event)
         },
         onSuccess: async (_) => {
             await refetch()
         },
 
     })
+
     return (
         <>
             <Grid item container sx={{padding: 3}} alignItems="center">
@@ -256,18 +276,15 @@ export const CalendarPage = () => {
                 onDialogClose={() => {
                     setIsEventDialogOpen(false)
                     setSelectedEvent(null)
-                } }
+                }}
                 currentValue={selectedEvent}
                 calendarId={claendarId}
-                onDialogAdd={(event) => {
-
-                    addEventMutation.mutate(event) 
-                } }
+                onDialogAdd={addEventMutation.mutate}
                 // TODO: Edit to be able to edit Event
-                onDialogEdit={() => { } } 
-                onDeletedEvent={(event: CalendarEvent) => {
-                    queryClient.invalidateQueries({queryKey: ['events']});
-                } }/>}
+                onDialogEdit={handleOnEditEvent}
+                onDeletedEvent={async (event: CalendarEvent) => {
+                    await queryClient.invalidateQueries({queryKey: ['events']});
+                }}/>}
         </>
     )
 }
