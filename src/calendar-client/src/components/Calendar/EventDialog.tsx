@@ -93,7 +93,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerie(currentValue.repeat)
             setSelectedLectureId(currentValue.lecture.id!)
-            console.log('currentValue', currentValue);
         }
     }, [currentValue])
 
@@ -216,13 +215,11 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             return
         }
         if(deleteSeries) {
-            console.log('deleteSeries', deleteSeries);
             deleteEventSeriesMutation.mutate({
                 calendarId: currentValue.calendarId,
                 event: currentValue
             })
         } else {
-            console.log('deleteSingel');
             deleteEventMutation.mutate({
                 calendarId: currentValue.calendarId,
                 event: currentValue
