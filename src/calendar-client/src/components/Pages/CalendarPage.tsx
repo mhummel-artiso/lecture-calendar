@@ -22,12 +22,13 @@ import { EventDialog } from '../Calendar/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
 import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
-import { Calendar } from "../../models/calendar";
+import {  Calendar} from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
 import { getCalendarByName, getEventsFrom } from '../../services/CalendarService'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
-import { CalendarEvent } from '../../models/calendarEvent'
+import { CreateCalendarEvent, CalendarEvent } from '../../models/calendarEvent'
+import {addEvent} from "../../services/CalendarService"
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -38,8 +39,9 @@ export const CalendarPage = () => {
     const location = useLocation()
     const [calendarView, setCalendarView] = useState<CalendarViewType>('week')
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
-
+    const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
+    const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
+    const [claendarId,setCalendarId] = useState<string>("")
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null;
 
@@ -48,9 +50,11 @@ export const CalendarPage = () => {
             
             const startDate = getStartDateFromCurrentDate();
             const events: CalendarEvent[] = [];
-
+            if(calendar.length===1)
+                setCalendarId(calendar[0].id!)
             for (const c of calendar){
                 const result = await getEventsFrom(c?.id!, startDate, calendarView!);
+                console.log(result)
                 events.push(...result);
             }
             return events;
@@ -58,6 +62,7 @@ export const CalendarPage = () => {
         else if(calendarName){
             try{
                 const c = await getCalendarByName(calendarName);
+                setCalendarId(c.id!)
                 navigate(`/calendar/${calendarName}`, { state: [c] });
             }
             catch(error){
@@ -70,7 +75,7 @@ export const CalendarPage = () => {
         return [];
     }
 
-    const {data: events} = useQuery({
+    const {data: events,refetch} = useQuery({
         queryKey: ['events', calendarName, calendarView],
         queryFn: getEvents,
         useErrorBoundary: true,
@@ -82,10 +87,12 @@ export const CalendarPage = () => {
     }, [calendarName, location.state, calendarView, currentDate])
 
     const appointments = events?.map(c => {
-        return { 
+        return {
             startDate: moment(c.start), 
             endDate: moment(c.end), 
-            title: c.lecture.title
+            title: c.lecture.title,
+            location: c.location,
+            event: c
         } as unknown as AppointmentModel}
     );
 
@@ -138,6 +145,28 @@ export const CalendarPage = () => {
         }
     }
 
+    // Custom Appointments Component
+    const CustomAppointment: React.FC<Appointments.AppointmentProps> = ({ onClick, children, ...restProps}) => {
+        return(
+                <Appointments.Appointment {...restProps} onClick={(e) => {
+                    setIsEventDialogOpen(true);
+                    setSelectedEvent(e.data.event as CalendarEvent)
+                    if(onClick)
+                    onClick(e)
+                }}>
+                {children}
+                </Appointments.Appointment>
+        );
+    };
+    const addEventMutation=useMutation({
+        mutationFn: async (event:CreateCalendarEvent) => {
+            addEvent(event.calendarId, event)
+        },
+        onSuccess: async (_) => {
+            await refetch()
+        },
+
+    })
     return (
         <>
             <Grid item container sx={{padding: 3}} alignItems="center">
@@ -203,11 +232,7 @@ export const CalendarPage = () => {
                         <DayView name={"day"} startDayHour={7} endDayHour={17}/>
                         <WeekView name={"week"} startDayHour={7} endDayHour={17}/>
                         <MonthView name={"month"}/>
-                        <Appointments />
-                        {/* TODO: Open Event Dialog if clicked */}
-                        <AppointmentTooltip
-                            showCloseButton
-                        />
+                        <Appointments appointmentComponent={CustomAppointment}/>
                     </Scheduler>
                 </Grid>
             </Grid>
@@ -220,18 +245,29 @@ export const CalendarPage = () => {
                         right: 0,
                         margin: 7,
                     }}
-                    onClick={() => setIsDialogOpen(true)}
+                    onClick={() => setIsEventDialogOpen(true)}
                 >
                     <AddIcon/>
                 </Fab>
             )}
-            <EventDialog
-                isDialogOpen={isDialogOpen}
-                onDialogClose={() => setIsDialogOpen(false)}
-                calendarId={""}
-                onDialogAdd={() => { } }
-                onDialogEdit={() => { } } currentValue={null}/>
-                {/* TODO: current value ändern */}
+
+            {isEventDialogOpen && <EventDialog
+                isDialogOpen={isEventDialogOpen}
+                onDialogClose={() => {
+                    setIsEventDialogOpen(false)
+                    setSelectedEvent(null)
+                } }
+                currentValue={selectedEvent}
+                calendarId={claendarId}
+                onDialogAdd={(event) => {
+
+                    addEventMutation.mutate(event) 
+                } }
+                // TODO: Edit to be able to edit Event
+                onDialogEdit={() => { } } 
+                onDeletedEvent={(event: CalendarEvent) => {
+                    queryClient.invalidateQueries({queryKey: ['events']});
+                } }/>}
         </>
     )
 }

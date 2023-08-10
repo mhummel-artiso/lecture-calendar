@@ -41,6 +41,10 @@ namespace Calendar.Mongo.Db.Models
         public string? LectureId { get; set; }
 
 
+        [BsonRequired]
+        public string? CalendarId { get; set; }
+
+
         public CalendarEvent() { }
 
         public CalendarEvent(CalendarEvent calendarEvent, ObjectId serieId)
@@ -58,7 +62,7 @@ namespace Calendar.Mongo.Db.Models
             StartSeries = calendarEvent.StartSeries;
             EndSeries = calendarEvent.EndSeries;
             InstructorsIds = calendarEvent.InstructorsIds;
-
+            CalendarId = calendarEvent.CalendarId;
         }
     }
 }

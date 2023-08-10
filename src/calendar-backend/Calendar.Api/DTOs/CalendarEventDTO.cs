@@ -28,5 +28,6 @@ namespace Calendar.Api.DTOs
 
         [JsonIgnore]
         public string? LectureId { get; set; }
+        public string? CalendarId { get; set; }
     }
 }

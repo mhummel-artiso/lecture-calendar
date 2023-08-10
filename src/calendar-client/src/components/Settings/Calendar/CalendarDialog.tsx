@@ -14,7 +14,7 @@ import { Moment } from "moment/moment"
 import moment from "moment";
 import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
-export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
+export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calendar>> = ({
                                                                        isDialogOpen,
                                                                        onDialogClose,
                                                                        onDialogAdd,

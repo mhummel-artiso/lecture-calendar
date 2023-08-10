@@ -12,12 +12,16 @@ export interface CalendarEvent {
     lastUpdateDate?: Moment
     lecture: Lecture
     serieId: string
+    rotation: number
+    calendarId: string
 }
 export interface CreateCalendarEvent {
     location: string
     description?: string | undefined
     start: Moment
     end: Moment
+    rotation: number
     endSeries?: Moment | undefined
     lectureId: string
+    calendarId: string
 }

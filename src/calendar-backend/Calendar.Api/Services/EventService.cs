@@ -71,6 +71,7 @@ namespace Calendar.Api.Services
         public async Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             EventValidator.ValidateAddEvent(calendarEvent);
+            calendarEvent.CalendarId = calendarId;
 
             var eventsToAdd = new List<CalendarEvent>();
 

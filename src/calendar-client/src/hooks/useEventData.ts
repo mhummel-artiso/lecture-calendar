@@ -9,8 +9,8 @@ export interface AddEventType {
     calendarId: string
 }
 
-export const useAddEvent = () => {
-    return useMutation<CalendarEvent, AxiosError, AddEventType>((v) =>
-        addEvent(v.calendarId, v.event)
-    )
-}
+// export const useAddEvent = () => {
+//     return useMutation<CalendarEvent, AxiosError, AddEventType>((v) =>
+//         addEvent(v.calendarId, v.event)
+//     )
+// }
