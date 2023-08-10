@@ -1,9 +1,10 @@
 ﻿using Calendar.Mongo.Db.Models;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
 namespace Calendar.Api.DTOs.Create
 {
-    public class CreateCalendarEventDTO
+    public class CreateCalendarEventDTO : ICalendarEvent
     {
         [Required()]
         [StringLength(50)]
@@ -11,7 +12,7 @@ namespace Calendar.Api.DTOs.Create
 
         [StringLength(100)]
         public string? Description { get; set; }
-        
+
         [Required()]
         public DateTimeOffset Start { get; set; }
 
@@ -20,13 +21,13 @@ namespace Calendar.Api.DTOs.Create
 
         public List<string>? InstructorsIds { get; set; }
 
-        [Range(0, 2)]
-        public EventRotation? Rotation { get; set; }
+        [Range(0, 3)]
+        public EventRotation Rotation { get; set; }
 
         public DateTimeOffset? EndSeries { get; set; }
 
         [Required()]
-        [StringLength(24, MinimumLength =24)]
+        [StringLength(24, MinimumLength = 24)]
         public string? LectureId { get; set; }
     }
 }

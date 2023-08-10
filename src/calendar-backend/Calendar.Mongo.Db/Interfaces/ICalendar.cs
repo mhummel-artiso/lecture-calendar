@@ -4,5 +4,4 @@ public class ICalendar
 {
     string Name { get; set; }
     DateTimeOffset StartDate { get; set; }
-    DateTimeOffset CreatedDate { get; set; }
 }

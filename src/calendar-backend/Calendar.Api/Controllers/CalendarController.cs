@@ -4,16 +4,11 @@ using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Services.Validation;
 using Calendar.Mongo.Db.Models;
 using Keycloak.AuthServices.Sdk.Admin;
-using Keycloak.AuthServices.Sdk.AuthZ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Servers;
-using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
 
@@ -27,7 +22,6 @@ public class CalendarController : ControllerBase
     private readonly IKeycloakService keycloakService;
     private readonly IMapper mapper;
     private readonly ILogger<CalendarController> logger;
-    private readonly IKeycloakUserClient keycloakUserClient;
 
     public CalendarController(ICalendarService calendarService,
         IEventService eventService,
@@ -84,7 +78,6 @@ public class CalendarController : ControllerBase
     }
 
 
-
     [HttpGet("{calendarId}")]
     [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<UserCalendarDTO>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)
@@ -133,14 +126,14 @@ public class CalendarController : ControllerBase
             var mappedCalendarEvent = mapper.Map<CalendarEvent>(calendarEvent);
 
             var result = await eventService.AddEventAsync(calendarId, mappedCalendarEvent);
-            
+
             if (result == null)
             {
                 return BadRequest("Error at inserting");
             }
 
             var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
-            
+
 
             foreach (var mappedDto in mappedResult)
             {
@@ -149,7 +142,8 @@ public class CalendarController : ControllerBase
 
             return CreatedAtAction(nameof(AddEvent), mappedResult);
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -172,12 +166,12 @@ public class CalendarController : ControllerBase
                 await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
             }
             return Ok(mappedDtos);
-        } 
+        }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
-        
+
     }
 
     [HttpGet("{calendarId}/event/from/{date}/{viewType}")]
@@ -220,7 +214,7 @@ public class CalendarController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-        
+
     }
 
     [HttpPut("{calendarId}/event/{eventId}")]
@@ -239,7 +233,7 @@ public class CalendarController : ControllerBase
             await AddLectureToEventAsync(mappedDto);
             return Ok(mappedDto);
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -280,12 +274,12 @@ public class CalendarController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-        
+
     }
 
     [HttpDelete("{calendarId}/event/serie/{serieId}")]
     // [Authorize(Roles = "editor")]
-    public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, Guid serieId)
+    public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, ObjectId serieId)
     {
         try
         {
@@ -307,4 +301,5 @@ public class CalendarController : ControllerBase
     }
 
     #endregion
+
 }

@@ -1,6 +1,6 @@
 ﻿using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Services.Validation;
+using Calendar.Api.Validation;
 using Calendar.Mongo.Db.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -45,7 +45,7 @@ namespace Calendar.Api.Services
             };
             return result.Events.Where(x => x.Start >= startDate && (x.Start + x.Duration) <= endDate);
         }
-        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
+        public async Task<IEnumerable<CalendarEvent>?> GetAllEventsFromCalendarAsync(string calendarId)
         {
             var result = await dbCollection
                 .Find(x => x.Id == new ObjectId(calendarId))
@@ -53,7 +53,7 @@ namespace Calendar.Api.Services
             return result.Events;
         }
 
-        public async Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, Guid serieId)
+        public async Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, ObjectId serieId)
         {
             var calendar = await dbCollection
                 .Find(x => x.Id == new ObjectId(calendarId))
@@ -72,30 +72,20 @@ namespace Calendar.Api.Services
 
         public async Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            EventValidationService.ValidateAddEvent(calendarEvent);
+            EventValidator.ValidateAddEvent(calendarEvent);
 
             var eventsToAdd = new List<CalendarEvent>();
-
+            // TODO remove redundancy
             // Creating Events
-            if (calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
+            if (calendarEvent.Rotation != EventRotation.None && calendarEvent.EndSeries.HasValue)
             {
-                if (calendarEvent.Rotation == EventRotation.Daily)
+                eventsToAdd = calendarEvent.Rotation switch
                 {
-                    eventsToAdd = CreateEventsForDailySerie(calendarEvent);
-                }
-                else if (calendarEvent.Rotation == EventRotation.Weekly)
-                {
-                    eventsToAdd = CreateEventsForWeeklySerie(calendarEvent);
-                }
-                else if (calendarEvent.Rotation == EventRotation.Monthly)
-                {
-                    eventsToAdd = CreateEventsForMonthlySerie(calendarEvent);
-                }
-                else
-                {
-                    throw new Exception("There was no rotation enum to hit.");
-                }
-
+                    EventRotation.Daily => CreateEventsForDailySerie(calendarEvent),
+                    EventRotation.Weekly => CreateEventsForWeeklySerie(calendarEvent),
+                    EventRotation.Monthly => CreateEventsForMonthlySerie(calendarEvent),
+                    _ => throw new Exception("There was no rotation enum to hit.")
+                };
             }
             else
             {
@@ -122,6 +112,7 @@ namespace Calendar.Api.Services
             itemToUpdate.Duration = calendarEvent.Duration;
             itemToUpdate.InstructorsIds = calendarEvent.InstructorsIds;
 
+            // TODO what if whe a lectur only has one session?
             // Can update lecture only, if its no serie.
             if (!itemToUpdate.SerieId.HasValue)
             {
@@ -149,25 +140,16 @@ namespace Calendar.Api.Services
             if (oldSerieEvents.IsNullOrEmpty()) return null;
 
             var newSerieEvents = new List<CalendarEvent>();
-
-            if (calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
+            // TODO remove redundancy
+            if (calendarEvent.Rotation != EventRotation.None && calendarEvent.EndSeries.HasValue)
             {
-                if (calendarEvent.Rotation == EventRotation.Daily)
+                newSerieEvents = calendarEvent.Rotation switch
                 {
-                    newSerieEvents = CreateEventsForDailySerie(calendarEvent);
-                }
-                else if (calendarEvent.Rotation == EventRotation.Weekly)
-                {
-                    newSerieEvents = CreateEventsForWeeklySerie(calendarEvent);
-                }
-                else if (calendarEvent.Rotation == EventRotation.Monthly)
-                {
-                    newSerieEvents = CreateEventsForMonthlySerie(calendarEvent);
-                }
-                else
-                {
-                    throw new Exception("There was no rotation enum to hit.");
-                }
+                    EventRotation.Daily => CreateEventsForDailySerie(calendarEvent),
+                    EventRotation.Weekly => CreateEventsForWeeklySerie(calendarEvent),
+                    EventRotation.Monthly => CreateEventsForMonthlySerie(calendarEvent),
+                    _ => throw new Exception("There was no rotation enum to hit.")
+                };
 
             }
 
@@ -183,7 +165,7 @@ namespace Calendar.Api.Services
             return result1.ModifiedCount > 0 && result2.ModifiedCount > 0 ? newSerieEvents : null;
         }
 
-        public async Task<bool> DeleteEventSerieByIdAsync(string calendarId, string serieId)
+        public async Task<bool> DeleteEventSerieByIdAsync(string calendarId, ObjectId serieId)
         {
             var eventsToDelete = await GetSeriesEventsAsync(calendarId, serieId);
             if (eventsToDelete == null) return false;
@@ -217,7 +199,7 @@ namespace Calendar.Api.Services
                 return result.ModifiedCount > 0;
             }
         }
-
+        // TODO remove redundancy
         private List<CalendarEvent> CreateEventsForDailySerie(CalendarEvent firstEventInSeries)
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
@@ -225,7 +207,7 @@ namespace Calendar.Api.Services
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : Guid.NewGuid();
+            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 
@@ -244,7 +226,7 @@ namespace Calendar.Api.Services
             }
             return result;
         }
-
+        // TODO remove redundancy
         private List<CalendarEvent> CreateEventsForWeeklySerie(CalendarEvent firstEventInSeries)
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
@@ -252,7 +234,7 @@ namespace Calendar.Api.Services
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : Guid.NewGuid();
+            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 
@@ -271,7 +253,7 @@ namespace Calendar.Api.Services
             }
             return result;
         }
-
+        // TODO remove redundancy
         private List<CalendarEvent> CreateEventsForMonthlySerie(CalendarEvent firstEventInSeries)
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
@@ -279,7 +261,7 @@ namespace Calendar.Api.Services
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : Guid.NewGuid();
+            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 

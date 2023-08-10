@@ -21,9 +21,9 @@ namespace Calendar.Mongo.Db.Models
         [BsonRequired]
         public TimeSpan Duration { get; set; }
 
-        public Guid? SerieId { get; set; }
+        public ObjectId? SerieId { get; set; }
 
-        public EventRotation? Rotation { get; set; }
+        public EventRotation Rotation { get; set; }
 
         public DateTimeOffset? StartSeries { get; set; }
 
@@ -35,14 +35,14 @@ namespace Calendar.Mongo.Db.Models
         [BsonRequired]
         public DateTimeOffset LastUpdateDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
 
-        public List<Instructor>? InstructorsIds { get; set; }
+        public List<string>? InstructorsIds { get; set; }
 
         [BsonRequired]
         public string? LectureId { get; set; }
 
         public CalendarEvent() { }
 
-        public CalendarEvent(CalendarEvent calendarEvent, Guid serieId)
+        public CalendarEvent(CalendarEvent calendarEvent, ObjectId serieId)
         {
             Id = ObjectId.GenerateNewId();
             Location = calendarEvent.Location;

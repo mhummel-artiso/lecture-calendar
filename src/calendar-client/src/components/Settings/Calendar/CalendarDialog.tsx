@@ -26,14 +26,16 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
 
     useEffect(() => {
         setName(currentCalendar?.name ?? "")
-        setStartDate(moment(currentCalendar?.startDate))
-    }, [currentCalendar])
-
-    const canAddOrEdit = (): boolean => !!name && !!startDate
+        setStartDate(currentCalendar ? moment(currentCalendar.startDate) : moment())
+    }, [currentCalendar, isDialogOpen])
 
     const handleSubmitClick = () => {
-        const c: Calendar = {id: currentCalendar?.id, name: name, startDate: moment(startDate)};
-        if(currentCalendar == null && onDialogAdd) {
+        const c: Calendar = {
+            id: currentCalendar?.id,
+            name,
+            startDate: startDate.clone()
+        };
+        if(onDialogAdd && currentCalendar == null) {
             onDialogAdd(c)
         } else if(onDialogEdit) {
             onDialogEdit(c)
@@ -64,7 +66,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={onDialogClose}>Abbrechen</Button>
-                <Button disabled={!canAddOrEdit()}
+                <Button disabled={!!name && !!startDate}
                         onClick={handleSubmitClick}>{currentCalendar == null ? "Hinzufügen" : "Bearbeiten"}</Button>
             </DialogActions>
         </Dialog>

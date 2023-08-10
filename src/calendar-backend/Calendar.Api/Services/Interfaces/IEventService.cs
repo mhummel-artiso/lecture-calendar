@@ -8,8 +8,8 @@ namespace Calendar.Api.Services.Interfaces
     {
         Task<CalendarEvent> GetEventAsync(string calendarId, string eventId);
         Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date);
-        Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId);
-        Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, Guid serieId);
+        Task<IEnumerable<CalendarEvent>?> GetAllEventsFromCalendarAsync(string calendarId);
+        Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, ObjectId serieId);
 
         Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent);
 
@@ -17,6 +17,6 @@ namespace Calendar.Api.Services.Interfaces
         Task<IEnumerable<CalendarEvent>?> UpdateEventSerieAsync(string calendarId, CalendarEvent calendarEvent);
 
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
-        Task<bool> DeleteEventSerieByIdAsync(string calendarId, Guid serieId);
+        Task<bool> DeleteEventSerieByIdAsync(string calendarId, ObjectId serieId);
     }
 }

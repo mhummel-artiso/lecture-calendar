@@ -2,7 +2,7 @@
 
 public interface ILecture
 {
-    public string? Title { get; set; }
-    public string? Description { get; set; }
-    public string? ShortKey { get; set; }        
+    string? Title { get; set; }
+    string? Description { get; set; }
+    string? ShortKey { get; set; }
 }

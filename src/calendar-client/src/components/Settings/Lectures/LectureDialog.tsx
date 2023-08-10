@@ -26,7 +26,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setTitle(currentLecture?.title ?? "")
         setShortKey(currentLecture?.shortKey ?? "")
         setDescription(currentLecture?.description ?? "")
-    }, [currentLecture])
+    }, [currentLecture, isDialogOpen])
 
     const canAddOrEdit = (): boolean => !!title && !!shortKey
 

@@ -143,7 +143,7 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
