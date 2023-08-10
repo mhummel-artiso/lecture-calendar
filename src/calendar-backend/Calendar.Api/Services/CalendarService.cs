@@ -46,7 +46,7 @@ public class CalendarService : ICalendarService
                 string.Equals(calendar.Name, x.Name, StringComparison.OrdinalIgnoreCase))
             .FirstOrDefaultAsync();
         if (existed != null)
-            throw new ApplicationException($"the calendar with the name {calendar.Name} already exists");
+            throw new KeyNotFoundException($"the calendar with the name {calendar.Name} already exists");
         calendar.CreatedDate = DateTimeOffset.UtcNow;
         calendar.LastUpdateDate = DateTimeOffset.UtcNow;
         await dbCollection.InsertOneAsync(calendar);

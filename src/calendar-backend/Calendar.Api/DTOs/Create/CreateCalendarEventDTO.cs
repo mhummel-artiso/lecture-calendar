@@ -21,7 +21,7 @@ namespace Calendar.Api.DTOs.Create
         public List<string>? InstructorsIds { get; set; }
 
         [Range(0, 3)]
-        public EventRepeat? Rotation { get; set; }
+        public EventRepeat? Repeat { get; set; }
 
         public DateTimeOffset? EndSeries { get; set; }
 
