@@ -26,8 +26,9 @@ export const RouterComponent: FC = () => {
                     <Route path="/" element={<HelloPage/>}/>
                     {isLoggedIn && (
                         <>
-                            <Route path="/calendar" element={<CalendarPage/>}/>
-                            {/* This page is only for administrator to see specific calendars.*/}
+                            <Route 
+                                path="/calendar" element={<CalendarPage/>}
+                            />
                             <Route
                                 path="/calendar/:calendarName"
                                 element={<CalendarPage/>}

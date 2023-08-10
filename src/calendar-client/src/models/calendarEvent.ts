@@ -1,5 +1,5 @@
 import { Lecture } from './lecture'
-import { Moment } from "moment/moment"
+import { Moment }from "moment/moment"
 
 export interface CalendarEvent {
     id: string

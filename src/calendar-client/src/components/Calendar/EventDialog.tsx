@@ -132,6 +132,8 @@ export const EventDialog = ({
             isValidSerie;
     }
 
+      
+
     return (
         <Dialog open={isDialogOpen} onClose={handleClose}>
             <DialogTitle>Event hinzufügen</DialogTitle>
@@ -224,7 +226,6 @@ export const EventDialog = ({
                     />
                     <TextField
                         multiline
-                        rows={2}
                         margin="dense"
                         type="text"
                         label="Zusätzliche Infos"

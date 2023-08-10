@@ -1,11 +1,11 @@
-import React from 'react'
 import { AuthProvider, AuthProviderProps } from 'oidc-react'
 import { EnvConfig, useEnvironment } from './hooks/useEnvironment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import moment from 'moment-timezone';
+import moment from 'moment';
+import 'moment/dist/locale/de';
 
 import { queryClient } from './utils/queryClient'
 import { RouterComponent } from "./components/RouterComponent";
@@ -14,7 +14,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 
 function App() {
-    moment.tz.setDefault('Europe/Berlin'); // Ersetze 'Europe/Berlin' durch deine Zeitzone
+    moment.locale('de'); 
     const envConfig: EnvConfig = useEnvironment()
     console.log('envConfig', envConfig.OIDC_AUTO_SIGN_IN);
     const oidcConfig: AuthProviderProps = {

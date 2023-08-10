@@ -15,9 +15,8 @@ import {
     DayView,
     WeekView,
     Appointments,
-    MonthView,
-    AppointmentForm,
     AppointmentTooltip,
+    MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { EventDialog } from '../Calendar/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
@@ -28,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { getCalendarByName, getEventsFrom } from '../../services/CalendarService'
 import { useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
+import { CalendarEvent } from '../../models/calendarEvent'
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -43,13 +43,11 @@ export const CalendarPage = () => {
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null;
 
-        // TODO: Überprüfung, ob state.name das Gleiche ist wie calendarName
-        // außerdem rekursion irgendwo drin 
-        if(calendarName && state) {
+        if(state) {
             const calendar = state as Calendar[];
             
             const startDate = getStartDateFromCurrentDate();
-            const events = [];
+            const events: CalendarEvent[] = [];
 
             for (const c of calendar){
                 const result = await getEventsFrom(c?.id!, startDate, calendarView!);
@@ -58,25 +56,43 @@ export const CalendarPage = () => {
             return events;
         }
         else if(calendarName){
-            const calendar = await getCalendarByName(calendarName);
-            
-            if (calendar==null)
-                return [];
-
-            // if calender returned, redirect to correct calendar site
-            navigate(`/calendar/${calendarName}`, {state: [calendar],})
+            try{
+                const c = await getCalendarByName(calendarName);
+                navigate(`/calendar/${calendarName}`, { state: [c] });
             }
+            catch(error){
+                navigate(`*`);
+            }
+        }
         else{
-            // redirect to hello-page
             navigate(`/`);
         }
         return [];
     }
 
+    const {data: events} = useQuery({
+        queryKey: ['events', calendarName, calendarView],
+        queryFn: getEvents,
+        useErrorBoundary: true,
+    })
+
+    // Invalidates events when parameters change
+    useEffect(() => {
+       queryClient.invalidateQueries({queryKey: ['events']})
+    }, [calendarName, location.state, calendarView, currentDate])
+
+    const appointments = events?.map(c => {
+        return { 
+            startDate: moment(c.start), 
+            endDate: moment(c.end), 
+            title: c.lecture.title
+        } as unknown as AppointmentModel}
+    );
 
     const getStartDateFromCurrentDate = (): string =>{
         switch(calendarView){
             case 'day':
+                // Current Day
                 return currentDate.clone().format('YYYY-MM-DD');
             case 'week': {
                 // First Day of Week
@@ -86,22 +102,11 @@ export const CalendarPage = () => {
                 // First Day of Month
                 return currentDate.clone().startOf('month').format('YYYY-MM-DD');
             default:
-                return 'Invalid View Type'
+                return 'Invalid View Type';
         }
     }
 
-    const {isLoading, data: events, refetch} = useQuery({
-        queryKey: ['events', calendarName, calendarView],
-        queryFn: getEvents,
-        useErrorBoundary: true,
-    })
-
-    // Fetcht Daten Neu, wenn sich die Parameter ändern
-    useEffect(() => {
-       queryClient.invalidateQueries()
-    }, [calendarName, location.state, calendarView, currentDate])
-
-    const handleChange = (
+    const handleViewChange = (
         event: React.MouseEvent<HTMLElement>,
         newAlignment: CalendarViewType | null
     ) => {
@@ -110,14 +115,13 @@ export const CalendarPage = () => {
         }
     }
 
-    const handleNavigate = (date: Moment, isForward: boolean) => {
+    const handleDataNavigation = (date: Moment, isForward: boolean) => {
         // adds or remove 1 day or week or month
         date.add(isForward ? 1 : -1, calendarView)
         setCurrentDate(moment(date));
     }
 
-
-    const formatCurrentDate = () => {
+    const formatCurrentDateView = () => {
         switch(calendarView) {
             case 'day':
                 return currentDate.format('dddd, DD. MMMM YYYY');
@@ -134,19 +138,6 @@ export const CalendarPage = () => {
         }
     }
 
-
-
-    //TODO: check, ob Timezones zusammenpassen
-    const appointments = events?.map(c => {
-        console.log("Event", c);
-
-        console.log("gemappt: ",moment(c.start), moment(c.end) , c.lecture.title);
-        return { 
-            startDate: moment(c.start), 
-            endDate: moment(c.end), 
-            title: c.lecture.title
-        } as unknown as AppointmentModel});
-
     return (
         <>
             <Grid item container sx={{padding: 3}} alignItems="center">
@@ -158,16 +149,16 @@ export const CalendarPage = () => {
                     >
                         <Fab
                             color="primary"
-                            onClick={() => handleNavigate(currentDate, false)}
+                            onClick={() => handleDataNavigation(currentDate, false)}
                         >
                             <KeyboardArrowLeftIcon/>
                         </Fab>
                         <Typography variant="subtitle1">
-                            {formatCurrentDate()}
+                            {formatCurrentDateView()}
                         </Typography>
                         <Fab
                             color="primary"
-                            onClick={() => handleNavigate(currentDate, true)}
+                            onClick={() => handleDataNavigation(currentDate, true)}
                         >
                             <KeyboardArrowRightIcon/>
                         </Fab>
@@ -183,7 +174,7 @@ export const CalendarPage = () => {
                             color="primary"
                             value={calendarView}
                             exclusive
-                            onChange={handleChange}
+                            onChange={handleViewChange}
                             aria-label="Platform"
                         >
                             <ToggleButton value="month">Monat</ToggleButton>
