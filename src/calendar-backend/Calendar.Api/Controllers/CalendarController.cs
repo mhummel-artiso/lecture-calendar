@@ -4,16 +4,10 @@ using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-
 using Calendar.Mongo.Db.Models;
 using Keycloak.AuthServices.Sdk.Admin;
-using Keycloak.AuthServices.Sdk.AuthZ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Servers;
-using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
 

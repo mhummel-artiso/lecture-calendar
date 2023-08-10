@@ -16,8 +16,7 @@ import { ErrorBoundary } from "react-error-boundary";
 function App() {
     moment.locale('de'); 
     const envConfig: EnvConfig = useEnvironment()
-    console.log('envConfig', envConfig.OIDC_AUTO_SIGN_IN);
-    const oidcConfig: AuthProviderProps = {
+        const oidcConfig: AuthProviderProps = {
         loadUserInfo: true,
         autoSignIn: envConfig.OIDC_AUTO_SIGN_IN,
         authority: envConfig.OIDC_AUTHORITY,

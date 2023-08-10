@@ -13,7 +13,7 @@ export const ErrorPage: FC<FallbackProps> = ({error: err, resetErrorBoundary}) =
             console.log('err', err);
             return (<>
                 <Typography sx={{maxWidth: "80%"}}>
-                    {err.message} {err.statusText}
+                    {err.message} {err?.statusText}
                 </Typography>
                 {err?.response?.data?.split('\n').map(l => (
                     <Typography sx={{maxWidth: "80%"}}>
