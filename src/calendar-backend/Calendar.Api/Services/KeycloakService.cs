@@ -1,20 +1,25 @@
-﻿using Calendar.Api.DTOs;
+﻿using Calendar.Api.Configurations;
+using Calendar.Api.DTOs;
 using Calendar.Api.Services.Interfaces;
 using FS.Keycloak.RestApiClient.Api;
 using FS.Keycloak.RestApiClient.Client;
+using Microsoft.Extensions.Options;
 
 namespace Calendar.Api.Services;
 
 public class KeycloakService : IKeycloakService
 {
     private readonly KeycloakHttpClient httpClient;
-    private readonly string realm = "Calendar";
-    private readonly string calendarsGroupName = "Semesters";
-    private readonly string instructorGroupName = "Verwaltung";
+    private readonly string realm;
+    private readonly string calendarsGroupName;
+    private readonly string instructorGroupName;
    
-    public KeycloakService(KeycloakHttpClient httpClient)
+    public KeycloakService(KeycloakHttpClient httpClient, IOptions<KeycloakRestEnvironmentConfiguration> options)
     {
         this.httpClient = httpClient;
+        realm = options.Value.KEYCLOAK_REALM;
+        calendarsGroupName = options.Value.KEYCLOAK_CALENDARS_GROUP_NAME;
+        instructorGroupName = options.Value.KEYCLOAK_INSTRUCTOR_GROUP_NAME;
     }
 
     public async Task<IEnumerable<string>?> GetGroupsForUserAsync(string userId)
