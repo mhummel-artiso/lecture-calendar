@@ -143,7 +143,7 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler data={} locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={[]} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
@@ -174,8 +174,8 @@ export const CalendarPage = () => {
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => setIsDialogOpen(false)}
                 calendarId={""}
-                onDialogAdd={()=>{}}
-                onDialogEdit={()=>{}}
+                onDialogAdd={(e)=>{}}
+                onDialogEdit={(e)=>{}}
             />
         </>
     )

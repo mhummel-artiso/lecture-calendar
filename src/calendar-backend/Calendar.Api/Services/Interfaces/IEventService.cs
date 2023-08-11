@@ -17,6 +17,6 @@ namespace Calendar.Api.Services.Interfaces
         Task<IEnumerable<CalendarEvent>?> UpdateEventSerieAsync(string calendarId, CalendarEvent calendarEvent);
 
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
-        Task<bool> DeleteEventSerieByIdAsync(string calendarId, ObjectId serieId);
+        Task<bool> DeleteEventSerieByIdAsync(string calendarId, string serieId);
     }
 }
