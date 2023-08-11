@@ -22,17 +22,27 @@ public class KeycloakService : IKeycloakService
         instructorGroupName = options.Value.KEYCLOAK_INSTRUCTOR_GROUP_NAME;
     }
 
-    public async Task<IEnumerable<string>?> GetGroupsForUserAsync(string userId)
+    public async Task<IEnumerable<string>?> GetAssignedCalendarsByUserAsync(string userId)
     {
         using var userApi = ApiClientFactory.Create<UserApi>(httpClient);
         var assignedGroupsFromUser = await userApi.GetUsersGroupsByIdAsync(realm, userId);
-
-        var result = new List<string>();
-
+        
         if (assignedGroupsFromUser == null) return null;
 
-        assignedGroupsFromUser.ForEach(group => result.Add(group.Name));
 
+        var result = new List<string>();
+        var semesterGroup = assignedGroupsFromUser.FirstOrDefault(x => x.Name.Equals(calendarsGroupName));
+        if (semesterGroup != null)
+        {
+            using var groupApi = ApiClientFactory.Create<GroupApi>(httpClient);
+            var semesterGroupComplete = await groupApi.GetGroupsByIdAsync(realm, semesterGroup.Id);
+            if (semesterGroupComplete == null || semesterGroupComplete.SubGroups == null) return null;
+            semesterGroupComplete.SubGroups.ForEach(group => result.Add(group.Name));
+        }
+        else
+        {
+            assignedGroupsFromUser.ForEach(group => result.Add(group.Name));
+        }
         return result;
     }
 

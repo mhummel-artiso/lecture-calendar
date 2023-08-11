@@ -4,7 +4,7 @@ namespace Calendar.Api.Services.Interfaces;
 
 public interface IKeycloakService
 {
-    Task<IEnumerable<string>?> GetGroupsForUserAsync(string userId);
+    Task<IEnumerable<string>?> GetAssignedCalendarsByUserAsync(string userId);
 
     Task<IEnumerable<InstructorDTO>?> GetInstructorsAsync();
 

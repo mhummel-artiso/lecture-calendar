@@ -9,7 +9,7 @@ namespace Calendar.Api.Configurations
         public string KEYCLOAK_REST_PASSWORD { get; set; }
         public string KEYCLOAK_REALM { get; set; } = "Calendar";
         public string KEYCLOAK_CALENDARS_GROUP_NAME { get; set; } = "Semesters";
-        public string KEYCLOAK_INSTRUCTOR_GROUP_NAME { get; set; } = "Verwaltung";
+        public string KEYCLOAK_INSTRUCTOR_GROUP_NAME { get; set; } = "Instructors";
 
         public KeycloakRestEnvironmentConfiguration Validate()
         {

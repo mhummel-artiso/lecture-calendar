@@ -73,7 +73,7 @@ public class CalendarController : ControllerBase
         if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
             return BadRequest("invalid user id");
         
-        var groups = await keycloakService.GetGroupsForUserAsync(nameIdentifier.Value);
+        var groups = await keycloakService.GetAssignedCalendarsByUserAsync(nameIdentifier.Value);
 
         if (groups == null) return new List<UserCalendarDTO>();
         
