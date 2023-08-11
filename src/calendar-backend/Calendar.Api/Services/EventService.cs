@@ -151,9 +151,9 @@ namespace Calendar.Api.Services
             return result.ModifiedCount > 0 ? eventsToUpdate : null;
         }
 
-        public async Task<bool> DeleteEventSeriesByIdAsync(string calendarId, string serieId)
+        public async Task<bool> DeleteEventSeriesByIdAsync(string calendarId, string seriesId)
         {
-            var eventsToDelete = await GetSeriesEventsAsync(calendarId, new ObjectId(serieId));
+            var eventsToDelete = await GetSeriesEventsAsync(calendarId, new ObjectId(seriesId));
             if (eventsToDelete == null) return false;
             var update = new UpdateDefinitionBuilder<UserCalendar>().PullAll(x => x.Events, eventsToDelete);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
