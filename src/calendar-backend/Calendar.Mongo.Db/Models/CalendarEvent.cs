@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Options;
 
 namespace Calendar.Mongo.Db.Models
 {
-    public class CalendarEvent : ICalendarEvent
+    public class CalendarEvent
     {
         [BsonId]
         [BsonRequired]
@@ -23,7 +23,7 @@ namespace Calendar.Mongo.Db.Models
 
         public ObjectId? SerieId { get; set; }
 
-        public EventRotation Rotation { get; set; }
+        public EventRotation? Rotation { get; set; }
 
         public DateTimeOffset? StartSeries { get; set; }
 

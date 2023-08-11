@@ -1,6 +1,6 @@
 ﻿using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Validation;
+using Calendar.Api.Services.Validation;
 using Calendar.Mongo.Db.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -24,8 +24,7 @@ namespace Calendar.Api.Services
         }
         public async Task<CalendarEvent> GetEventAsync(string calendarId, string eventId)
         {
-            var result = await dbCollection.Find(x => x.Id.ToString() == calendarId).FirstOrDefaultAsync() ??
-                         throw new KeyNotFoundException("Calendar was not found.");
+            var result = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync() ?? throw new KeyNotFoundException("Calendar was not found.");
             return result.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId)) ?? throw new KeyNotFoundException("Event was not found.");
         }
         public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date)
@@ -45,7 +44,7 @@ namespace Calendar.Api.Services
             };
             return result.Events.Where(x => x.Start >= startDate && (x.Start + x.Duration) <= endDate);
         }
-        public async Task<IEnumerable<CalendarEvent>?> GetAllEventsFromCalendarAsync(string calendarId)
+        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
         {
             var result = await dbCollection
                 .Find(x => x.Id == new ObjectId(calendarId))
@@ -59,33 +58,43 @@ namespace Calendar.Api.Services
                 .Find(x => x.Id == new ObjectId(calendarId))
                 .FirstOrDefaultAsync();
 
-            if (calendar == null)
-                throw new KeyNotFoundException("Calendar was not found.");
+            if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
 
             var serieEvents = calendar.Events.Where(x => x.SerieId == serieId);
 
-            if (serieEvents.IsNullOrEmpty())
-                return null;
+            if (serieEvents.IsNullOrEmpty()) return null;
 
             return serieEvents;
         }
 
         public async Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            EventValidator.ValidateAddEvent(calendarEvent);
-
+            EventValidationService.ValidateAddEvent(calendarEvent);
+            
             var eventsToAdd = new List<CalendarEvent>();
-            // TODO remove redundancy
+            
+
+
             // Creating Events
-            if (calendarEvent.Rotation != EventRotation.None && calendarEvent.EndSeries.HasValue)
+            if(calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
             {
-                eventsToAdd = calendarEvent.Rotation switch
+                if (calendarEvent.Rotation == EventRotation.Daily)
                 {
-                    EventRotation.Daily => CreateEventsForDailySerie(calendarEvent),
-                    EventRotation.Weekly => CreateEventsForWeeklySerie(calendarEvent),
-                    EventRotation.Monthly => CreateEventsForMonthlySerie(calendarEvent),
-                    _ => throw new Exception("There was no rotation enum to hit.")
-                };
+                    eventsToAdd = CreateEventsForDailySerie(calendarEvent);
+                }
+                else if (calendarEvent.Rotation == EventRotation.Weekly)
+                {
+                    eventsToAdd = CreateEventsForWeeklySerie(calendarEvent);
+                }
+                else if (calendarEvent.Rotation == EventRotation.Monthly)
+                {
+                    eventsToAdd = CreateEventsForMonthlySerie(calendarEvent);
+                }
+                else
+                {
+                    throw new Exception("There was no rotation enum to hit.");
+                }
+
             }
             else
             {
@@ -94,7 +103,7 @@ namespace Calendar.Api.Services
 
             var update = new UpdateDefinitionBuilder<UserCalendar>().AddToSetEach(x => x.Events, eventsToAdd);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
-
+            
             return result.IsAcknowledged ? eventsToAdd : null;
         }
         public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
@@ -111,8 +120,7 @@ namespace Calendar.Api.Services
             itemToUpdate.Start = calendarEvent.Start;
             itemToUpdate.Duration = calendarEvent.Duration;
             itemToUpdate.InstructorsIds = calendarEvent.InstructorsIds;
-
-            // TODO what if whe a lectur only has one session?
+            
             // Can update lecture only, if its no serie.
             if (!itemToUpdate.SerieId.HasValue)
             {
@@ -120,19 +128,19 @@ namespace Calendar.Api.Services
             }
             var filterBuilder = Builders<UserCalendar>.Filter;
             var filter = filterBuilder.Eq(x => x.Id, new ObjectId(calendarId)) &
-                         filterBuilder.ElemMatch(x => x.Events, el => el.Id == itemToUpdate.Id);
+                filterBuilder.ElemMatch(x => x.Events, el => el.Id == itemToUpdate.Id);
 
             var updateBuilder = Builders<UserCalendar>.Update;
             var update = updateBuilder.Set(x => x.Events.FirstMatchingElement(), itemToUpdate);
             var result = await dbCollection.UpdateOneAsync(filter, update);
-
+            
             return result.ModifiedCount > 0 ? itemToUpdate : null;
         }
 
         public async Task<IEnumerable<CalendarEvent>?> UpdateEventSerieAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            if (!calendarEvent.SerieId.HasValue) ArgumentNullException.ThrowIfNull(calendarEvent.SerieId);
-
+            if(!calendarEvent.SerieId.HasValue) ArgumentNullException.ThrowIfNull(calendarEvent.SerieId);
+            
             var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
             ArgumentNullException.ThrowIfNull(calendarId);
 
@@ -140,19 +148,28 @@ namespace Calendar.Api.Services
             if (oldSerieEvents.IsNullOrEmpty()) return null;
 
             var newSerieEvents = new List<CalendarEvent>();
-            // TODO remove redundancy
-            if (calendarEvent.Rotation != EventRotation.None && calendarEvent.EndSeries.HasValue)
+
+            if (calendarEvent.EndSeries.HasValue && calendarEvent.Rotation.HasValue)
             {
-                newSerieEvents = calendarEvent.Rotation switch
+                if (calendarEvent.Rotation == EventRotation.Daily)
                 {
-                    EventRotation.Daily => CreateEventsForDailySerie(calendarEvent),
-                    EventRotation.Weekly => CreateEventsForWeeklySerie(calendarEvent),
-                    EventRotation.Monthly => CreateEventsForMonthlySerie(calendarEvent),
-                    _ => throw new Exception("There was no rotation enum to hit.")
-                };
+                    newSerieEvents = CreateEventsForDailySerie(calendarEvent);
+                }
+                else if (calendarEvent.Rotation == EventRotation.Weekly)
+                {
+                    newSerieEvents = CreateEventsForWeeklySerie(calendarEvent);
+                }
+                else if (calendarEvent.Rotation == EventRotation.Monthly)
+                {
+                    newSerieEvents = CreateEventsForMonthlySerie(calendarEvent);
+                }
+                else
+                {
+                    throw new Exception("There was no rotation enum to hit.");
+                }
 
             }
-
+            
             var filterBuilder = Builders<UserCalendar>.Filter;
             var filter = filterBuilder.Eq(x => x.Id, new ObjectId(calendarId));
 
@@ -165,9 +182,9 @@ namespace Calendar.Api.Services
             return result1.ModifiedCount > 0 && result2.ModifiedCount > 0 ? newSerieEvents : null;
         }
 
-        public async Task<bool> DeleteEventSerieByIdAsync(string calendarId, ObjectId serieId)
+        public async Task<bool> DeleteEventSerieByIdAsync(string calendarId, string serieId)
         {
-            var eventsToDelete = await GetSeriesEventsAsync(calendarId, serieId);
+            var eventsToDelete = await GetSeriesEventsAsync(calendarId, new ObjectId(serieId));
             if (eventsToDelete == null) return false;
             var update = new UpdateDefinitionBuilder<UserCalendar>().PullAll(x => x.Events, eventsToDelete);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
@@ -176,16 +193,16 @@ namespace Calendar.Api.Services
 
         public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)
         {
-            var calendar = await dbCollection.Find(x => x.Id.ToString() == calendarId).FirstOrDefaultAsync();
+            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
 
             if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
 
-            var calendarEvent = calendar.Events.FirstOrDefault(x => x.Id.ToString() == eventId);
-
-            if (calendarEvent == null) return false;
-
+            var calendarEvent = calendar.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
+            
+            if(calendarEvent == null) return false;
+            
             var isSerie = calendarEvent.SerieId != null;
-
+            
             if (isSerie)
             {
                 var updatePullDef = new UpdateDefinitionBuilder<UserCalendar>().Pull(x => x.Events, calendarEvent);
@@ -199,15 +216,16 @@ namespace Calendar.Api.Services
                 return result.ModifiedCount > 0;
             }
         }
-        // TODO remove redundancy
-        private List<CalendarEvent> CreateEventsForDailySerie(CalendarEvent firstEventInSeries)
+
+        private List<CalendarEvent> CreateEventsForDailySerie(CalendarEvent firstEventInSeries) 
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
             {
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
+            
+            ObjectId serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 
@@ -226,7 +244,7 @@ namespace Calendar.Api.Services
             }
             return result;
         }
-        // TODO remove redundancy
+
         private List<CalendarEvent> CreateEventsForWeeklySerie(CalendarEvent firstEventInSeries)
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
@@ -234,7 +252,7 @@ namespace Calendar.Api.Services
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
+            ObjectId serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 
@@ -243,7 +261,7 @@ namespace Calendar.Api.Services
 
             var result = new List<CalendarEvent>();
 
-            for (int i = 0; serieStart <= serieEnd; i += 7)
+            for (int i = 0; serieStart <= serieEnd; i+=7)
             {
                 var newCalendar = new CalendarEvent(firstEventInSeries, serieId);
                 newCalendar.Start = newCalendar.Start.AddDays(i);
@@ -253,7 +271,7 @@ namespace Calendar.Api.Services
             }
             return result;
         }
-        // TODO remove redundancy
+
         private List<CalendarEvent> CreateEventsForMonthlySerie(CalendarEvent firstEventInSeries)
         {
             if (!firstEventInSeries.EndSeries.HasValue || !firstEventInSeries.StartSeries.HasValue)
@@ -261,7 +279,7 @@ namespace Calendar.Api.Services
                 throw new Exception();
             }
 
-            var serieId = firstEventInSeries.SerieId ?? ObjectId.GenerateNewId();
+            ObjectId serieId = firstEventInSeries.SerieId.HasValue ? firstEventInSeries.SerieId.Value : ObjectId.GenerateNewId();
             var serieStart = firstEventInSeries.StartSeries.Value;
             var eventEnd = firstEventInSeries.Start + firstEventInSeries.Duration;
 
