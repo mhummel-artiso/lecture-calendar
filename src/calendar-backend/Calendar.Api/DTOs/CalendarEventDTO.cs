@@ -22,7 +22,7 @@ namespace Calendar.Api.DTOs
         public LectureDTO? Lecture { get; set; }
         public DateTimeOffset? StartSeries { get; set; }
         public DateTimeOffset? EndSeries { get; set; }
-        public List<Instructor>? Instructors { get; set; }
+        public List<InstructorDTO>? Instructors { get; set; }
 
         [JsonIgnore]
         public List<string>? InstructorsIds { get; set; }

@@ -11,7 +11,6 @@ import {
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import React, { FC, useEffect, useState } from "react";
 import { Calendar } from "../../models/calendar";
-import { axiosInstance } from "../../utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getCalendars } from "../../services/CalendarService";
@@ -22,7 +21,7 @@ interface Props {
 
 export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     const navigate = useNavigate()
-    const [calendars, setCalendars] = useState<Calendar[][]>([])
+    const [calendars, setCalendars] = useState<Calendar[]>([])
 
     const {isLoading, data, isError, error, isFetching} = useQuery({
         queryKey: ['calendars'],

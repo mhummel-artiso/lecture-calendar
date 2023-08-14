@@ -2042,6 +2042,7 @@ ce7313f0-9fa2-4948-966d-19f366995acb	rsa-generated	d4932c90-8454-4b23-b96a-05444
 e5bb2e79-8516-478d-825d-aa5f5ef659e2	hmac-generated	d4932c90-8454-4b23-b96a-05444067272e	hmac-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 74129383-7d0c-44f8-8856-ee6b803d53da	rsa-enc-generated	d4932c90-8454-4b23-b96a-05444067272e	rsa-enc-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 c17c7650-8b61-4f77-aa5d-380ed6772d57	aes-generated	d4932c90-8454-4b23-b96a-05444067272e	aes-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
+1e438998-04ce-499c-8d36-57925f51c79d	\N	d4932c90-8454-4b23-b96a-05444067272e	declarative-user-profile	org.keycloak.userprofile.UserProfileProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 \.
 
 
@@ -2470,6 +2471,7 @@ COPY public.federated_user (id, storage_provider_id, realm_id) FROM stdin;
 --
 
 COPY public.group_attribute (id, name, value, group_id) FROM stdin;
+bc41913b-12da-4c85-9fed-c71eb906d8da	IsDozent	true	a12bd244-8ddf-4220-a9f1-b530891a5ec9
 \.
 
 
@@ -2480,9 +2482,9 @@ COPY public.group_attribute (id, name, value, group_id) FROM stdin;
 COPY public.group_role_mapping (role_id, group_id) FROM stdin;
 c275580f-3be2-4fd9-bc16-c9070fa3ce9d	19bb2450-039d-4780-a347-f686e9af8769
 92521f28-439b-49fd-9f69-aaad96d123d3	a12bd244-8ddf-4220-a9f1-b530891a5ec9
-92521f28-439b-49fd-9f69-aaad96d123d3	19bb2450-039d-4780-a347-f686e9af8769
 92521f28-439b-49fd-9f69-aaad96d123d3	623a8856-4bb3-4103-94a1-7ed974a1a14a
 f8287ef9-36e5-4a8c-a160-a4f30f694375	269072d2-19a8-4ea8-a367-fc85b6af1c53
+92521f28-439b-49fd-9f69-aaad96d123d3	19bb2450-039d-4780-a347-f686e9af8769
 \.
 
 
@@ -2527,6 +2529,8 @@ COPY public.keycloak_group (id, name, parent_group, realm_id) FROM stdin;
 a12bd244-8ddf-4220-a9f1-b530891a5ec9	Instructors	 	d4932c90-8454-4b23-b96a-05444067272e
 269072d2-19a8-4ea8-a367-fc85b6af1c53	TINF2021AI	623a8856-4bb3-4103-94a1-7ed974a1a14a	d4932c90-8454-4b23-b96a-05444067272e
 623a8856-4bb3-4103-94a1-7ed974a1a14a	Semesters	 	d4932c90-8454-4b23-b96a-05444067272e
+c9811517-c13b-4937-8c90-806418330de2	TINF2020AI	623a8856-4bb3-4103-94a1-7ed974a1a14a	d4932c90-8454-4b23-b96a-05444067272e
+b91f647f-a655-458a-9965-9386e8125f85	TINF2022AI	623a8856-4bb3-4103-94a1-7ed974a1a14a	d4932c90-8454-4b23-b96a-05444067272e
 \.
 
 
@@ -3101,7 +3105,7 @@ f9e1b117-22de-4107-ad0f-585be5351262	String	jsonType.label
 
 COPY public.realm (id, access_code_lifespan, user_action_lifespan, access_token_lifespan, account_theme, admin_theme, email_theme, enabled, events_enabled, events_expiration, login_theme, name, not_before, password_policy, registration_allowed, remember_me, reset_password_allowed, social, ssl_required, sso_idle_timeout, sso_max_lifespan, update_profile_on_soc_login, verify_email, master_admin_client, login_lifespan, internationalization_enabled, default_locale, reg_email_as_username, admin_events_enabled, admin_events_details_enabled, edit_username_allowed, otp_policy_counter, otp_policy_window, otp_policy_period, otp_policy_digits, otp_policy_alg, otp_policy_type, browser_flow, registration_flow, direct_grant_flow, reset_credentials_flow, client_auth_flow, offline_session_idle_timeout, revoke_refresh_token, access_token_life_implicit, login_with_email_allowed, duplicate_emails_allowed, docker_auth_flow, refresh_token_max_reuse, allow_user_managed_access, sso_max_lifespan_remember_me, sso_idle_timeout_remember_me, default_role) FROM stdin;
 e09f66b1-fa27-4fd8-affd-235a04a06fba	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	40c35b4b-faec-4a96-befb-88e1049653c3	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	77c26107-84ae-477d-8004-89012c00284a	c80bafd1-ab88-4e34-ab7b-d6937e394379	887b916f-5a63-4603-b399-494d45e0afe4	4d1bc370-774d-4188-93c4-b8d47c5099d1	c5b5ea41-299e-4d15-a047-6f5838f3e5bf	2592000	f	900	t	f	c2b0981c-d5ee-42c3-9d8b-8502f2aee29e	0	f	0	0	95cc1bb4-86dc-4f85-a3d1-80dabefb577b
-d4932c90-8454-4b23-b96a-05444067272e	60	300	300	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	900	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	0	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
+d4932c90-8454-4b23-b96a-05444067272e	60	300	18000	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	54000	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	1	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
 \.
 
 
@@ -3132,14 +3136,8 @@ displayNameHtml	e09f66b1-fa27-4fd8-affd-235a04a06fba	<div class="kc-logo-text"><
 defaultSignatureAlgorithm	e09f66b1-fa27-4fd8-affd-235a04a06fba	RS256
 offlineSessionMaxLifespanEnabled	e09f66b1-fa27-4fd8-affd-235a04a06fba	false
 offlineSessionMaxLifespan	e09f66b1-fa27-4fd8-affd-235a04a06fba	5184000
-_browser_header.contentSecurityPolicyReportOnly	d4932c90-8454-4b23-b96a-05444067272e	
-_browser_header.xContentTypeOptions	d4932c90-8454-4b23-b96a-05444067272e	nosniff
-_browser_header.referrerPolicy	d4932c90-8454-4b23-b96a-05444067272e	no-referrer
-_browser_header.xRobotsTag	d4932c90-8454-4b23-b96a-05444067272e	none
-_browser_header.xFrameOptions	d4932c90-8454-4b23-b96a-05444067272e	SAMEORIGIN
-_browser_header.contentSecurityPolicy	d4932c90-8454-4b23-b96a-05444067272e	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
-_browser_header.xXSSProtection	d4932c90-8454-4b23-b96a-05444067272e	1; mode=block
-_browser_header.strictTransportSecurity	d4932c90-8454-4b23-b96a-05444067272e	max-age=31536000; includeSubDomains
+displayName	d4932c90-8454-4b23-b96a-05444067272e	Calendar realm
+displayNameHtml	d4932c90-8454-4b23-b96a-05444067272e	<div class="kc-logo-text"><span>Lecture Calendar</span></div>
 bruteForceProtected	d4932c90-8454-4b23-b96a-05444067272e	false
 permanentLockout	d4932c90-8454-4b23-b96a-05444067272e	false
 maxFailureWaitSeconds	d4932c90-8454-4b23-b96a-05444067272e	900
@@ -3148,28 +3146,26 @@ waitIncrementSeconds	d4932c90-8454-4b23-b96a-05444067272e	60
 quickLoginCheckMilliSeconds	d4932c90-8454-4b23-b96a-05444067272e	1000
 maxDeltaTimeSeconds	d4932c90-8454-4b23-b96a-05444067272e	43200
 failureFactor	d4932c90-8454-4b23-b96a-05444067272e	30
-realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
-displayName	d4932c90-8454-4b23-b96a-05444067272e	Calendar realm
-displayNameHtml	d4932c90-8454-4b23-b96a-05444067272e	<div class="kc-logo-text"><span>Lecture Calendar</span></div>
+actionTokenGeneratedByAdminLifespan	d4932c90-8454-4b23-b96a-05444067272e	43200
+actionTokenGeneratedByUserLifespan	d4932c90-8454-4b23-b96a-05444067272e	300
 defaultSignatureAlgorithm	d4932c90-8454-4b23-b96a-05444067272e	RS256
 offlineSessionMaxLifespanEnabled	d4932c90-8454-4b23-b96a-05444067272e	false
 offlineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	5184000
-clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
-actionTokenGeneratedByAdminLifespan	d4932c90-8454-4b23-b96a-05444067272e	43200
-actionTokenGeneratedByUserLifespan	d4932c90-8454-4b23-b96a-05444067272e	300
-oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
-oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
 webAuthnPolicyRpEntityName	d4932c90-8454-4b23-b96a-05444067272e	keycloak
+realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicySignatureAlgorithms	d4932c90-8454-4b23-b96a-05444067272e	ES256
 webAuthnPolicyRpId	d4932c90-8454-4b23-b96a-05444067272e	
 webAuthnPolicyAttestationConveyancePreference	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyAuthenticatorAttachment	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyRequireResidentKey	d4932c90-8454-4b23-b96a-05444067272e	not specified
+clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
 webAuthnPolicyUserVerificationRequirement	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyCreateTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
+oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
 webAuthnPolicyAvoidSameAuthenticatorRegister	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicyRpEntityNamePasswordless	d4932c90-8454-4b23-b96a-05444067272e	keycloak
 webAuthnPolicySignatureAlgorithmsPasswordless	d4932c90-8454-4b23-b96a-05444067272e	ES256
@@ -3180,6 +3176,14 @@ webAuthnPolicyRequireResidentKeyPasswordless	d4932c90-8454-4b23-b96a-05444067272
 webAuthnPolicyUserVerificationRequirementPasswordless	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyCreateTimeoutPasswordless	d4932c90-8454-4b23-b96a-05444067272e	0
 webAuthnPolicyAvoidSameAuthenticatorRegisterPasswordless	d4932c90-8454-4b23-b96a-05444067272e	false
+client-policies.profiles	d4932c90-8454-4b23-b96a-05444067272e	{"profiles":[]}
+client-policies.policies	d4932c90-8454-4b23-b96a-05444067272e	{"policies":[]}
+_browser_header.contentSecurityPolicyReportOnly	d4932c90-8454-4b23-b96a-05444067272e	
+_browser_header.xContentTypeOptions	d4932c90-8454-4b23-b96a-05444067272e	nosniff
+_browser_header.referrerPolicy	d4932c90-8454-4b23-b96a-05444067272e	no-referrer
+_browser_header.xRobotsTag	d4932c90-8454-4b23-b96a-05444067272e	none
+_browser_header.xFrameOptions	d4932c90-8454-4b23-b96a-05444067272e	SAMEORIGIN
+_browser_header.contentSecurityPolicy	d4932c90-8454-4b23-b96a-05444067272e	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
 cibaBackchannelTokenDeliveryMode	d4932c90-8454-4b23-b96a-05444067272e	poll
 cibaExpiresIn	d4932c90-8454-4b23-b96a-05444067272e	120
 cibaInterval	d4932c90-8454-4b23-b96a-05444067272e	5
@@ -3193,8 +3197,8 @@ frontendUrl	d4932c90-8454-4b23-b96a-05444067272e
 acr.loa.map	d4932c90-8454-4b23-b96a-05444067272e	{}
 adminEventsExpiration	d4932c90-8454-4b23-b96a-05444067272e	
 shortVerificationUri	d4932c90-8454-4b23-b96a-05444067272e	
-client-policies.profiles	d4932c90-8454-4b23-b96a-05444067272e	{"profiles":[]}
-client-policies.policies	d4932c90-8454-4b23-b96a-05444067272e	{"policies":[]}
+_browser_header.xXSSProtection	d4932c90-8454-4b23-b96a-05444067272e	1; mode=block
+_browser_header.strictTransportSecurity	d4932c90-8454-4b23-b96a-05444067272e	max-age=31536000; includeSubDomains
 \.
 
 
@@ -3582,9 +3586,14 @@ a12bd244-8ddf-4220-a9f1-b530891a5ec9	e735b777-a13e-4f04-81ee-92edc3068449
 269072d2-19a8-4ea8-a367-fc85b6af1c53	45171f94-33bb-439c-8765-7a69d0d6d79e
 19bb2450-039d-4780-a347-f686e9af8769	4f95e562-3f21-416c-aba8-98d10d65a744
 269072d2-19a8-4ea8-a367-fc85b6af1c53	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6
-19bb2450-039d-4780-a347-f686e9af8769	3d13b017-9494-4164-9a3a-9d4d6c534614
-623a8856-4bb3-4103-94a1-7ed974a1a14a	3d13b017-9494-4164-9a3a-9d4d6c534614
 a12bd244-8ddf-4220-a9f1-b530891a5ec9	3d13b017-9494-4164-9a3a-9d4d6c534614
+19bb2450-039d-4780-a347-f686e9af8769	3d13b017-9494-4164-9a3a-9d4d6c534614
+269072d2-19a8-4ea8-a367-fc85b6af1c53	3d13b017-9494-4164-9a3a-9d4d6c534614
+269072d2-19a8-4ea8-a367-fc85b6af1c53	e735b777-a13e-4f04-81ee-92edc3068449
+b91f647f-a655-458a-9965-9386e8125f85	e735b777-a13e-4f04-81ee-92edc3068449
+c9811517-c13b-4937-8c90-806418330de2	3d13b017-9494-4164-9a3a-9d4d6c534614
+c9811517-c13b-4937-8c90-806418330de2	e735b777-a13e-4f04-81ee-92edc3068449
+b91f647f-a655-458a-9965-9386e8125f85	3d13b017-9494-4164-9a3a-9d4d6c534614
 \.
 
 

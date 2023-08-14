@@ -22,7 +22,8 @@
         "API_JWT_AUTHORITY": "http://localhost:8080/realms/Calendar",
         "API_JWT_METADATA_ADDRESS": "http://localhost:8080/realms/Calendar",
         "API_DEBUG_TEST_ENDPOINT_ENABLED": "true",
-        "API_DEBUG_TEST_ENDPOINT_POLICY": "EDITOR"
+        "API_DEBUG_TEST_ENDPOINT_POLICY": "EDITOR",
+        "KEYCLOAK_REST_PASSWORD": "74RuqICjDPQEFREmhIFaqRf6H"
       },
       "hotReloadEnabled": true,
       "applicationUrl": "http://localhost:4000",
