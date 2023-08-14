@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Calendar.Mongo.Db.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Calendar.Api.DTOs.Update
 {
@@ -24,7 +25,7 @@ namespace Calendar.Api.DTOs.Update
         [Required()]
         public DateTimeOffset End { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<InstructorDTO>? Instructors { get; set; }
 
         [StringLength(24, MinimumLength = 24)]
         public string? LectureId { get; set; }

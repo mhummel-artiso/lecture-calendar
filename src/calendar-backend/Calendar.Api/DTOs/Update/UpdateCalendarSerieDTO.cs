@@ -29,7 +29,7 @@ namespace Calendar.Api.DTOs.Update
         [Required()]
         public DateTimeOffset EndSeries { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<InstructorDTO>? Instructors { get; set; }
 
         [Required()]
         [StringLength(24, MinimumLength = 24)]

@@ -92,7 +92,7 @@ namespace Calendar.Api.Services
             itemToUpdate.Description = calendarEvent.Description;
             itemToUpdate.Start = calendarEvent.Start;
             itemToUpdate.Duration = calendarEvent.Duration;
-            itemToUpdate.InstructorsIds = calendarEvent.InstructorsIds;
+            itemToUpdate.Instructors = calendarEvent.Instructors;
 
             // Can update lecture only, if its no serie.
             if (!itemToUpdate.SeriesId.HasValue)
@@ -143,7 +143,7 @@ namespace Calendar.Api.Services
                     oldEvent.Description = calendarEvent.Description;
                     oldEvent.Start = calendarEvent.Start;
                     oldEvent.Duration = calendarEvent.Duration;
-                    oldEvent.InstructorsIds = calendarEvent.InstructorsIds;
+                    oldEvent.Instructors = calendarEvent.Instructors;
                 }
                 eventUpdate = Builders<UserCalendar>.Update.Set(x => x.Events, oldSeriesEvents);
             }
@@ -203,7 +203,7 @@ namespace Calendar.Api.Services
                     Description = firstEvent.Description,
                     Location = firstEvent.Location,
                     LectureId = firstEvent.LectureId,
-                    InstructorsIds = firstEvent.InstructorsIds,
+                    Instructors = firstEvent.Instructors,
                     CalendarId = firstEvent.CalendarId,
                     CreatedDate = !isUpdate ? DateTimeOffset.UtcNow : firstEvent.CreatedDate,
                     LastUpdateDate = isUpdate ? DateTimeOffset.UtcNow : firstEvent.LastUpdateDate,

@@ -1,7 +1,11 @@
 import { Calendar } from '../models/calendar'
 import { axiosInstance } from '../utils/axiosInstance'
-import { CalendarEvent, CreateCalendarEvent } from "../models/calendarEvent";
-import { Moment } from "moment/moment"
+import {
+    CalendarEvent,
+    CreateCalendarEvent,
+    UpdateCalendarEvent,
+    UpdateCalendarEventSeries
+} from "../models/calendarEvent";
 
 // Calendar functions
 const calendarEndPointName = (calendarId: string | null = null) => {
@@ -16,6 +20,10 @@ export const addCalendar = async (calendar: Calendar): Promise<Calendar> => {
 
 export const getCalendars = async (): Promise<Calendar[]> => {
     const response = await axiosInstance.get<Calendar[]>(calendarEndPointName())
+    return Promise.resolve(response.data)
+}
+export const getAllCalendars = async (): Promise<Calendar[]> => {
+    const response = await axiosInstance.get<Calendar[]>(`${calendarEndPointName()}/all`)
     return Promise.resolve(response.data)
 }
 export const getCalendar = async (calendarId: string): Promise<Calendar> => {
@@ -63,7 +71,7 @@ export const getEvent = async (calendarId: string, eventId: string) => {
     return Promise.resolve(response.data);
 }
 
-export const editEvent = async (calendarId: string, event: CalendarEvent) => {
+export const editEvent = async (calendarId: string, event: UpdateCalendarEvent) => {
     const response = await axiosInstance.put<CalendarEvent>(eventEndPointName(calendarId, event.id), event);
     return Promise.resolve(response.data);
 }
@@ -77,8 +85,8 @@ const seriesEndPointName = (calendarId: string, seriesId: string) => {
     return `Calendar/${calendarId}/series/${seriesId}`;
 };
 
-export const editEventSeries = async (calendarId: string, seriesId: string) => {
-    const response = await axiosInstance.put<CalendarEvent[]>(seriesEndPointName(calendarId, seriesId));
+export const editEventSeries = async (calendarId: string, seriesId: string, event: UpdateCalendarEventSeries) => {
+    const response = await axiosInstance.put<CalendarEvent[]>(seriesEndPointName(calendarId, seriesId), event);
     return Promise.resolve(response.data)
 }
 export const deleteEventSeries = async (calendarId: string, seriesId: string) => {

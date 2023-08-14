@@ -3,12 +3,10 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
-    Button, CircularProgress, drawerClasses,
-    Fab,
-    Grid,
+    Button,
+    CircularProgress,
     IconButton,
     List,
-    ListItem,
     ListItemButton,
     ListItemSecondaryAction,
     ListItemText,
@@ -18,7 +16,12 @@ import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { addCalendar, deleteCalendar, editCalendar, getCalendars } from '../../../services/CalendarService'
+import {
+    addCalendar,
+    deleteCalendar,
+    editCalendar,
+    getAllCalendars,
+} from '../../../services/CalendarService'
 import { Calendar } from '../../../models/calendar'
 import AddIcon from '@mui/icons-material/Add'
 import { CalendarDialog } from './CalendarDialog'
@@ -33,8 +36,8 @@ export const CalendarList: FC = () => {
     }
 
     const {isLoading, data, refetch} = useQuery({
-        queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryKey: ['calendarsSettings'],
+        queryFn: getAllCalendars,
         useErrorBoundary: true
     })
 

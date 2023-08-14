@@ -70,10 +70,12 @@ public class CalendarService : ICalendarService
         var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(calendarId));
         return result.DeletedCount == 1;
     }
-
-    // FOR TESTING, later use GetCalendarsByNamesAsync
+    
     public async Task<IEnumerable<UserCalendar>> GetCalendars()
     {
-        return await dbCollection.Find(x => true).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
+        return await dbCollection
+            .Find(x => true)
+            .Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events))
+            .ToListAsync();
     }
 }

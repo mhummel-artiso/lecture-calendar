@@ -15,14 +15,14 @@ import moment from "moment";
 import { DialogComponentProps } from "../../../models/dialogComponentProps";
 
 export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calendar>> = ({
-                                                                       isDialogOpen,
-                                                                       onDialogClose,
-                                                                       onDialogAdd,
-                                                                       onDialogEdit,
-                                                                       currentValue: currentCalendar
-                                                                   }) => {
+                                                                                           isDialogOpen,
+                                                                                           onDialogClose,
+                                                                                           onDialogAdd,
+                                                                                           onDialogEdit,
+                                                                                           currentValue: currentCalendar
+                                                                                       }) => {
     const [name, setName] = useState<string>("");
-    const [startDate, setStartDate] = useState<Moment>(moment());
+    const [startDate, setStartDate] = useState<Moment | null>(moment());
 
     useEffect(() => {
         setName(currentCalendar?.name ?? "")

@@ -6,6 +6,7 @@ using Calendar.Mongo.Db.Models;
 
 namespace Calendar.Api.Profiles
 {
+
     public class CalendarProfile : Profile
     {
         public CalendarProfile()

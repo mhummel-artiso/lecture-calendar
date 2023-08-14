@@ -1,5 +1,5 @@
 import {
-    Button, CircularProgress,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -9,12 +9,19 @@ import {
     MenuItem,
     Stack,
     TextField,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Stepper,
+    Step,
+    Box,
+    StepLabel,
 } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import React, { FC, useEffect, useState } from 'react'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { DateTimePicker, TimePicker } from '@mui/x-date-pickers'
-import { AddEventType } from '../../hooks/useEventData'
 import {
     CalendarEvent,
     CreateCalendarEvent,
@@ -23,11 +30,16 @@ import {
 } from '../../models/calendarEvent'
 import { Moment } from "moment/moment";
 import moment from "moment";
-import { getLectures } from "../../services/LectureService";
-import { deleteEvent, deleteEventSeries, getCalendars } from "../../services/CalendarService";
+import { deleteEvent, deleteEventSeries } from "../../services/CalendarService";
 import { DialogComponentProps } from "../../models/dialogComponentProps";
 import DeleteIcon from '@mui/icons-material/Delete'
-
+import { Instructor } from '../../models/instructor'
+import { LectureSelect } from './LectureSelect'
+import { CalendarSelect } from './CalendarSelect'
+import { InstructorSelect } from './InstructorSelect'
+import { EditSeriesDialogContent } from './EditSeriesDialogContent'
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import { useAccount } from '../../hooks/useAccount'
 
 const serialList = [
     // dnr = do not repeat
@@ -38,6 +50,7 @@ const serialList = [
 ]
 
 export interface EditEventCallback {
+    calendarId: string
     event?: UpdateCalendarEvent,
     eventSeries?: UpdateCalendarEventSeries
 }
@@ -47,6 +60,7 @@ interface EventDialogComponentProps extends DialogComponentProps<CalendarEvent, 
     onDeletedEvent: (event: CalendarEvent) => void;
 }
 
+type TextFieldViewType = 'required' | 'time' | 'optional';
 export const EventDialog: FC<EventDialogComponentProps> = ({
                                                                isDialogOpen,
                                                                onDialogClose,
@@ -56,19 +70,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                                                                currentValue,
                                                                calendarId
                                                            }: EventDialogComponentProps) => {
-
-    const {data: calendarsData, isLoading: isCalendarLoading} = useQuery({
-        queryKey: ['calendars'],
-        queryFn: getCalendars,
-        useErrorBoundary: true
-    })
-
-    const {data: lectureData, isLoading: isLectureLoading} = useQuery({
-        queryKey: ['lectures'],
-        queryFn: getLectures,
-        useErrorBoundary: true
-    })
-
     const [selectedCalendarId, setSelectedCalendarId] = React.useState<string>(calendarId)
     const [selectedLectureId, setSelectedLectureId] = React.useState<string>("")
     const [startDate, setStartDate] = useState<Moment>(moment());
@@ -79,6 +80,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     const [serie, setSerie] = useState<number>(serialList[0].value);
     const [askEditSeries, setAskEditSeries] = useState<boolean>();
     const [askDeleteSeries, setAskDeleteSeries] = useState<boolean>(false);
+    const [selectedInstructurs, setSelectedInstructurs] = useState<Instructor[]>([]);
+    const {canEdit} = useAccount();
 
     useEffect(() => {
         if(!currentValue) {
@@ -93,6 +96,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerie(currentValue.repeat)
             setSelectedLectureId(currentValue.lecture.id!)
+            setSelectedInstructurs(currentValue.instructors)
         }
     }, [currentValue])
 
@@ -117,7 +121,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             if(onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
                     // TODO add ui for instructors
-                    instructorsIds: currentValue.instructorsIds,
+                    instructors: currentValue.instructors,
                     lastUpdateDate: currentValue.lastUpdateDate,
                     createdDate: currentValue.createdDate,
                     end: endDate,
@@ -127,11 +131,11 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     endSeries: serieEnd,
                     location: location,
                     lectureId: selectedLectureId,
-                    seriesId: currentValue.serieId,
+                    seriesId: currentValue.seriesId,
                     calendarId: currentValue.calendarId
                 }
                 onDialogEdit({
-                    // TODO fix
+                    calendarId: currentValue.calendarId,
                     eventSeries: data,
                     event: undefined
                 });
@@ -142,7 +146,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
 
                     id: currentValue.id,
                     // TODO add ui for instructors
-                    instructorsIds: currentValue.instructorsIds,
+                    instructors: currentValue.instructors,
                     lastUpdateDate: currentValue.lastUpdateDate,
                     description: comment,
                     end: endDate,
@@ -153,6 +157,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     lectureId: selectedLectureId
                 }
                 onDialogEdit({
+                    calendarId: currentValue.calendarId,
                     event: data,
                     eventSeries: undefined
                 })
@@ -168,26 +173,32 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                 calendarId: selectedCalendarId,
                 repeat: serie,
                 // TODO add ui for instructors
-                instructorsIds: []
+                instructors: selectedInstructurs
             }
             onDialogAdd(data);
         }
 
         handleClose()
     }
-
-    const canClickAdd = () => {
+    const validateRequiredFilds = (): boolean => {
+        return selectedCalendarId?.length > 0 &&
+            selectedLectureId?.length > 0 &&
+            location?.length > 0 &&
+            selectedInstructurs?.length > 0;
+    }
+    const validateTimeFilds = (): boolean => {
         let isValidSerie = true;
         if(serie != serialList[0].value) {
             isValidSerie = !!serieEnd;
         }
-        return selectedCalendarId &&
-            selectedLectureId &&
-            location &&
-            startDate &&
+        return startDate &&
             endDate &&
+            endDate > startDate &&
             isValidSerie;
     }
+    const canClickAdd = () =>
+        validateRequiredFilds() && validateTimeFilds()
+
 
     const deleteEventMutation = useMutation({
         mutationFn: async ({calendarId, event}: { calendarId: string, event: CalendarEvent }) => {
@@ -195,7 +206,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             onDeletedEvent(event)
             return result;
         },
-        onSuccess: async (_) => {
+        onSuccess: (_) => {
             handleClose()
         },
     })
@@ -205,7 +216,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             onDeletedEvent(event)
             return result;
         },
-        onSuccess: async (_) => {
+        onSuccess: (_) => {
             handleClose()
         },
     })
@@ -230,173 +241,294 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
         setAskDeleteSeries(false);
         setAskDeleteSeries(false);
     }
+
+
     const addOrEditContent = () => {
+        const requiredFields = () => {
+            const {canEdit} = useAccount();
+            return (<Stack direction="column" spacing={2} sx={{margin: 1, mt: 2}}>
+                <CalendarSelect readonlyValue={currentValue?.calendar?.name} value={selectedCalendarId}
+                                onChange={setSelectedCalendarId}/>
+                <LectureSelect readonlyValue={currentValue?.lecture?.title} value={selectedLectureId}
+                               onChange={setSelectedLectureId}/>
+                <TextField disabled={!canEdit}
+                           margin="dense"
+                           label="Vorlesungsort"
+                           type="text"
+                           value={location}
+                           onChange={(e) => setLocation(e.target.value)}
+                />
+                <InstructorSelect value={selectedInstructurs} onChange={setSelectedInstructurs}/>
+            </Stack>)
+        }
+
+        const timeFields = () => {
+            return (
+                <Stack spacing={2} sx={{margin: 1}}>
+                    <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
+                        <DateTimePicker disabled={!canEdit}
+                                        key={"start"}
+                                        value={startDate}
+                                        onChange={value => {
+                                            setStartDate(value!)
+                                            setEndDate(value!)
+                                        }}
+                                        label="Start"
+                        />
+                        <TimePicker
+                            value={endDate} disabled={!canEdit}
+                            onChange={(e) => setEndDate(e!)}
+                            label="Ende"
+                            viewRenderers={{
+                                hours: renderTimeViewClock,
+                                minutes: renderTimeViewClock,
+                                seconds: renderTimeViewClock,
+                            }}
+                        />
+                    </Stack>
+                    {seriesFields()}
+                </Stack>)
+        }
+        const seriesFields = () => {
+            const shouldRender = !currentValue || currentValue.seriesId;
+            console.log('shouldRender', shouldRender);
+            return shouldRender && (
+                <Stack direction="row">
+                    <TextField disabled={!canEdit}
+                               margin="dense"
+                               select
+                               fullWidth
+                               defaultValue={serialList[0].value}
+                               value={serie}
+                               onChange={(event) =>
+                                   setSerie(Number(event?.target?.value))
+                               }
+                    >
+                        {serialList.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                                {item.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <DatePicker
+                        label="Serienende"
+                        sx={{ml: 2, mt: 1, mb: 1}}
+                        disabled={serie === serialList[0].value || !canEdit}
+                        value={serieEnd}
+                        onChange={(e) => setSerieEnd(e!)}
+                    />
+                </Stack>
+            )
+
+        }
+        const optionalFields = () => {
+            return (<Stack spacing={2} sx={{margin: 1}}>
+                <TextField disabled={!canEdit}
+                           multiline
+                           margin="dense"
+                           type="text"
+                           label="zusätzlicher Kommentar"
+                           maxRows={4}
+                           value={comment}
+                           onChange={(e) => setComment(e.target.value)}
+                />
+            </Stack>)
+        }
+        const accordionLayout = () => {
+            const [expanded, setExpanded] = React.useState<TextFieldViewType | boolean>('required');
+            const handleChange = (panel: TextFieldViewType) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+                setExpanded(isExpanded ? panel : false);
+            }
+            return (
+                <>
+                    <Accordion onChange={handleChange("required")} expanded={expanded == "required"}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                            <Typography>Allgemein</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {requiredFields()}
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion onChange={handleChange("time")} expanded={expanded == "time"}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                            <Typography>Zeit</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {timeFields()}
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion onChange={handleChange("optional")} expanded={expanded == "optional"}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                            <Typography>Zusätzliche Infos</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {optionalFields()}
+                        </AccordionDetails>
+                    </Accordion>
+                </>
+            )
+        }
+        const stepperLayout = () => {
+            console.log('setepperLayout');
+            const steps = [
+                {lable: "Allgemein", required: true},
+                {lable: "Zeit", required: true},
+                {lable: "Zusätzliche Infos", required: true}]
+            const [activeStep, setActiveStep] = React.useState(0);
+            const [completed, setCompleted] = React.useState<{
+                [k: number]: boolean;
+            }>({});
+
+            const handleStep = (step: number) => () => {
+                setActiveStep(step);
+                const newCompleted = completed;
+                for(let i = steps.length - 1; i >= step; i--) {
+                    newCompleted[i] = false
+                }
+                setCompleted(newCompleted)
+            }
+            const totalSteps = () => {
+                return steps.length;
+            };
+
+            const isLastStep = () => {
+                return activeStep === totalSteps() - 1;
+            };
+            const handleComplete = () => {
+                const newCompleted = completed;
+                setCompleted(prevState => {
+                    newCompleted[activeStep] = true
+                    return newCompleted
+                });
+                setActiveStep((prevActiveStep) => prevActiveStep + 1)
+            }
+            const singelStep = (x: { lable: string, required: boolean }, index: number) => {
+                const lableProps: {
+                    optional?: React.ReactNode;
+                    error?: boolean;
+                } = {};
+                if(activeStep !== index) {
+                    switch(index) {
+                        case 0:
+                            lableProps.error = !validateRequiredFilds();
+                            if(lableProps.error) {
+                                lableProps.optional = (
+                                    <Typography variant="caption" color="error">
+                                        Fehlende Pflichtfelder
+                                    </Typography>
+                                )
+                            }
+                            break;
+                        case 1:
+                            lableProps.error = !validateTimeFilds();
+                            if(lableProps.error) {
+                                lableProps.optional = (
+                                    <Typography variant="caption" color="error">
+                                        Fehlende Zeitangaben
+                                    </Typography>
+                                )
+                            }
+                    }
+                }
+
+                return (
+                    <Step key={x.lable} completed={completed[index]} color={completed[index] ? "success" : undefined}>
+                        <StepLabel {...lableProps} onClick={handleStep(index)}>
+                            {x.lable}
+                        </StepLabel>
+                    </Step>)
+            }
+            const canContinue = () => {
+                switch(activeStep) {
+                    case 0:
+                        return validateRequiredFilds();
+                    case 1:
+                        return validateTimeFilds();
+                    default:
+                        return true;
+                }
+            }
+            return (<>
+                    <Stepper nonLinear activeStep={activeStep}>
+                        {steps.map(singelStep)}
+                    </Stepper>
+                    {activeStep == 0 && requiredFields()}
+                    {activeStep == 1 && timeFields()}
+                    {activeStep == 2 && optionalFields()}
+                    <Box sx={{flex: "1 1 auto"}}>
+                        {isLastStep() ? (
+                            <Button onClick={() => handleAddOrEditEvent()} disabled={!completed[0] && !completed[1]}
+                                    variant="contained">
+                                Hinzufügen
+                            </Button>
+                        ) : (<Button onClick={handleComplete} disabled={!canContinue()}>
+                            Weiter
+                        </Button>)}
+                        <Button onClick={handleClose}>Abbrechen</Button>
+                    </Box>
+                </>
+            )
+        }
+
         return (
             <>
                 <DialogTitle>
                     Event {currentValue ? "bearbeiten" : "hinzufügen"}
                 </DialogTitle>
                 <DialogContent sx={{width: '500px'}}>
-                    <Stack spacing={2} sx={{margin: 1}}>
-                        <Stack direction="row" spacing={2}>
-                            {isCalendarLoading ? (
-                                <CircularProgress/>
-                            ) : (<TextField
-                                fullWidth
-                                value={selectedCalendarId}
-                                onChange={(e) => setSelectedCalendarId(e.target.value)}
-                                select
-                                label="Kurs"
-                                id={"kurs"}
-                                required>
-                                {(calendarsData ?? []).map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>)}
-                            {isLectureLoading ? (
-                                <CircularProgress/>
-                            ) : (
-                                <TextField
-                                    fullWidth
-                                    value={selectedLectureId}
-                                    onChange={(e) => setSelectedLectureId(e.target.value)}
-                                    select
-                                    id={"vorlesung"}
-                                    label="Vorlesung"
-                                >
-                                    {(lectureData ?? []).map((item) => (
-                                        <MenuItem key={item.id} value={item.id}>
-                                            {item.title}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            )}
-                        </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
-                            <DateTimePicker
-                                key={"start"}
-                                value={startDate}
-                                onChange={value => {
-                                    setStartDate(value!)
-                                    setEndDate(value!)
-                                }}
-                                label="Start"
-                            />
-                            <TimePicker
-                                value={endDate}
-                                onChange={(e) => setEndDate(e!)}
-                                label="Ende"
-                            />
-                        </Stack>
-                        <Stack direction="row">
-                            <TextField
-                                margin="dense"
-                                select
-                                fullWidth
-                                defaultValue={serialList[0].value}
-                                value={serie}
-                                onChange={(event) =>
-                                    setSerie(Number(event?.target?.value))
-                                }
+                    {currentValue ? accordionLayout() : canEdit && stepperLayout()}
+                </DialogContent>
+                {currentValue &&
+                    <DialogActions>
+                        {canEdit &&
+                            <IconButton edge="end"
+                                        aria-label="delete"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if(currentValue.seriesId !== undefined || currentValue?.seriesId !== null) {
+                                                setAskDeleteSeries(true)
+                                            } else {
+                                                handleDeleteClick(false)
+                                            }
+                                        }}
+                                        color="error"
                             >
-                                {serialList.map((item, index) => (
-                                    <MenuItem key={index} value={item.value}>
-                                        {item.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            <DatePicker
-                                label="Serienende"
-                                sx={{ml: 2, mt: 1, mb: 1}}
-                                disabled={serie === serialList[0].value}
-                                value={serieEnd}
-                                onChange={(e) => setSerieEnd(e!)}
-                            />
-                        </Stack>
-                        <TextField
-                            margin="dense"
-                            label="Vorlesungsort"
-                            type="text"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        />
-                        <TextField
-                            multiline
-                            margin="dense"
-                            type="text"
-                            label="Zusätzliche Infos"
-                            maxRows={4}
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                        />
-                    </Stack>
-                </DialogContent>
-                <DialogActions>
-                    {currentValue && (
-                        <IconButton edge="end"
-                                    aria-label="delete"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if(currentValue.serieId !== undefined || currentValue?.serieId !== null) {
-                                            setAskDeleteSeries(true)
-                                        } else {
-                                            handleDeleteClick(false)
-                                        }
-                                    }}
-                        >
-                            <DeleteIcon/>
-                        </IconButton>)}
-                    <Button onClick={handleClose}>Abbrechen</Button>
-                    <Button onClick={() => currentValue ? setAskEditSeries(true) : handleAddOrEditEvent()}
-                            disabled={!canClickAdd()}>{currentValue ? "Bearbeiten" : "Hinzufügen"}</Button>
-                </DialogActions>
+                                <DeleteIcon/>
+                            </IconButton>}
+                        <Button
+                            onClick={onDialogClose}>
+                            {canEdit ? "Abbrechen" : "Schließen"}
+                        </Button>
+                        {canEdit &&
+                            <Button
+                                onClick={() => currentValue.seriesId ? setAskEditSeries(true) : handleAddOrEditEvent()}
+                                disabled={!canClickAdd()} variant="contained">
+                                Bearbeiten</Button>}
+                    </DialogActions>
+                }
+
             </>
         )
     }
-    const askForEditSeriesContent = () => {
-        return (
-            <>
-                <DialogTitle>
-                    Serie Bearbeiten?
-                </DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        Wollen sie nur das aktuelle Ereignis oder die gesamte Serie Bearbeiten?
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancelAskDialog}>Abbrechen</Button>
-                    <Button onClick={() => {handleAddOrEditEvent(true)}}>Alle Elemente</Button>
-                    <Button onClick={() => {handleAddOrEditEvent(false)}}>Nur diese</Button>
-                </DialogActions>
-            </>
-        )
-    }
-    const askForDeleteSeriesContent = () => {
-        return (
-            <>
-                <DialogTitle>
-                    Serie Löschen?
-                </DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        Wollen sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => handleCancelAskDialog()}>Abbrechen</Button>
-                    <Button onClick={() => {handleDeleteClick(true)}}>Alle Elemente</Button>
-                    <Button onClick={() => {handleDeleteClick(false)}}>Nur diese</Button>
-                </DialogActions>
-            </>
-        )
-    }
+
     return (
         <Dialog open={isDialogOpen} onClose={handleClose}>
-            {askEditSeries && askForEditSeriesContent()}
-            {askDeleteSeries && askForDeleteSeriesContent()}
+            {askEditSeries && <EditSeriesDialogContent
+                title="Serie Bearbeiten?"
+                onCanceled={handleCancelAskDialog}
+                onAccepted={handleAddOrEditEvent}>
+                <Typography>
+                    Wollen sie nur das aktuelle Ereignis oder die gesamte Serie Bearbeiten?
+                </Typography>
+            </EditSeriesDialogContent>}
+            {askDeleteSeries && <EditSeriesDialogContent
+                title="Serie Löschen?"
+                onCanceled={handleCancelAskDialog}
+                onAccepted={handleDeleteClick}>
+                <Typography>
+                    Wollen sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
+                </Typography>
+            </EditSeriesDialogContent>}
             {!askEditSeries && !askDeleteSeries && addOrEditContent()}
         </Dialog>
     )

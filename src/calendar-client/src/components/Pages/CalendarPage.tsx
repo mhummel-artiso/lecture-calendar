@@ -1,34 +1,20 @@
-import {
-    ToggleButton,
-    ToggleButtonGroup,
-    Grid,
-    Typography,
-    Fab,
-} from '@mui/material'
+import { Fab, Grid, ToggleButton, ToggleButtonGroup, Typography, } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import React, { useEffect, useState } from 'react'
 import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler'
-import {
-    Scheduler,
-    DayView,
-    WeekView,
-    Appointments,
-    AppointmentTooltip,
-    MonthView,
-} from '@devexpress/dx-react-scheduler-material-ui'
+import { Appointments, DayView, MonthView, Scheduler, WeekView, } from '@devexpress/dx-react-scheduler-material-ui'
 import { EditEventCallback, EventDialog } from '../Calendar/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
 import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
 import { Calendar } from "../../models/calendar";
 import { useNavigate } from "react-router-dom";
-import { getCalendarByName, getEventsFrom } from '../../services/CalendarService'
+import { addEvent, editEvent, editEventSeries, getCalendarByName, getEventsFrom } from '../../services/CalendarService'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
-import { CreateCalendarEvent, CalendarEvent } from '../../models/calendarEvent'
-import { addEvent } from "../../services/CalendarService"
+import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
 
 type CalendarViewType = 'month' | 'week' | 'day';
 
@@ -46,7 +32,7 @@ export const CalendarPage = () => {
         const state = location.state as Calendar[] | undefined | null;
 
         if(state) {
-            const calendar = state as Calendar[];
+            const calendar = state;
 
             const startDate = getStartDateFromCurrentDate();
             const events: CalendarEvent[] = [];
@@ -54,7 +40,7 @@ export const CalendarPage = () => {
                 setCalendarId(calendar[0].id!)
             }
             for(const c of calendar) {
-                const result = await getEventsFrom(c?.id!, startDate, calendarView!);
+                const result = await getEventsFrom(c?.id!, startDate, calendarView);
                 events.push(...result);
             }
             return events;
@@ -146,7 +132,6 @@ export const CalendarPage = () => {
             case 'week': {
                 const firstDayOfWeek = currentDate.clone().weekday(1);
                 const lastDayOfWeek = currentDate.clone().weekday(7);
-
                 return `${firstDayOfWeek.format('D.MM')} - ${lastDayOfWeek.format('D.MM.YYYY')}`
             }
             case 'month':
@@ -160,8 +145,12 @@ export const CalendarPage = () => {
     const CustomAppointment: React.FC<Appointments.AppointmentProps> = ({onClick, children, ...restProps}) => {
         return (
             <Appointments.Appointment {...restProps} onClick={(e) => {
+                const {data: {event}} = e;
+                if(!event) {
+                    return;
+                }
                 setIsEventDialogOpen(true);
-                setSelectedEvent(e.data.event as CalendarEvent)
+                setSelectedEvent(event as CalendarEvent)
                 if(onClick) {
                     onClick(e)
                 }
@@ -170,13 +159,7 @@ export const CalendarPage = () => {
             </Appointments.Appointment>
         );
     };
-    const handleOnEditEvent = (e: EditEventCallback) => {
-        if(e.event){
-            // TODO implement mutation
-        }else if(e.eventSeries){
-            // TODO implement mutation
-        }
-    }
+
     const addEventMutation = useMutation({
         mutationFn: async (event: CreateCalendarEvent) => {
             return await addEvent(event.calendarId, event)
@@ -185,6 +168,16 @@ export const CalendarPage = () => {
             await refetch()
         },
 
+    })
+    const eventEditMutation = useMutation({
+        mutationFn: async (e: EditEventCallback) => {
+            if(e.event) {
+                return await editEvent(e.calendarId, e.event)
+            } else if(e.eventSeries) {
+                return await editEventSeries(e.calendarId, e.eventSeries.seriesId, e.eventSeries)
+            }
+
+        }
     })
 
     return (
@@ -281,7 +274,7 @@ export const CalendarPage = () => {
                 calendarId={claendarId}
                 onDialogAdd={addEventMutation.mutate}
                 // TODO: Edit to be able to edit Event
-                onDialogEdit={handleOnEditEvent}
+                onDialogEdit={eventEditMutation.mutate}
                 onDeletedEvent={async (event: CalendarEvent) => {
                     await queryClient.invalidateQueries({queryKey: ['events']});
                 }}/>}

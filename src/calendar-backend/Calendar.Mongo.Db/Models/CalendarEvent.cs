@@ -39,7 +39,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonRequired]
         public DateTimeOffset? LastUpdateDate { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<Instructor>? Instructors { get; set; }
 
         [BsonRequired]
         public string? LectureId { get; set; }

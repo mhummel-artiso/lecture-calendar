@@ -8,6 +8,7 @@ using Calendar.Mongo.Db.Models;
 using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
 
@@ -21,8 +22,6 @@ public class CalendarController : ControllerBase
     private readonly IKeycloakService keycloakService;
     private readonly IMapper mapper;
     private readonly ILogger<CalendarController> logger;
-    private readonly IKeycloakUserClient keycloakUserClient;
-
     public CalendarController(ICalendarService calendarService,
         IEventService eventService,
         ILectureService lectureService,
@@ -66,15 +65,21 @@ public class CalendarController : ControllerBase
         var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
         if (nameIdentifier == null || string.IsNullOrEmpty(nameIdentifier.Value))
             return BadRequest("invalid user id");
-        
+
         var groups = await keycloakService.GetAssignedCalendarsByUserAsync(nameIdentifier.Value);
 
         if (groups == null) return NotFound();
-        
+
         var calendars = await calendarService.GetCalendarsByNamesAsync(groups);
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendars));
     }
-
+    [HttpGet("all")]
+    [Authorize(AuthPolicies.EDITOR)]
+    public async Task<ActionResult<IEnumerable<UserCalendarDTO>>> GetAllCalendars()
+    {
+        var calendars = await calendarService.GetCalendars();
+        return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendars));
+    }
     [HttpGet("name/{calendarName}")]
     [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<UserCalendarDTO>> GetCalendarByName(string calendarName, [FromQuery] bool includeEvents = false)
@@ -148,6 +153,7 @@ public class CalendarController : ControllerBase
             foreach (var mappedDto in mappedResult)
             {
                 await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+                await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
             }
 
             return CreatedAtAction(nameof(AddEvent), mappedResult);
@@ -178,6 +184,7 @@ public class CalendarController : ControllerBase
             foreach (var mappedDto in mappedDtos)
             {
                 await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+                await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
             }
             return Ok(mappedDtos);
         }
@@ -202,6 +209,7 @@ public class CalendarController : ControllerBase
             foreach (var mappedDto in mappedDtos)
             {
                 await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+                await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
             }
             return Ok(mappedDtos);
         }
@@ -311,6 +319,13 @@ public class CalendarController : ControllerBase
             return;
         var lecture = await lectureService.GetLectureByIdAsync(eventDto.LectureId);
         eventDto.Lecture = mapper.Map<LectureDTO>(lecture);
+    }
+    private async Task AddCalendarToEventAsync(CalendarEventDTO eventDto)
+    {
+        if (string.IsNullOrWhiteSpace(eventDto.CalendarId))
+            return;
+        var calendar = await calendarService.GetCalendarByIdAsync(eventDto.CalendarId);
+        eventDto.Calendar = mapper.Map<UserCalendarDTO>(calendar);
     }
 
     #endregion
