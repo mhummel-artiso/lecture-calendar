@@ -75,7 +75,7 @@ public class CalendarController : ControllerBase
         
         var groups = await keycloakService.GetAssignedCalendarsByUserAsync(nameIdentifier.Value);
 
-        if (groups == null) return new List<UserCalendarDTO>();
+        if (groups == null) return NotFound();
         
         var calendars = await calendarService.GetCalendarsByNamesAsync(groups);
         return Ok(mapper.Map<IEnumerable<UserCalendarDTO>>(calendars));
