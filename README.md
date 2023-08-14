@@ -38,5 +38,7 @@ path to configs: ./config/\<container-name\>/
   - `API_DEBUG_TEST_ENDPOINT_POLICY` : The policy for the test endpoint mögliche werte: [`EDITOR` |  `VIEWER` | `EDITOR_VIEWER`] (`""`) [*Optional*]
 
 ### Client
-
+### Build errors
+TODO replace this line in package.json
+`"build": "tsc && vite build",`
 #### Environment variables
