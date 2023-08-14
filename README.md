@@ -2,7 +2,16 @@
 
 ## Docker container
 ### Configurations
+
 path to configs: ./config/\<container-name\>/
+
+### Postgres Dump
+
+in the postgres container run:
+
+```bash
+pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
+```
 
 ### Api
 #### Environment variables
