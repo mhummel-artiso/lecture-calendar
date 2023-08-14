@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Calendar.Api.DTOs;
 using Calendar.Api.Models;
+using Calendar.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,32 +13,36 @@ namespace Calendar.Api.Controllers
     {
         private readonly IMapper mapper;
         private readonly ILogger<LectureController> logger;
+        private readonly IKeycloakService keycloakService;
 
-        public KeycloakController(IMapper mapper, ILogger<LectureController> logger)
+        public KeycloakController(IMapper mapper, ILogger<LectureController> logger, IKeycloakService keycloakService)
         {
             this.mapper = mapper;
             this.logger = logger;
+            this.keycloakService = keycloakService;
         }
 
-        [HttpGet]
-        [Authorize(AuthPolicies.EDITOR_VIEWER)]
-        public async Task<ActionResult> GetAssignedCalendars()
-        {
-            return Ok();
-        }
 
-        [HttpGet]
+        [HttpGet("instructors")]
         [Authorize(AuthPolicies.EDITOR)]
-        public async Task<ActionResult> GetInstructors()
+        public async Task<ActionResult<IEnumerable<InstructorDTO>>> GetInstructors()
         {
-            return Ok();
+            var instructors = await keycloakService.GetInstructorsAsync();
+
+            if(instructors == null) return NotFound();
+
+            return Ok(instructors);
         }
 
-        [HttpGet]
+        [HttpGet("calendars")]
         [Authorize(AuthPolicies.EDITOR)]
-        public async Task<ActionResult> GetSemester()
+        public async Task<ActionResult<IEnumerable<UserCalendarKeycloakDTO>>> GetSemester()
         {
-            return Ok();
+            var allCalendars = await keycloakService.GetAllCalendarsAsync();
+
+            if(allCalendars == null) return NotFound();
+
+            return Ok(allCalendars);
         }
     }
 }
