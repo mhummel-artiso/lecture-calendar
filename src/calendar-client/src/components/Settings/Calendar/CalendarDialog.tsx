@@ -74,13 +74,12 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
         createdCalendars: Calendar[] | undefined
     ): KeycloakCalendar[] => {
         if (allCalendars && createdCalendars) {
-            const pending = allCalendars.filter(
+            return allCalendars.filter(
                 (x) =>
                     !createdCalendars.some(
                         (y) => y.name.toLowerCase() === x.name.toLowerCase()
                     )
             )
-            return pending
         } else {
             return []
         }
@@ -89,59 +88,85 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
     return (
         <Dialog open={isDialogOpen} onClose={onDialogClose}>
             <DialogTitle>
-                Kalender {currentCalendar == null ? 'hinzufügen' : 'bearbeiten'}
+                Kalender {currentCalendar == null ? 'hinzufügen' : 'Info'}
             </DialogTitle>
             <DialogContent sx={{ width: '500px' }}>
                 <Stack>
-                    <FormControl fullWidth sx={{ marginTop: 1 }}>
-                        <InputLabel id="demo-simple-select-label">
-                            Name
-                        </InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={name}
+                    {currentCalendar !== null && (
+                        <TextField
+                            id="outlined-read-only-input"
                             label="Name"
-                            onChange={(e: SelectChangeEvent) =>
-                                setName(e.target.value)
-                            }
-                        >
-                            {getPendingCalendars(
-                                keycloakCalendarsData,
-                                calendarsData
-                            ).map((value, index) => {
-                                return (
-                                    <MenuItem key={index} value={value.name}>
-                                        {value.name}
+                            defaultValue={currentCalendar.name}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                            sx={{ marginTop: 1 }}
+                        />
+                    )}
+
+                    {currentCalendar === null && (
+                        <FormControl sx={{ marginTop: 1 }}>
+                            <InputLabel id="demo-simple-select-label">
+                                Name
+                            </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={name}
+                                label="Name"
+                                onChange={(e: SelectChangeEvent) =>
+                                    setName(e.target.value)
+                                }
+                            >
+                                {getPendingCalendars(
+                                    keycloakCalendarsData,
+                                    calendarsData
+                                ).map((value, index) => {
+                                    return (
+                                        <MenuItem
+                                            key={index}
+                                            value={value.name}
+                                        >
+                                            {value.name}
+                                        </MenuItem>
+                                    )
+                                })}
+                                {getPendingCalendars(
+                                    keycloakCalendarsData,
+                                    calendarsData
+                                ).length === 0 && (
+                                    <MenuItem
+                                        disabled={true}
+                                        value={'noCalendars'}
+                                    >
+                                        Keine weiteren Kalender zum Hinzufügen
                                     </MenuItem>
-                                )
-                            })}
-                            {getPendingCalendars(
-                                keycloakCalendarsData,
-                                calendarsData
-                            ).length === 0 && (
-                                <MenuItem disabled={true} value={'noCalendars'}>
-                                    Keine weiteren Kalender zum Hinzufügen
-                                </MenuItem>
-                            )}
-                        </Select>
-                    </FormControl>
+                                )}
+                            </Select>
+                        </FormControl>
+                    )}
                     <DatePicker
                         sx={{ mt: 2 }}
                         label="Startdatum"
                         value={startDate}
                         onChange={(e) => setStartDate(e)}
+                        readOnly={currentCalendar !== null}
                     />
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onDialogClose}>Abbrechen</Button>
-                <Button
-                    disabled={!name && !!startDate}
-                    onClick={handleSubmitClick}
-                >
-                    {currentCalendar == null ? 'Hinzufügen' : 'Bearbeiten'}
+                <Button onClick={onDialogClose}>
+                    {currentCalendar === null ? 'Abbrechen' : 'Schließen'}
                 </Button>
+
+                {currentCalendar == null && (
+                    <Button
+                        disabled={!name && !!startDate}
+                        onClick={handleSubmitClick}
+                    >
+                        Hinzufügen
+                    </Button>
+                )}
             </DialogActions>
         </Dialog>
     )
