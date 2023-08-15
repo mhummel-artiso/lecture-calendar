@@ -88,7 +88,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     const isEdit = !!currentValue ;
     const isSeries = currentValue?.repeat !== 0;
     useEffect(() => {
-        if(!currentValue) {
+        if (!currentValue) {
             resetValues()
         } else {
             setStartDate(moment(currentValue.start))

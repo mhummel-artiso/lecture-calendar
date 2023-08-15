@@ -6,20 +6,20 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Typography
-} from "@mui/material";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import React, { FC, useEffect, useState } from "react";
-import { Calendar } from "../../models/calendar";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { getCalendars } from "../../services/CalendarService";
+    Typography,
+} from '@mui/material'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import React, { FC, useEffect, useState } from 'react'
+import { Calendar } from '../../models/calendar'
+import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
+import { getCalendars } from '../../services/CalendarService'
 
 interface Props {
     disablePadding?: boolean
 }
 
-export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
+export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
     const navigate = useNavigate()
     const [calendars, setCalendars] = useState<Calendar[]>([])
 
@@ -33,29 +33,31 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     }, [data])
     return isLoading ? (
         <Box margin={2}>
-            <CircularProgress/>
+            <CircularProgress />
         </Box>
     ) : (
         <List>
             {/*Display text if no calendars available*/}
-            {!calendars || data?.length == 0 && (
-                <ListItem disablePadding={disablePadding}>
-                    <ListItemText primary={"Kein Kalender verfügbar"}/>
-                </ListItem>)}
+            {!calendars ||
+                (data?.length == 0 && (
+                    <ListItem disablePadding={disablePadding}>
+                        <ListItemText primary={'Kein Kalender verfügbar'} />
+                    </ListItem>
+                ))}
             {/* Display option if more than one calendar is visible */}
             {calendars && calendars.length > 1 && (
                 <ListItem disablePadding={disablePadding}>
                     <ListItemButton
                         onClick={() =>
                             navigate(`/calendar`, {
-                                state: [...calendars]
+                                state: [...calendars],
                             })
                         }
                     >
                         <ListItemIcon>
-                            <CalendarTodayIcon/>
+                            <CalendarTodayIcon />
                         </ListItemIcon>
-                        <ListItemText primary={"Alle Events anzeigen"}/>
+                        <ListItemText primary={'Alle Events anzeigen'} />
                     </ListItemButton>
                 </ListItem>
             )}
@@ -70,9 +72,9 @@ export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
                         }
                     >
                         <ListItemIcon>
-                            <CalendarTodayIcon/>
+                            <CalendarTodayIcon />
                         </ListItemIcon>
-                        <ListItemText primary={calendar.name}/>
+                        <ListItemText primary={calendar.name} />
                     </ListItemButton>
                 </ListItem>
             ))}

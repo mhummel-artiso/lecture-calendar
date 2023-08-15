@@ -41,7 +41,6 @@ namespace Calendar.Api.Profiles
                 .ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => x.CreatedDate))
                 .ForMember(x => x.LastUpdateDate, opt => opt.MapFrom(x => x.LastUpdateDate));
 
-
             CreateMap<UpdateCalendarEventDTO, CalendarEvent>()
                 .ForMember(x => x.Start, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
                 .ForMember(x => x.Duration, opt =>
