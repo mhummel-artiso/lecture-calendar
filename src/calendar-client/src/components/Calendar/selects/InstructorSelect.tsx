@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { useQuery } from "@tanstack/react-query"
-import { GenericFormInput } from "./GenericFormInput";
+import { DialogInterfaces } from "../DialogInterfaces";
 import { CircularProgress, Autocomplete, TextField } from "@mui/material"
-import { Instructor } from "../../models/instructor";
-import { getInstructors } from "../../services/KeyCloakService";
-import { useAccount } from "../../hooks/useAccount";
+import { Instructor } from "../../../models/instructor";
+import { getInstructors } from "../../../services/KeyCloakService";
+import { useAccount } from "../../../hooks/useAccount";
 
-export const InstructorSelect: FC<GenericFormInput<Instructor[]>> = ({value, onChange}) => {
+export const InstructorSelect: FC<DialogInterfaces<Instructor[]>> = ({value, onChange}) => {
     const {canEdit}=useAccount();
 
     const {data, isLoading} = useQuery({

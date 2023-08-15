@@ -34,12 +34,15 @@ import { deleteEvent, deleteEventSeries } from "../../services/CalendarService";
 import { DialogComponentProps } from "../../models/dialogComponentProps";
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Instructor } from '../../models/instructor'
-import { LectureSelect } from './LectureSelect'
-import { CalendarSelect } from './CalendarSelect'
-import { InstructorSelect } from './InstructorSelect'
+import { LectureSelect } from './selects/LectureSelect'
+import { CalendarSelect } from './selects/CalendarSelect'
+import { InstructorSelect } from './selects/InstructorSelect'
 import { EditSeriesDialogContent } from './EditSeriesDialogContent'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { useAccount } from '../../hooks/useAccount'
+import { StepperLayout } from "./layout/StepperLayout";
+import { AccordionLayout } from "./layout/AccordionLayout";
+import { LayoutDisplayItem } from "./DialogInterfaces";
 
 const serialList = [
     // dnr = do not repeat
@@ -60,7 +63,7 @@ interface EventDialogComponentProps extends DialogComponentProps<CalendarEvent, 
     onDeletedEvent: (event: CalendarEvent) => void;
 }
 
-type TextFieldViewType = 'required' | 'time' | 'optional';
+export type TextFieldViewType = 'required' | 'time' | 'optional';
 export const EventDialog: FC<EventDialogComponentProps> = ({
                                                                isDialogOpen,
                                                                onDialogClose,
@@ -82,7 +85,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     const [askDeleteSeries, setAskDeleteSeries] = useState<boolean>(false);
     const [selectedInstructurs, setSelectedInstructurs] = useState<Instructor[]>([]);
     const {canEdit} = useAccount();
-
+    const isEdit = !!currentValue ;
+    const isSeries = currentValue?.repeat !== 0;
     useEffect(() => {
         if(!currentValue) {
             resetValues()
@@ -188,7 +192,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     }
     const validateTimeFilds = (): boolean => {
         let isValidSerie = true;
-        if(serie != serialList[0].value) {
+        if(serie !== serialList[0].value) {
             isValidSerie = !!serieEnd;
         }
         return startDate &&
@@ -237,36 +241,40 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             })
         }
     }
+
     const handleCancelAskDialog = () => {
         setAskDeleteSeries(false);
         setAskDeleteSeries(false);
     }
 
-
-    const addOrEditContent = () => {
-        const requiredFields = () => {
-            const {canEdit} = useAccount();
-            return (<Stack direction="column" spacing={2} sx={{margin: 1, mt: 2}}>
-                <CalendarSelect readonlyValue={currentValue?.calendar?.name} value={selectedCalendarId}
-                                onChange={setSelectedCalendarId}/>
-                <LectureSelect readonlyValue={currentValue?.lecture?.title} value={selectedLectureId}
-                               onChange={setSelectedLectureId}/>
-                <TextField disabled={!canEdit}
-                           margin="dense"
-                           label="Vorlesungsort"
-                           type="text"
-                           value={location}
-                           onChange={(e) => setLocation(e.target.value)}
-                />
-                <InstructorSelect value={selectedInstructurs} onChange={setSelectedInstructurs}/>
-            </Stack>)
+    const addOrEditContent = (disabled: boolean) => {
+        const requiredFields = (disabled: boolean) => {
+            return (
+                <Stack direction="column" spacing={2} sx={{margin: 1, mt: 2}}>
+                    <CalendarSelect disabled={disabled || isEdit}
+                                    readonlyValue={currentValue?.calendar?.name}
+                                    value={selectedCalendarId}
+                                    onChange={setSelectedCalendarId}/>
+                    <LectureSelect disabled={disabled}
+                                   readonlyValue={currentValue?.lecture?.title}
+                                   value={selectedLectureId}
+                                   onChange={setSelectedLectureId}/>
+                    <TextField disabled={disabled}
+                               margin="dense"
+                               label="Vorlesungsort"
+                               type="text"
+                               value={location}
+                               onChange={(e) => setLocation(e.target.value)}
+                    />
+                    <InstructorSelect value={selectedInstructurs} onChange={setSelectedInstructurs}/>
+                </Stack>)
         }
 
-        const timeFields = () => {
+        const timeFields = (disabled: boolean) => {
             return (
                 <Stack spacing={2} sx={{margin: 1}}>
                     <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
-                        <DateTimePicker disabled={!canEdit}
+                        <DateTimePicker disabled={disabled}
                                         key={"start"}
                                         value={startDate}
                                         onChange={value => {
@@ -276,7 +284,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                                         label="Start"
                         />
                         <TimePicker
-                            value={endDate} disabled={!canEdit}
+                            value={endDate}
+                            disabled={disabled}
                             onChange={(e) => setEndDate(e!)}
                             label="Ende"
                             viewRenderers={{
@@ -286,16 +295,14 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                             }}
                         />
                     </Stack>
-                    {seriesFields()}
+                    {seriesFields(disabled)}
                 </Stack>)
         }
-        const seriesFields = () => {
-            const shouldRender = !currentValue || currentValue.seriesId;
-            console.log('shouldRender', shouldRender);
+        const seriesFields = (disabled: boolean) => {
+            const shouldRender = !isEdit || isSeries;
             return shouldRender && (
-                <Stack direction="row">
-                    <TextField disabled={!canEdit}
-                               margin="dense"
+                <Stack direction="row" spacing={1}>
+                    <TextField disabled={disabled || isEdit}
                                select
                                fullWidth
                                defaultValue={serialList[0].value}
@@ -312,18 +319,17 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     </TextField>
                     <DatePicker
                         label="Serienende"
-                        sx={{ml: 2, mt: 1, mb: 1}}
-                        disabled={serie === serialList[0].value || !canEdit}
+                        disabled={serie === serialList[0].value || disabled}
                         value={serieEnd}
                         onChange={(e) => setSerieEnd(e!)}
                     />
                 </Stack>
             )
-
         }
-        const optionalFields = () => {
+
+        const optionalFields = (disabled: boolean) => {
             return (<Stack spacing={2} sx={{margin: 1}}>
-                <TextField disabled={!canEdit}
+                <TextField disabled={disabled}
                            multiline
                            margin="dense"
                            type="text"
@@ -334,179 +340,37 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                 />
             </Stack>)
         }
-        const accordionLayout = () => {
-            const [expanded, setExpanded] = React.useState<TextFieldViewType | boolean>('required');
-            const handleChange = (panel: TextFieldViewType) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-                setExpanded(isExpanded ? panel : false);
-            }
-            return (
-                <>
-                    <Accordion onChange={handleChange("required")} expanded={expanded == "required"}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                            <Typography>Allgemein</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {requiredFields()}
-                        </AccordionDetails>
-                    </Accordion>
-                    <Accordion onChange={handleChange("time")} expanded={expanded == "time"}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                            <Typography>Zeit</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {timeFields()}
-                        </AccordionDetails>
-                    </Accordion>
-                    <Accordion onChange={handleChange("optional")} expanded={expanded == "optional"}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                            <Typography>Zusätzliche Infos</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {optionalFields()}
-                        </AccordionDetails>
-                    </Accordion>
-                </>
-            )
-        }
-        const stepperLayout = () => {
-            console.log('setepperLayout');
-            const steps = [
-                {lable: "Allgemein", required: true},
-                {lable: "Zeit", required: true},
-                {lable: "Zusätzliche Infos", required: true}]
-            const [activeStep, setActiveStep] = React.useState(0);
-            const [completed, setCompleted] = React.useState<{
-                [k: number]: boolean;
-            }>({});
 
-            const handleStep = (step: number) => () => {
-                setActiveStep(step);
-                const newCompleted = completed;
-                for(let i = steps.length - 1; i >= step; i--) {
-                    newCompleted[i] = false
-                }
-                setCompleted(newCompleted)
-            }
-            const totalSteps = () => {
-                return steps.length;
-            };
-
-            const isLastStep = () => {
-                return activeStep === totalSteps() - 1;
-            };
-            const handleComplete = () => {
-                const newCompleted = completed;
-                setCompleted(prevState => {
-                    newCompleted[activeStep] = true
-                    return newCompleted
-                });
-                setActiveStep((prevActiveStep) => prevActiveStep + 1)
-            }
-            const singelStep = (x: { lable: string, required: boolean }, index: number) => {
-                const lableProps: {
-                    optional?: React.ReactNode;
-                    error?: boolean;
-                } = {};
-                if(activeStep !== index) {
-                    switch(index) {
-                        case 0:
-                            lableProps.error = !validateRequiredFilds();
-                            if(lableProps.error) {
-                                lableProps.optional = (
-                                    <Typography variant="caption" color="error">
-                                        Fehlende Pflichtfelder
-                                    </Typography>
-                                )
-                            }
-                            break;
-                        case 1:
-                            lableProps.error = !validateTimeFilds();
-                            if(lableProps.error) {
-                                lableProps.optional = (
-                                    <Typography variant="caption" color="error">
-                                        Fehlende Zeitangaben
-                                    </Typography>
-                                )
-                            }
-                    }
-                }
-
-                return (
-                    <Step key={x.lable} completed={completed[index]} color={completed[index] ? "success" : undefined}>
-                        <StepLabel {...lableProps} onClick={handleStep(index)}>
-                            {x.lable}
-                        </StepLabel>
-                    </Step>)
-            }
-            const canContinue = () => {
-                switch(activeStep) {
-                    case 0:
-                        return validateRequiredFilds();
-                    case 1:
-                        return validateTimeFilds();
-                    default:
-                        return true;
-                }
-            }
-            return (<>
-                    <Stepper nonLinear activeStep={activeStep}>
-                        {steps.map(singelStep)}
-                    </Stepper>
-                    {activeStep == 0 && requiredFields()}
-                    {activeStep == 1 && timeFields()}
-                    {activeStep == 2 && optionalFields()}
-                    <Box sx={{flex: "1 1 auto"}}>
-                        {isLastStep() ? (
-                            <Button onClick={() => handleAddOrEditEvent()} disabled={!completed[0] && !completed[1]}
-                                    variant="contained">
-                                Hinzufügen
-                            </Button>
-                        ) : (<Button onClick={handleComplete} disabled={!canContinue()}>
-                            Weiter
-                        </Button>)}
-                        <Button onClick={handleClose}>Abbrechen</Button>
-                    </Box>
-                </>
-            )
-        }
+        const layoutElement: LayoutDisplayItem[] = [
+            {lable: "Allgemein", required: true, renderComponent: requiredFields(disabled), key: "required",errorFn:()=>!validateRequiredFilds(),errorMassage:"Fehlende Angaben"},
+            {lable: "Zeit", required: true, renderComponent: timeFields(disabled), key: "time", errorFn:()=>!validateTimeFilds(),errorMassage:"Falsche Zeitangaben"},
+            {lable: "Zusätzliche Infos", required: true, renderComponent: optionalFields(disabled), key: "optional"}
+        ]
 
         return (
             <>
                 <DialogTitle>
-                    Event {currentValue ? "bearbeiten" : "hinzufügen"}
+                    Event {isEdit ? "bearbeiten" : "hinzufügen"}
                 </DialogTitle>
                 <DialogContent sx={{width: '500px'}}>
-                    {currentValue ? accordionLayout() : canEdit && stepperLayout()}
+                    {isEdit ?
+                        <AccordionLayout
+                            sections={layoutElement}
+                            onCancel={onDialogClose}
+                            canUpdate={canClickAdd()}
+                            onDelete={() => {
+                                if(isSeries) {
+                                    setAskDeleteSeries(true)
+                                } else {
+                                    handleDeleteClick(false)
+                                }
+                            }}
+                            onUpdate={() => isSeries ? setAskEditSeries(true) : handleAddOrEditEvent()}
+                        /> : <StepperLayout
+                            steps={layoutElement}
+                            onCancel={handleClose}
+                            onSubmit={() => handleAddOrEditEvent()}/>}
                 </DialogContent>
-                {currentValue &&
-                    <DialogActions>
-                        {canEdit &&
-                            <IconButton edge="end"
-                                        aria-label="delete"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if(currentValue.seriesId !== undefined || currentValue?.seriesId !== null) {
-                                                setAskDeleteSeries(true)
-                                            } else {
-                                                handleDeleteClick(false)
-                                            }
-                                        }}
-                                        color="error"
-                            >
-                                <DeleteIcon/>
-                            </IconButton>}
-                        <Button
-                            onClick={onDialogClose}>
-                            {canEdit ? "Abbrechen" : "Schließen"}
-                        </Button>
-                        {canEdit &&
-                            <Button
-                                onClick={() => currentValue.seriesId ? setAskEditSeries(true) : handleAddOrEditEvent()}
-                                disabled={!canClickAdd()} variant="contained">
-                                Bearbeiten</Button>}
-                    </DialogActions>
-                }
-
             </>
         )
     }
@@ -529,7 +393,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     Wollen sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
                 </Typography>
             </EditSeriesDialogContent>}
-            {!askEditSeries && !askDeleteSeries && addOrEditContent()}
+            {!askEditSeries && !askDeleteSeries && addOrEditContent(!canEdit)}
         </Dialog>
     )
 }
