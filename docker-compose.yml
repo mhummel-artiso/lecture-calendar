@@ -66,6 +66,8 @@ services:
     depends_on:
       postgressdb:
         condition: service_healthy
+      mongodb:
+        condition: service_started
     networks:
       - frontend
       - backend
