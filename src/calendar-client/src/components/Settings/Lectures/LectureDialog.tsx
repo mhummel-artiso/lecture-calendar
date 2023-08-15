@@ -9,40 +9,47 @@ import {
 } from '@mui/material'
 import React, { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
-import { DialogComponentProps } from "../../../models/dialogComponentProps";
+import { DialogComponentProps } from '../../../models/dialogComponentProps'
 
 export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
-                                                                     isDialogOpen,
-                                                                     onDialogClose,
-                                                                     onDialogAdd,
-                                                                     onDialogEdit,
-                                                                     currentValue: currentLecture
-                                                                 }) => {
-    const [title, setTitle] = useState<string>("");
-    const [shortKey, setShortKey] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    isDialogOpen,
+    onDialogClose,
+    onDialogAdd,
+    onDialogEdit,
+    currentValue: currentLecture,
+}) => {
+    const [title, setTitle] = useState<string>('')
+    const [shortKey, setShortKey] = useState<string>('')
+    const [description, setDescription] = useState<string>('')
 
     useEffect(() => {
-        setTitle(currentLecture?.title ?? "")
-        setShortKey(currentLecture?.shortKey ?? "")
-        setDescription(currentLecture?.description ?? "")
+        setTitle(currentLecture?.title ?? '')
+        setShortKey(currentLecture?.shortKey ?? '')
+        setDescription(currentLecture?.description ?? '')
     }, [currentLecture, isDialogOpen])
 
     const canAddOrEdit = (): boolean => !!title && !!shortKey
 
     const handleSubmitClick = () => {
-        const l: Lecture = {id: currentLecture?.id, title, shortKey, description};
-        if(currentLecture == null && onDialogAdd) {
+        const l: Lecture = {
+            id: currentLecture?.id,
+            title,
+            shortKey,
+            description,
+        }
+        if (currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
-        } else if(onDialogEdit) {
+        } else if (onDialogEdit) {
             onDialogEdit(l)
         }
         onDialogClose()
     }
     return (
         <Dialog open={isDialogOpen} onClose={onDialogClose}>
-            <DialogTitle>Vorlesung {currentLecture == null ? "hinzufügen" : "bearbeiten"}</DialogTitle>
-            <DialogContent sx={{width: '500px'}}>
+            <DialogTitle>
+                Vorlesung {currentLecture == null ? 'hinzufügen' : 'bearbeiten'}
+            </DialogTitle>
+            <DialogContent sx={{ width: '500px' }}>
                 <Stack>
                     <TextField
                         margin="dense"
@@ -77,8 +84,9 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={onDialogClose}>Abbrechen</Button>
-                <Button disabled={!canAddOrEdit()}
-                        onClick={handleSubmitClick}>{currentLecture == null ? "Hinzufügen" : "Bearbeiten"}</Button>
+                <Button disabled={!canAddOrEdit()} onClick={handleSubmitClick}>
+                    {currentLecture == null ? 'Hinzufügen' : 'Bearbeiten'}
+                </Button>
             </DialogActions>
         </Dialog>
     )

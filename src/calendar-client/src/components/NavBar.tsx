@@ -1,5 +1,6 @@
 import {
-    AppBar, Avatar,
+    AppBar,
+    Avatar,
     Button,
     Drawer,
     IconButton,
@@ -11,12 +12,12 @@ import React, { useState } from 'react'
 import { DrawerContent } from './DrawerContent'
 import { useLocation } from 'react-router'
 import { Calendar } from '../models/calendar'
-import { useAccount } from "../hooks/useAccount";
-import { AccountButton } from "./utils/AccountButton";
+import { useAccount } from '../hooks/useAccount'
+import { AccountButton } from './utils/AccountButton'
 
 export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)
-    const {signOut, isLoggedIn, signIn, userAccount} = useAccount();
+    const { signOut, isLoggedIn, signIn, userAccount } = useAccount()
     const location = useLocation()
     const state: Calendar | undefined = location.state
         ? (location.state as Calendar)
@@ -25,9 +26,9 @@ export const NavBar = () => {
     const displayText = () => {
         let displayName = 'Kalender'
         // TODO: Check if user is authorized
-        if(location.pathname.startsWith('/administration')) {
+        if (location.pathname.startsWith('/administration')) {
             displayName = 'Übersicht'
-        } else if(location.pathname.startsWith('/calendar/')) {
+        } else if (location.pathname.startsWith('/calendar/')) {
             displayName = state ? `Kalender: ${state.name}` : 'Kalender'
         }
         return displayName
@@ -42,12 +43,12 @@ export const NavBar = () => {
                     edge="start"
                     color="inherit"
                     aria-label="menu"
-                    sx={{mr: 2}}
+                    sx={{ mr: 2 }}
                     onClick={() => setDrawerActive(true)}
                 >
-                    <MenuIcon/>
+                    <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     {displayText()}
                 </Typography>
                 {isLoggedIn ? (
@@ -55,14 +56,11 @@ export const NavBar = () => {
                 ) : (
                     <Button onClick={signIn} color="inherit">
                         Anmelden
-                    </Button>)}
-
+                    </Button>
+                )}
             </Toolbar>
-            <Drawer
-                open={drawerActive}
-                onClose={() => setDrawerActive(false)}
-            >
-                <DrawerContent handleClose={() => setDrawerActive(false)}/>
+            <Drawer open={drawerActive} onClose={() => setDrawerActive(false)}>
+                <DrawerContent handleClose={() => setDrawerActive(false)} />
             </Drawer>
         </AppBar>
     )

@@ -1,5 +1,5 @@
 import { CalendarEvent } from './calendarEvent'
-import { Moment } from "moment/moment";
+import { Moment } from 'moment/moment'
 
 export interface Calendar {
     id?: string

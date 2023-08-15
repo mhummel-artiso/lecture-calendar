@@ -1,7 +1,5 @@
-﻿using Calendar.Api.Models;
-using Calendar.Mongo.Db.Models;
+﻿using Calendar.Mongo.Db.Models;
 using System.Text.Json.Serialization;
-using Instructor = Calendar.Api.Models.Instructor;
 
 namespace Calendar.Api.DTOs
 {

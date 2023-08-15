@@ -1,8 +1,10 @@
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary, Box,
-    Button, CircularProgress,
+    AccordionSummary,
+    Box,
+    Button,
+    CircularProgress,
     Fab,
     Grid,
     IconButton,
@@ -17,28 +19,33 @@ import React, { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { addLecture, deleteLecture, editLecture, getLectures } from '../../../services/LectureService'
+import {
+    addLecture,
+    deleteLecture,
+    editLecture,
+    getLectures,
+} from '../../../services/LectureService'
 import { Lecture } from '../../../models/lecture'
 import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
 
 export const LectureList: FC = () => {
     const [expanded, setExpanded] = useState('')
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null)
 
     const handleExpanded = (name: string) => {
-        if(name === expanded) {
+        if (name === expanded) {
             setExpanded('')
         } else {
             setExpanded(name)
         }
     }
 
-    const {isLoading, data, refetch} = useQuery({
+    const { isLoading, data, refetch } = useQuery({
         queryKey: ['lectures'],
         queryFn: getLectures,
-        useErrorBoundary: true
+        useErrorBoundary: true,
     })
 
     const addLectureMutation = useMutation({
@@ -48,18 +55,18 @@ export const LectureList: FC = () => {
         onSuccess: async (_) => {
             await refetch()
         },
-    });
+    })
 
     const editLectureMutation = useMutation({
         mutationFn: async (lecture: Lecture) => {
-            if(lecture.id) {
+            if (lecture.id) {
                 return await editLecture(lecture.id, lecture)
             }
         },
         onSuccess: async (_) => {
             await refetch()
         },
-    });
+    })
 
     const deleteLectureMutation = useMutation({
         mutationFn: async (lectureId: string) => {
@@ -76,50 +83,58 @@ export const LectureList: FC = () => {
                 expanded={expanded === 'lecture'}
                 onChange={() => handleExpanded('lecture')}
             >
-                <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Grid>
                         <Typography>Fächer</Typography>
                     </Grid>
                 </AccordionSummary>
-                <AccordionDetails>{isLoading ? (
+                <AccordionDetails>
+                    {isLoading ? (
                         <Box margin={1}>
-                            <CircularProgress/>
+                            <CircularProgress />
                         </Box>
-                    ) :
-                    (<><Button variant="outlined" startIcon={<AddIcon/>} onClick={() => {
-                        setSelectedLecture(null);
-                        setIsDialogOpen(true)
-                    }}>Vorlesung hinzufügen</Button>
-                        <List>
-                            {data?.map(
-                                (lecture, index) =>
+                    ) : (
+                        <>
+                            <Button
+                                variant="outlined"
+                                startIcon={<AddIcon />}
+                                onClick={() => {
+                                    setSelectedLecture(null)
+                                    setIsDialogOpen(true)
+                                }}
+                            >
+                                Vorlesung hinzufügen
+                            </Button>
+                            <List>
+                                {data?.map((lecture, index) => (
                                     <ListItemButton
                                         divider
                                         key={index}
                                         onClick={() => {
-                                            setIsDialogOpen(true);
+                                            setIsDialogOpen(true)
                                             setSelectedLecture(lecture)
                                         }}
                                     >
-                                        <ListItemText primary={lecture.title}/>
+                                        <ListItemText primary={lecture.title} />
                                         <ListItemSecondaryAction>
                                             <IconButton
                                                 edge="end"
                                                 aria-label="delete"
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
+                                                    e.stopPropagation()
                                                     deleteLectureMutation.mutate(
                                                         lecture.id!
                                                     )
                                                 }}
                                             >
-                                                <DeleteIcon/>
+                                                <DeleteIcon />
                                             </IconButton>
                                         </ListItemSecondaryAction>
                                     </ListItemButton>
-                            )}
-                        </List>
-                    </>)}
+                                ))}
+                            </List>
+                        </>
+                    )}
                 </AccordionDetails>
             </Accordion>
             <LectureDialog

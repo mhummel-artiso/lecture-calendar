@@ -9,6 +9,7 @@ using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
 

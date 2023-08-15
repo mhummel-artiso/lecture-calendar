@@ -1,4 +1,4 @@
-import { Moment } from "moment/moment"
+import { Moment } from 'moment/moment'
 
 export interface Lecture {
     id?: string
