@@ -18,18 +18,18 @@ import {
     MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { EventDialog } from '../Calendar/EventDialog'
-import { useAccount } from "../../hooks/useAccount";
-import moment, { Moment } from "moment";
-import { useLocation, useParams } from "react-router";
-import { Calendar } from "../../models/calendar";
-import { useNavigate } from "react-router-dom";
+import { useAccount } from '../../hooks/useAccount'
+import moment, { Moment } from 'moment'
+import { useLocation, useParams } from 'react-router'
+import { Calendar } from '../../models/calendar'
+import { useNavigate } from 'react-router-dom'
 
-type CalendarViewType = 'month' | 'week' | 'day';
+type CalendarViewType = 'month' | 'week' | 'day'
 
 export const CalendarPage = () => {
-    const {canEdit} = useAccount();
+    const { canEdit } = useAccount()
     const navigate = useNavigate()
-    const {calendarName} = useParams();
+    const { calendarName } = useParams()
     const location = useLocation()
     const [calendarView, setCalendarView] = useState<CalendarViewType>('week')
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
@@ -39,17 +39,17 @@ export const CalendarPage = () => {
         // TODO what should happen if the location.state is undefined?
         // This state is undefined if the user navigates direct without select a calendar in the nav bar to the given calendar,
         // for example the user paste the url .../calendar/123 direct into the browser and press enter.
-        console.log('location', location.state, calendarName);
-        const state = location.state as Calendar | Calendar[];
+        console.log('location', location.state, calendarName)
+        const state = location.state as Calendar | Calendar[]
 
-        if(calendarName && state) {
-            const calendar = state as Calendar | undefined;
+        if (calendarName && state) {
+            const calendar = state as Calendar | undefined
             // TODO load events for current events from location.state#
-            console.log('load events for calendar: ', calendar);
-        } else if(!calendarName && state) {
+            console.log('load events for calendar: ', calendar)
+        } else if (!calendarName && state) {
             const calendars = state as Calendar[]
             // TODO load all events for all calendar in state
-            console.log('load events for calendars: ', calendars);
+            console.log('load events for calendars: ', calendars)
         }
     }, [calendarName, location.state])
 
@@ -57,7 +57,7 @@ export const CalendarPage = () => {
         event: React.MouseEvent<HTMLElement>,
         newAlignment: CalendarViewType | null
     ) => {
-        if(newAlignment) {
+        if (newAlignment) {
             setCalendarView(newAlignment)
         }
     }
@@ -65,31 +65,34 @@ export const CalendarPage = () => {
     const handleNavigate = (date: Moment, isForward: boolean) => {
         // adds or remove 1 day or week or month
         date.add(isForward ? 1 : -1, calendarView)
-        setCurrentDate(moment(date));
+        setCurrentDate(moment(date))
     }
 
     const formatCurrentDate = (viewType: CalendarViewType) => {
-        switch(viewType) {
+        switch (viewType) {
             case 'day':
-                return currentDate.format('dddd, DD.MMMM.YYYY');
+                return currentDate.format('dddd, DD.MMMM.YYYY')
             case 'week': {
                 // calculate the first day of the week
-                const firstDayOfWeek = moment(currentDate)
-                    .add(-(currentDate.weekday()) + 1, "day")
+                const firstDayOfWeek = moment(currentDate).add(
+                    -currentDate.weekday() + 1,
+                    'day'
+                )
                 // calculate the last day of the week
-                const lastDayOfWeek = moment(firstDayOfWeek)
-                    .add(6, "day")
-                return `${firstDayOfWeek.format('D.MM')} - ${lastDayOfWeek.format('D.MM.YYYY')}`
+                const lastDayOfWeek = moment(firstDayOfWeek).add(6, 'day')
+                return `${firstDayOfWeek.format(
+                    'D.MM'
+                )} - ${lastDayOfWeek.format('D.MM.YYYY')}`
             }
             case 'month':
-                return currentDate.format("MM.YYYY")
+                return currentDate.format('MM.YYYY')
             default:
                 return ''
         }
     }
     return (
         <>
-            <Grid item container sx={{padding: 3}} alignItems="center">
+            <Grid item container sx={{ padding: 3 }} alignItems="center">
                 <Grid item xl={10} md={9} xs={12}>
                     <Grid
                         container
@@ -100,7 +103,7 @@ export const CalendarPage = () => {
                             color="primary"
                             onClick={() => handleNavigate(currentDate, false)}
                         >
-                            <KeyboardArrowLeftIcon/>
+                            <KeyboardArrowLeftIcon />
                         </Fab>
                         <Typography variant="subtitle1">
                             {formatCurrentDate(calendarView)}
@@ -109,7 +112,7 @@ export const CalendarPage = () => {
                             color="primary"
                             onClick={() => handleNavigate(currentDate, true)}
                         >
-                            <KeyboardArrowRightIcon/>
+                            <KeyboardArrowRightIcon />
                         </Fab>
                     </Grid>
                 </Grid>
@@ -133,7 +136,7 @@ export const CalendarPage = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid sx={{position: 'relative', flexGrow: 1}}>
+            <Grid sx={{ position: 'relative', flexGrow: 1 }}>
                 <Grid
                     sx={{
                         top: 0,
@@ -143,16 +146,24 @@ export const CalendarPage = () => {
                         position: 'absolute',
                     }}
                 >
-                    <Scheduler locale={'de-DE'} firstDayOfWeek={1}>
+                    <Scheduler data={[]} locale={'de-DE'} firstDayOfWeek={1}>
                         <ViewState
                             currentDate={currentDate.toDate()}
                             currentViewName={calendarView}
                             defaultCurrentViewName={'month'}
                         />
-                        <DayView name={"day"} startDayHour={6} endDayHour={18}/>
-                        <WeekView name={"week"} startDayHour={6} endDayHour={18}/>
-                        <MonthView name={"month"}/>
-                        <Appointments/>
+                        <DayView
+                            name={'day'}
+                            startDayHour={6}
+                            endDayHour={18}
+                        />
+                        <WeekView
+                            name={'week'}
+                            startDayHour={6}
+                            endDayHour={18}
+                        />
+                        <MonthView name={'month'} />
+                        <Appointments />
                     </Scheduler>
                 </Grid>
             </Grid>
@@ -167,15 +178,15 @@ export const CalendarPage = () => {
                     }}
                     onClick={() => setIsDialogOpen(true)}
                 >
-                    <AddIcon/>
+                    <AddIcon />
                 </Fab>
             )}
             <EventDialog
                 isDialogOpen={isDialogOpen}
                 onDialogClose={() => setIsDialogOpen(false)}
-                calendarId={""}
-                onDialogAdd={()=>{}}
-                onDialogEdit={()=>{}}
+                calendarId={''}
+                onDialogAdd={(e) => {}}
+                onDialogEdit={(e) => {}}
             />
         </>
     )

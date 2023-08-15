@@ -33,8 +33,8 @@ namespace Calendar.Api.Services
         public async Task<Lecture?> UpdateLectureAsync(string lectureId, Lecture lecture)
         {
             var update = new UpdateDefinitionBuilder<Lecture>()
-                .Set(x => x.Professor, lecture.Professor)
-                .Set(x => x.Comment, lecture.Comment)
+                .Set(x => x.ShortKey, lecture.ShortKey)
+                .Set(x => x.Description, lecture.Description)
                 .Set(x => x.Title, lecture.Title)
                 .Set(x => x.LastUpdateDate, DateTimeOffset.UtcNow);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(lectureId), update);

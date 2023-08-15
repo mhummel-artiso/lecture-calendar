@@ -2,6 +2,7 @@
 {
     public enum EventRotation
     {
+        None,
         Daily,
         Weekly,
         Monthly,

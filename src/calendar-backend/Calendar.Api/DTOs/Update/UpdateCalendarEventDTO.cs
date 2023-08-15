@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Calendar.Mongo.Db.Models;
+using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace Calendar.Api.DTOs.Update
 {
@@ -7,9 +9,10 @@ namespace Calendar.Api.DTOs.Update
         [Required()]
         [StringLength(24, MinimumLength = 24)]
         public string? Id { get; set; }
-        
+
         [StringLength(24, MinimumLength = 24)]
-        public string? SerieId { get; set; }
+        [Range(0, 3)]
+        public EventRotation Rotation { get; set; }
 
         [Required()]
         [StringLength(50)]
