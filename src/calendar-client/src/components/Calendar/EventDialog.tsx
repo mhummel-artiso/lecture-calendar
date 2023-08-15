@@ -23,7 +23,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useMutation } from '@tanstack/react-query'
 import { DateTimePicker, TimePicker } from '@mui/x-date-pickers'
 import {
-    CalendarEvent,
+    CalendarEvent, CalendarEventBase,
     CreateCalendarEvent,
     UpdateCalendarEvent,
     UpdateCalendarEventSeries
@@ -78,7 +78,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     const [startDate, setStartDate] = useState<Moment>(moment());
     const [endDate, setEndDate] = useState<Moment>(moment());
     const [location, setLocation] = useState<string>("")
-    const [comment, setComment] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
     const [serieEnd, setSerieEnd] = useState<Moment>(moment());
     const [serie, setSerie] = useState<number>(serialList[0].value);
     const [askEditSeries, setAskEditSeries] = useState<boolean>();
@@ -95,7 +95,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             setEndDate(moment(currentValue.end))
             setSelectedCalendarId(currentValue.calendarId ?? calendarId)
             setLocation(currentValue.location)
-            setComment(currentValue.description ?? "")
+            setDescription(currentValue.description ?? "")
             //TODO: überarbeiten
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerie(currentValue.repeat)
@@ -109,7 +109,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
         setEndDate(moment())
         setSerie(serialList[0].value);
         setLocation("")
-        setComment("")
+        setDescription("")
         setSerieEnd(moment())
         setSelectedCalendarId(calendarId ?? "")
         setSelectedLectureId("")
@@ -121,22 +121,23 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     }
 
     const handleAddOrEditEvent = (editSeries: boolean | undefined = undefined) => {
+        const base:CalendarEventBase={
+            calendarId: selectedCalendarId,
+            repeat: serie,
+            description: description,
+            instructors: selectedInstructurs,
+            location: location,
+            start: startDate,
+            end: endDate,
+        }
         if(currentValue) {
             if(onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
+                    ...base,
                     // TODO add ui for instructors
-                    instructors: currentValue.instructors,
-                    lastUpdateDate: currentValue.lastUpdateDate,
-                    createdDate: currentValue.createdDate,
-                    end: endDate,
-                    start: startDate,
-                    description: comment,
-                    repeat: serie,
+                    ...currentValue,
                     endSeries: serieEnd,
-                    location: location,
                     lectureId: selectedLectureId,
-                    seriesId: currentValue.seriesId,
-                    calendarId: currentValue.calendarId
                 }
                 onDialogEdit({
                     calendarId: currentValue.calendarId,
@@ -145,19 +146,11 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                 });
             } else if(onDialogEdit && !editSeries) {
                 const data: UpdateCalendarEvent = {
+                    ...base,
+                    ...currentValue,
                     calendarId: currentValue.calendarId,
-                    createdDate: currentValue.createdDate,
-
-                    id: currentValue.id,
                     // TODO add ui for instructors
-                    instructors: currentValue.instructors,
-                    lastUpdateDate: currentValue.lastUpdateDate,
-                    description: comment,
-                    end: endDate,
-                    start: startDate,
-                    repeat: serie,
                     endSeries: serieEnd,
-                    location: location,
                     lectureId: selectedLectureId
                 }
                 onDialogEdit({
@@ -168,16 +161,10 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             }
         } else if(onDialogAdd) {
             const data: CreateCalendarEvent = {
+                ...base,
                 lectureId: selectedLectureId,
-                end: endDate,
-                start: startDate,
-                description: comment ?? undefined,
-                location: location,
+                description: description ?? undefined,
                 endSeries: serieEnd ?? undefined,
-                calendarId: selectedCalendarId,
-                repeat: serie,
-                // TODO add ui for instructors
-                instructors: selectedInstructurs
             }
             onDialogAdd(data);
         }
@@ -335,8 +322,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                            type="text"
                            label="zusätzlicher Kommentar"
                            maxRows={4}
-                           value={comment}
-                           onChange={(e) => setComment(e.target.value)}
+                           value={description}
+                           onChange={(e) => setDescription(e.target.value)}
                 />
             </Stack>)
         }

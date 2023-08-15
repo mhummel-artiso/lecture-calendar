@@ -3,7 +3,7 @@ import { Instructor } from './instructor'
 import { Lecture } from './lecture'
 import { Moment } from "moment/moment"
 
-interface CalendarEventBase {
+export interface CalendarEventBase {
     location: string,
     description?: string
     start: Moment
@@ -38,6 +38,7 @@ export interface UpdateCalendarEvent extends CalendarEventBase {
     // this dates only necessary for api to check the last edit
     lastUpdateDate?: Moment
     createdDate?: Moment
+    instructors: Instructor[]
 }
 
 export interface UpdateCalendarEventSeries extends CalendarEventBase {
