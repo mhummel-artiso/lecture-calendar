@@ -6,22 +6,24 @@ import { useAccount } from "../../hooks/useAccount";
 export const HelloPage = () => {
     const {isLoggedIn, signIn} = useAccount();
     return isLoggedIn ? (
-        <Container>
-            <Typography variant="h3">
-                Deine Kurse
-            </Typography>
-            <AvailableCalendarsList/>
-        </Container>
+        <Grid container alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
+            <Grid item>
+                <Typography variant="h3">
+                    Deine Kurse
+                </Typography>
+                <AvailableCalendarsList/>
+            </Grid>
+        </Grid>
     ) : (
-        <Container>
-            <Box sx={{display: 'flex', flexDirection: 'column', flexGrow: 1, margin:"auto",alignItems:"center",alignContent:"center"}}>
+        <Grid container alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
+            <Grid item alignContent="center" textAlign="center">
                 <Typography variant="h3">
                     Bitte Anmelden
                 </Typography>
                 <Button variant={"contained"} onClick={signIn}>
                     Anmelden
                 </Button>
-            </Box>
-        </Container>
+            </Grid>
+        </Grid>
     )
 }
