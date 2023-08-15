@@ -86,10 +86,6 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
         }
     }
 
-    useEffect(() => {
-        console.log('name', name)
-    }, [name])
-
     return (
         <Dialog open={isDialogOpen} onClose={onDialogClose}>
             <DialogTitle>
