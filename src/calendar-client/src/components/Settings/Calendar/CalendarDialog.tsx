@@ -125,7 +125,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar>> = ({
                                 calendarsData
                             ).length === 0 && (
                                 <MenuItem disabled={true} value={'noCalendars'}>
-                                    Keine Kalender zum Hinzufügen
+                                    Keine weiteren Kalender zum Hinzufügen
                                 </MenuItem>
                             )}
                         </Select>
