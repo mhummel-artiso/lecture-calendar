@@ -11,13 +11,13 @@ import React, { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 
-export const LectureDialog: FC<DialogComponentProps<Lecture, Lecture, Lecture>> = ({
-                                                                                       isDialogOpen,
-                                                                                       onDialogClose,
-                                                                                       onDialogAdd,
-                                                                                       onDialogEdit,
-                                                                                       currentValue: currentLecture,
-                                                                                   }) => {
+export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
+    isDialogOpen,
+    onDialogClose,
+    onDialogAdd,
+    onDialogEdit,
+    currentValue: currentLecture,
+}) => {
     const [title, setTitle] = useState<string>('')
     const [shortKey, setShortKey] = useState<string>('')
     const [description, setDescription] = useState<string>('')
@@ -39,7 +39,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture, Lecture, Lecture>> 
         }
         if(currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
-        } else if(onDialogEdit) {
+        } else if (onDialogEdit) {
             onDialogEdit(l)
         }
         onDialogClose()
