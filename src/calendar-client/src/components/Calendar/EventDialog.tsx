@@ -87,6 +87,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     const {canEdit} = useAccount();
     const isEdit = !!currentValue ;
     const isSeries = currentValue?.repeat !== 0;
+
     useEffect(() => {
         if(!currentValue) {
             resetValues()
@@ -96,7 +97,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             setSelectedCalendarId(currentValue.calendarId ?? calendarId)
             setLocation(currentValue.location)
             setDescription(currentValue.description ?? "")
-            //TODO: überarbeiten
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerie(currentValue.repeat)
             setSelectedLectureId(currentValue.lecture.id!)
@@ -134,7 +134,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             if(onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
                     ...base,
-                    // TODO add ui for instructors
                     ...currentValue,
                     endSeries: serieEnd,
                     lectureId: selectedLectureId,
@@ -149,7 +148,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     ...base,
                     ...currentValue,
                     calendarId: currentValue.calendarId,
-                    // TODO add ui for instructors
                     endSeries: serieEnd,
                     lectureId: selectedLectureId
                 }
@@ -320,7 +318,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                            multiline
                            margin="dense"
                            type="text"
-                           label="zusätzlicher Kommentar"
+                           label="Zusätzlicher Kommentar"
                            maxRows={4}
                            value={description}
                            onChange={(e) => setDescription(e.target.value)}
@@ -365,19 +363,19 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     return (
         <Dialog open={isDialogOpen} onClose={handleClose}>
             {askEditSeries && <EditSeriesDialogContent
-                title="Serie Bearbeiten?"
+                title="Serie bearbeiten?"
                 onCanceled={handleCancelAskDialog}
                 onAccepted={handleAddOrEditEvent}>
                 <Typography>
-                    Wollen sie nur das aktuelle Ereignis oder die gesamte Serie Bearbeiten?
+                    Wollen Sie nur das aktuelle Ereignis oder die gesamte Serie bearbeiten?
                 </Typography>
             </EditSeriesDialogContent>}
             {askDeleteSeries && <EditSeriesDialogContent
-                title="Serie Löschen?"
+                title="Serie löschen?"
                 onCanceled={handleCancelAskDialog}
                 onAccepted={handleDeleteClick}>
                 <Typography>
-                    Wollen sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
+                    Wollen Sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
                 </Typography>
             </EditSeriesDialogContent>}
             {!askEditSeries && !askDeleteSeries && addOrEditContent(!canEdit)}
