@@ -6,7 +6,7 @@ import { ErrorPage } from './pages/ErrorPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
 import { CalendarPage } from './calendar/CalendarPage'
-import { AdminPage } from './settings/AdminPageContainer'
+import { AdminPage } from './adminComponents/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
 

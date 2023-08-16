@@ -5,7 +5,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import React, { useEffect, useState } from 'react'
 import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler'
 import { Appointments, DayView, MonthView, Scheduler, WeekView, } from '@devexpress/dx-react-scheduler-material-ui'
-import { EditEventCallback, EventDialog } from '../events/EventDialog'
+import { EditEventCallback, EventDialog } from '../eventDialog/EventDialog'
 import { useAccount } from "../../hooks/useAccount";
 import moment, { Moment } from "moment";
 import { useLocation, useParams } from "react-router";
