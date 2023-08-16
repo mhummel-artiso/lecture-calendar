@@ -44,7 +44,7 @@ export const LectureSelect: FC<DialogSelectInterfaces<string>> = ({value, onChan
                     ...params.InputProps,
                     readOnly: !canEdit,
                     endAdornment: (<>
-                        {isLoading && <CircularProgress color="inherit" size={20}/>}
+                        {isLoading && canEdit && <CircularProgress color="inherit" size={20}/>}
                         {params.InputProps.endAdornment}
                     </>)
                 }}
