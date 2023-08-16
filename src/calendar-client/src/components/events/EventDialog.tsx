@@ -32,7 +32,7 @@ import { Moment } from "moment/moment";
 import moment from "moment";
 import { deleteEvent, deleteEventSeries } from "../../services/CalendarService";
 import { DialogComponentProps } from "../../models/dialogComponentProps";
-import { EditSeriesDialogContent } from './eventDialogContent/EditSeriesDialogContent'
+import { EditEventSeriesDialogContent } from './eventDialogContent/EditEventSeriesDialogContent'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { useAccount } from '../../hooks/useAccount'
 import { Instructor } from '../../models/instructor'
@@ -362,22 +362,22 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
 
     return (
         <Dialog open={isDialogOpen} onClose={handleClose}>
-            {askEditSeries && <EditSeriesDialogContent
+            {askEditSeries && <EditEventSeriesDialogContent
                 title="Serie bearbeiten?"
                 onCanceled={handleCancelAskDialog}
                 onAccepted={handleAddOrEditEvent}>
                 <Typography>
                     Wollen Sie nur das aktuelle Ereignis oder die gesamte Serie bearbeiten?
                 </Typography>
-            </EditSeriesDialogContent>}
-            {askDeleteSeries && <EditSeriesDialogContent
+            </EditEventSeriesDialogContent>}
+            {askDeleteSeries && <EditEventSeriesDialogContent
                 title="Serie löschen?"
                 onCanceled={handleCancelAskDialog}
                 onAccepted={handleDeleteClick}>
                 <Typography>
                     Wollen Sie nur das aktuelle Ereignis oder die gesamte Serie löschen?
                 </Typography>
-            </EditSeriesDialogContent>}
+            </EditEventSeriesDialogContent>}
             {!askEditSeries && !askDeleteSeries && addOrEditContent(!canEdit)}
         </Dialog>
     )

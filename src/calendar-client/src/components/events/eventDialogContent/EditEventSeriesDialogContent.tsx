@@ -8,7 +8,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-export const EditSeriesDialogContent: FC<Props> = ({onAccepted, onCanceled, title, children}) => {
+export const EditEventSeriesDialogContent: FC<Props> = ({onAccepted, onCanceled, title, children}) => {
     return (<>
         <DialogTitle>
             {title}
