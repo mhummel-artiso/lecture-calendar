@@ -32,14 +32,14 @@ import { Moment } from "moment/moment";
 import moment from "moment";
 import { deleteEvent, deleteEventSeries } from "../../services/CalendarService";
 import { DialogComponentProps } from "../../models/dialogComponentProps";
-import { EditSeriesDialogContent } from './EditSeriesDialogContent'
+import { EditSeriesDialogContent } from './eventDialogContent/EditSeriesDialogContent'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { useAccount } from '../../hooks/useAccount'
 import { Instructor } from '../../models/instructor'
 import { CalendarSelect } from "./selects/CalendarSelect";
 import { LectureSelect } from "./selects/LectureSelect";
 import { InstructorSelect } from "./selects/InstructorSelect";
-import { LayoutDisplayItem } from "./DialogInterfaces";
+import { LayoutDisplayItem } from "../Calendar/DialogInterfaces";
 import { AccordionLayout } from "./layout/AccordionLayout";
 import { StepperLayout } from "./layout/StepperLayout";
 

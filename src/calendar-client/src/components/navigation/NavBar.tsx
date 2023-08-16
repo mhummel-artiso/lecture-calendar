@@ -11,9 +11,9 @@ import MenuIcon from '@mui/icons-material/Menu'
 import React, { useState } from 'react'
 import { DrawerContent } from './DrawerContent'
 import { useLocation, useNavigate } from 'react-router'
-import { Calendar } from '../models/calendar'
-import { useAccount } from '../hooks/useAccount'
-import { AccountButton } from './utils/AccountButton'
+import { Calendar } from '../../models/calendar'
+import { useAccount } from '../../hooks/useAccount'
+import { AccountButton } from '../utils/AccountButton'
 
 export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)

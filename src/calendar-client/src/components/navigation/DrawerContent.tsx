@@ -10,8 +10,8 @@ import {
 import React from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useNavigate } from 'react-router-dom'
-import { useAccount } from '../hooks/useAccount'
-import { AvailableCalendarsList } from './utils/AvailableCalendarsList'
+import { useAccount } from '../../hooks/useAccount'
+import { AvailableCalendarsList } from '../utils/AvailableCalendarsList'
 
 interface props {
     handleClose: () => void

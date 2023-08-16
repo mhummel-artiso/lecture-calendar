@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { LayoutDisplayItem } from "../DialogInterfaces";
+import { LayoutDisplayItem } from "../../Calendar/DialogInterfaces";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAccount } from "../../../hooks/useAccount";
 

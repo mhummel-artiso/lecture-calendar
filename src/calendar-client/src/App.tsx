@@ -9,7 +9,7 @@ import 'moment/dist/locale/de';
 
 import { queryClient } from './utils/queryClient'
 import { RouterComponent } from './components/RouterComponent'
-import { ErrorPage } from './components/Pages/ErrorPage'
+import { ErrorPage } from './components/pages/ErrorPage'
 import { ErrorBoundary } from 'react-error-boundary'
 
 
