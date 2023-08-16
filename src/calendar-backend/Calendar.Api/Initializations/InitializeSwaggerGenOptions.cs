@@ -48,7 +48,7 @@ public class InitializeSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
             OpenIdConnectUrl = new Uri($"{swaggerConfig.SWAGGER_OIDC_URL}/.well-known/openid-configuration"),
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.OpenIdConnect,
-            Description = "OAuht2 Server OpenId Security Scheme",
+            Description = "OIDC Server",
         });
         // Make sure swagger UI requires a Bearer token to be specified
 

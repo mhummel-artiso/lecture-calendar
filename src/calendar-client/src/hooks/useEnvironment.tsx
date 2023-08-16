@@ -16,7 +16,8 @@ export const useEnvironment = (): EnvConfig => {
 export const getGlobalEnv = (): EnvConfig => {
     return {
         API_URL: import.meta.env.VITE_API_URL as string,
-        OIDC_AUTO_SIGN_IN: (import.meta.env.VITE_OIDC_AUTO_SIGN_IN ?? false) as boolean,
+        OIDC_AUTO_SIGN_IN: (import.meta.env.VITE_OIDC_AUTO_SIGN_IN ??
+            false) as boolean,
         OIDC_AUTHORITY: import.meta.env.VITE_OIDC_AUTHORITY as string,
         OIDC_CLIENT_SECRET: import.meta.env.VITE_OIDC_CLIENT_SECRET as string,
         OIDC_REDIRECT_URL: import.meta.env.VITE_OIDC_REDIRECT_URL as string,

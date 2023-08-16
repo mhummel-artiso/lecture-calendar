@@ -8,9 +8,9 @@ import moment from 'moment';
 import 'moment/dist/locale/de';
 
 import { queryClient } from './utils/queryClient'
-import { RouterComponent } from "./components/RouterComponent";
-import { ErrorPage } from "./components/Pages/ErrorPage";
-import { ErrorBoundary } from "react-error-boundary";
+import { RouterComponent } from './components/RouterComponent'
+import { ErrorPage } from './components/Pages/ErrorPage'
+import { ErrorBoundary } from 'react-error-boundary'
 
 
 function App() {
@@ -20,13 +20,13 @@ function App() {
         loadUserInfo: true,
         autoSignIn: envConfig.OIDC_AUTO_SIGN_IN,
         authority: envConfig.OIDC_AUTHORITY,
-        automaticSilentRenew:true,
-        clientId: "calendar-client",
-        scope:"",
+        automaticSilentRenew: true,
+        clientId: 'calendar-client',
+        scope: '',
         clientSecret: envConfig.OIDC_CLIENT_SECRET,
         redirectUri: envConfig.OIDC_REDIRECT_URL,
         postLogoutRedirectUri: envConfig.OIDC_REDIRECT_URL,
-    };
+    }
     return (
         <ErrorBoundary FallbackComponent={ErrorPage}>
             <AuthProvider {...oidcConfig}>
@@ -36,9 +36,9 @@ function App() {
                         dateAdapter={AdapterMoment}
                         adapterLocale="de"
                     >
-                        <RouterComponent/>
+                        <RouterComponent />
                     </LocalizationProvider>
-                    {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools/>}
+                    {envConfig.QUERY_USE_DEVTOOL && <ReactQueryDevtools />}
                 </QueryClientProvider>
             </AuthProvider>
         </ErrorBoundary>

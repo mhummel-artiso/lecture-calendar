@@ -50,22 +50,5 @@ namespace Calendar.Mongo.Db.Models
 
         public CalendarEvent() { }
 
-        // public CalendarEvent(CalendarEvent calendarEvent, ObjectId seriesId)
-        // {
-        //     Id = ObjectId.GenerateNewId();
-        //     Location = calendarEvent.Location;
-        //     Description = calendarEvent.Description;
-        //     Start = calendarEvent.Start.ToUniversalTime();
-        //     End = calendarEvent.End;
-        //     LastUpdateDate = calendarEvent.LastUpdateDate.ToUniversalTime();
-        //     CreatedDate = calendarEvent.CreatedDate.ToUniversalTime();
-        //     LectureId = calendarEvent.LectureId;
-        //     Repeat = calendarEvent.Repeat;
-        //     SeriesId = seriesId;
-        //     StartSeries = calendarEvent.StartSeries;
-        //     EndSeries = calendarEvent.EndSeries;
-        //     InstructorsIds = calendarEvent.InstructorsIds;
-        //     CalendarId = calendarEvent.CalendarId;
-        // }
     }
 }

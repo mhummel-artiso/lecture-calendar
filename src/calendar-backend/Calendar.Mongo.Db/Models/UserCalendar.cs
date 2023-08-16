@@ -3,12 +3,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Calendar.Mongo.Db.Models
 {
-    public class UserCalendar
+    public class UserCalendar : ICalendar
     {
-        public UserCalendar()
-        {
-            Events = new List<CalendarEvent>();
-        }
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
@@ -16,7 +12,8 @@ namespace Calendar.Mongo.Db.Models
         
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset StartDate { get; set; }
-        public IList<CalendarEvent> Events { get; set; }
+        public IList<CalendarEvent> Events { get; set; } = new List<CalendarEvent>();
+        
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset CreatedDate { get; set; }
         [BsonRepresentation(BsonType.String)]

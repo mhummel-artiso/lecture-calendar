@@ -16,12 +16,12 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
 import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
 
-type CalendarViewType = 'month' | 'week' | 'day';
+type CalendarViewType = 'month' | 'week' | 'day'
 
 export const CalendarPage = () => {
-    const {canEdit} = useAccount();
+    const { canEdit } = useAccount()
     const navigate = useNavigate()
-    const {calendarName} = useParams();
+    const { calendarName } = useParams()
     const location = useLocation()
     const [calendarView, setCalendarView] = useState<CalendarViewType>('week')
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
@@ -114,7 +114,7 @@ export const CalendarPage = () => {
         event: React.MouseEvent<HTMLElement>,
         newAlignment: CalendarViewType | null
     ) => {
-        if(newAlignment) {
+        if (newAlignment) {
             setCalendarView(newAlignment)
         }
     }
@@ -122,7 +122,7 @@ export const CalendarPage = () => {
     const handleDataNavigation = (date: Moment, isForward: boolean) => {
         // adds or remove 1 day or week or month
         date.add(isForward ? 1 : -1, calendarView)
-        setCurrentDate(moment(date));
+        setCurrentDate(moment(date))
     }
 
     const formatCurrentDateView = () => {
@@ -135,7 +135,7 @@ export const CalendarPage = () => {
                 return `${firstDayOfWeek.format('D.MM')} - ${lastDayOfWeek.format('D.MM.YYYY')}`
             }
             case 'month':
-                return currentDate.format("MM.YYYY")
+                return currentDate.format('MM.YYYY')
             default:
                 return 'Invalid View Type'
         }
@@ -182,7 +182,7 @@ export const CalendarPage = () => {
 
     return (
         <>
-            <Grid item container sx={{padding: 3}} alignItems="center">
+            <Grid item container sx={{ padding: 3 }} alignItems="center">
                 <Grid item xl={10} md={9} xs={12}>
                     <Grid
                         container
@@ -193,7 +193,7 @@ export const CalendarPage = () => {
                             color="primary"
                             onClick={() => handleDataNavigation(currentDate, false)}
                         >
-                            <KeyboardArrowLeftIcon/>
+                            <KeyboardArrowLeftIcon />
                         </Fab>
                         <Typography variant="subtitle1">
                             {formatCurrentDateView()}
@@ -202,7 +202,7 @@ export const CalendarPage = () => {
                             color="primary"
                             onClick={() => handleDataNavigation(currentDate, true)}
                         >
-                            <KeyboardArrowRightIcon/>
+                            <KeyboardArrowRightIcon />
                         </Fab>
                     </Grid>
                 </Grid>
@@ -226,7 +226,7 @@ export const CalendarPage = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid sx={{position: 'relative', flexGrow: 1}}>
+            <Grid sx={{ position: 'relative', flexGrow: 1 }}>
                 <Grid
                     sx={{
                         top: 0,
@@ -260,7 +260,7 @@ export const CalendarPage = () => {
                     }}
                     onClick={() => setIsEventDialogOpen(true)}
                 >
-                    <AddIcon/>
+                    <AddIcon />
                 </Fab>
             )}
 

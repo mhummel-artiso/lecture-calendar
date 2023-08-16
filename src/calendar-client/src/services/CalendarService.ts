@@ -9,13 +9,16 @@ import {
 
 // Calendar functions
 const calendarEndPointName = (calendarId: string | null = null) => {
-    const path = 'Calendar';
-    return calendarId ? path + `/${calendarId}` : path;
-};
+    const path = 'Calendar'
+    return calendarId ? path + `/${calendarId}` : path
+}
 
 export const addCalendar = async (calendar: Calendar): Promise<Calendar> => {
-    const response = await axiosInstance.post<Calendar>(calendarEndPointName(), calendar)
-    return Promise.resolve(response.data);
+    const response = await axiosInstance.post<Calendar>(
+        calendarEndPointName(),
+        calendar
+    )
+    return Promise.resolve(response.data)
 }
 
 export const getCalendars = async (): Promise<Calendar[]> => {
@@ -27,7 +30,9 @@ export const getAllCalendars = async (): Promise<Calendar[]> => {
     return Promise.resolve(response.data)
 }
 export const getCalendar = async (calendarId: string): Promise<Calendar> => {
-    const response = await axiosInstance.get<Calendar>(calendarEndPointName(calendarId))
+    const response = await axiosInstance.get<Calendar>(
+        calendarEndPointName(calendarId)
+    )
     return Promise.resolve(response.data)
 }
 export const getCalendarByName = async (calendarName: string): Promise<Calendar> => {
@@ -42,8 +47,10 @@ export const editCalendar = async (calendarId: string, calendar: Calendar): Prom
 }
 
 export const deleteCalendar = async (calendarId: string): Promise<boolean> => {
-    const response = await axiosInstance.delete<boolean>(calendarEndPointName(calendarId));
-    return Promise.resolve(response.data);
+    const response = await axiosInstance.delete<boolean>(
+        calendarEndPointName(calendarId)
+    )
+    return Promise.resolve(response.data)
 }
 
 // Event calls
@@ -52,14 +59,24 @@ const eventEndPointName = (calendarId: string, eventId: string | null = null) =>
     return eventId ? path + `/${eventId}` : path;
 };
 
-export const addEvent = async (calendarId: string, event: CreateCalendarEvent): Promise<CalendarEvent> => {
-    const response = await axiosInstance.post<CalendarEvent>(eventEndPointName(calendarId), event)
+export const addEvent = async (
+    calendarId: string,
+    event: CreateCalendarEvent
+): Promise<CalendarEvent> => {
+    const response = await axiosInstance.post<CalendarEvent>(
+        eventEndPointName(calendarId),
+        event
+    )
     return Promise.resolve(response.data)
 }
 
-export const getEvents = async (calendarId: string): Promise<CalendarEvent[]> => {
-    const response = await axiosInstance.get<CalendarEvent[]>(eventEndPointName(calendarId));
-    return Promise.resolve(response.data);
+export const getEvents = async (
+    calendarId: string
+): Promise<CalendarEvent[]> => {
+    const response = await axiosInstance.get<CalendarEvent[]>(
+        eventEndPointName(calendarId)
+    )
+    return Promise.resolve(response.data)
 }
 export const getEventsFrom = async (calendarId: string, startDate: string, viewType: 'day' | 'week' | 'month'): Promise<CalendarEvent[]> => {
     const basePath = eventEndPointName(calendarId);
@@ -67,8 +84,10 @@ export const getEventsFrom = async (calendarId: string, startDate: string, viewT
     return Promise.resolve(response.data);
 }
 export const getEvent = async (calendarId: string, eventId: string) => {
-    const response = await axiosInstance.get<CalendarEvent[]>(eventEndPointName(calendarId, eventId));
-    return Promise.resolve(response.data);
+    const response = await axiosInstance.get<CalendarEvent[]>(
+        eventEndPointName(calendarId, eventId)
+    )
+    return Promise.resolve(response.data)
 }
 
 export const editEvent = async (calendarId: string, event: UpdateCalendarEvent) => {

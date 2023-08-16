@@ -16,14 +16,16 @@ const _canEdit = (user: User | null | undefined): boolean => {
 }
 
 export const useAccount = () => {
-    const {userData, signOut, signIn} = useAuth();
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [userAccount, setUserAccount] = useState<UserProfile | null>(null);
-    const [canEdit, setCanEdit] = useState<boolean>(false);
+    const { userData, signOut, signIn } = useAuth()
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [userAccount, setUserAccount] = useState<UserProfile | null>(null)
+    const [canEdit, setCanEdit] = useState<boolean>(false)
     useEffect(() => {
         const loggedIn = !!userData
         setIsLoggedIn(loggedIn)
-        axiosInstance.defaults.headers['Authorization'] = userData ? "Bearer " + userData.access_token : "";
+        axiosInstance.defaults.headers['Authorization'] = userData
+            ? 'Bearer ' + userData.access_token
+            : ''
         setUserAccount(userData?.profile ?? null)
         setCanEdit(_canEdit(userData))
         if(!loggedIn) {
@@ -36,6 +38,6 @@ export const useAccount = () => {
         signIn,
         signOut,
         isLoggedIn,
-        canEdit
+        canEdit,
     }
 }

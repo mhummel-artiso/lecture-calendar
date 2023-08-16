@@ -94,7 +94,6 @@ public class CalendarController : ControllerBase
         return Ok(mapped);
     }
 
-
     [HttpGet("{calendarId}")]
     [Authorize(AuthPolicies.EDITOR_VIEWER)]
     public async Task<ActionResult<UserCalendarDTO>> GetCalendarById(string calendarId, [FromQuery] bool includeEvents = false)

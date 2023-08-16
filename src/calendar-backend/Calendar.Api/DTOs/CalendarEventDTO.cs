@@ -1,5 +1,4 @@
-﻿using Calendar.Api.Models;
-using Calendar.Mongo.Db.Models;
+﻿using Calendar.Mongo.Db.Models;
 using System.Text.Json.Serialization;
 
 namespace Calendar.Api.DTOs
@@ -24,7 +23,6 @@ namespace Calendar.Api.DTOs
         public DateTimeOffset? EndSeries { get; set; }
         public List<InstructorDTO>? Instructors { get; set; }
 
-        [JsonIgnore]
         public string? LectureId { get; set; }
         public string? CalendarId { get; set; }
     }
