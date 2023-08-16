@@ -11,7 +11,7 @@ import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { CalendarSelect } from "../selects/CalendarSelect";
 import { LectureSelect } from "../selects/LectureSelect";
 import { InstructorSelect } from "../selects/InstructorSelect";
-import { LayoutDisplayItem } from "../DialogInterfaces";
+import { LayoutDisplayItem } from "../DialogSelectInterfaces";
 import { AccordionLayout } from "../layout/AccordionLayout";
 import { StepperLayout } from "../layout/StepperLayout";
 import { FC, useEffect, useState } from 'react';
@@ -21,6 +21,8 @@ import { Moment } from "moment/moment";
 import moment from "moment";
 import { Instructor } from '../../../models/instructor';
 import { CalendarEvent } from '../../../models/calendarEvent';
+import { Calendar } from "../../../models/calendar";
+import { Lecture } from "../../../models/lecture";
 
 const serialList = [
     {value: 0, label: 'Nicht wiederholen'},
@@ -29,7 +31,7 @@ const serialList = [
     {value: 3, label: 'Monatlich wiederholen'},
 ]
 
-export interface PassedDialogValues{
+export interface PassedDialogValues {
     calendarId: string
     lectureId: string
     start: Moment
@@ -46,27 +48,36 @@ interface Props {
     currentValue: CalendarEvent | null
     onDelete: () => void
     onAccept: (value: PassedDialogValues) => void
-    onCancel: ()=> void
+    onCancel: () => void
     calendarId: string
     isSeries: boolean
-};
+}
 
 export const AddOrEditEventDialogContent: FC<Props> = (props) => {
-    const {isEdit, currentValue, calendarId, isSeries, onCancel, onAccept, onDelete} = props;
+    const {
+        isEdit,
+        currentValue,
+        calendarId,
+        isSeries,
+        onCancel,
+        onAccept,
+        onDelete
+    } = props;
     const {canEdit} = useAccount();
-    const [selectedCalendarId, setSelectedCalendarId] = React.useState<string>(calendarId)
-    const [selectedLectureId, setSelectedLectureId] = React.useState<string>("")
+
+    const [selectedCalendarId, setSelectedCalendarId] = React.useState<string | null>(calendarId)
+    const [selectedLectureId, setSelectedLectureId] = React.useState<string | null>("")
     const [startDate, setStartDate] = useState<Moment>(moment());
-    const [endDate, setEndDate] = useState<Moment>(moment());
+    const [endDate, setEndDate] = useState<Moment | undefined>();
     const [location, setLocation] = useState<string>("")
     const [description, setDescription] = useState<string>("");
     const [serieEnd, setSerieEnd] = useState<Moment>(moment());
     const [serie, setSerie] = useState<number>(serialList[0].value);
-    const [selectedInstructors, setSelectedInstructors] = useState<Instructor[]>([]);
+    const [selectedInstructors, setSelectedInstructors] = useState<Instructor[] | null>([]);
 
 
     useEffect(() => {
-        if (!currentValue) {
+        if(!currentValue) {
             resetValues()
         } else {
             setStartDate(moment(currentValue.start))
@@ -79,7 +90,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             setSelectedLectureId(currentValue.lecture.id!)
             setSelectedInstructors(currentValue.instructors)
         }
-    }, [currentValue])
+    }, [currentValue, calendarId])
 
     const resetValues = () => {
         setStartDate(moment())
@@ -106,6 +117,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                 <TextField disabled={disabled}
                            margin="dense"
                            label="Vorlesungsort"
+                           id="location"
                            type="text"
                            value={location}
                            onChange={(e) => setLocation(e.target.value)}
@@ -116,8 +128,8 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
 
     const timeFields = (disabled: boolean) => {
         return (
-            <Stack spacing={2} sx={{margin: 1}}>
-                <Stack direction="row" spacing={2} sx={{mt: 1, mb: 1}}>
+            <Stack spacing={2}>
+                <Stack direction="row" spacing={2}>
                     <DateTimePicker disabled={disabled}
                                     key={"start"}
                                     value={startDate}
@@ -125,8 +137,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                                         setStartDate(value!)
                                         setEndDate(value!)
                                     }}
-                                    label="Start"
-                    />
+                                    label="Start"/>
                     <TimePicker
                         value={endDate}
                         disabled={disabled}
@@ -136,8 +147,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                             hours: renderTimeViewClock,
                             minutes: renderTimeViewClock,
                             seconds: renderTimeViewClock,
-                        }}
-                    />
+                        }}/>
                 </Stack>
                 {seriesFields(disabled)}
             </Stack>)
@@ -173,10 +183,10 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     }
 
     const validateRequiredFields = (): boolean => {
-        return selectedCalendarId?.length > 0 &&
-            selectedLectureId?.length > 0 &&
+        return (selectedCalendarId?.length ?? 0) > 0 &&
+            (selectedLectureId?.length ?? 0) > 0 &&
             location?.length > 0 &&
-            selectedInstructors?.length > 0;
+            (selectedInstructors?.length ?? 0) > 0;
     }
 
     const validateTimeFields = (): boolean => {
@@ -185,7 +195,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             isValidSerie = !!serieEnd;
         }
         return startDate &&
-            endDate &&
+            !!endDate &&
             endDate > startDate &&
             isValidSerie;
     }
@@ -205,8 +215,22 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     }
 
     const layoutElement: LayoutDisplayItem[] = [
-        {lable: "Allgemein", required: true, renderComponent: requiredFields(!canEdit), key: "required",errorFn:()=>!validateRequiredFields(),errorMassage:"Fehlende Angaben"},
-        {lable: "Zeit", required: true, renderComponent: timeFields(!canEdit), key: "time", errorFn:()=>!validateTimeFields(),errorMassage:"Falsche Zeitangaben"},
+        {
+            lable: "Allgemein",
+            required: true,
+            renderComponent: requiredFields(!canEdit),
+            key: "required",
+            errorFn: () => !validateRequiredFields(),
+            errorMassage: "Fehlende Angaben"
+        },
+        {
+            lable: "Zeit",
+            required: true,
+            renderComponent: timeFields(!canEdit),
+            key: "time",
+            errorFn: () => !validateTimeFields(),
+            errorMassage: "Falsche Zeitangaben"
+        },
         {lable: "Zusätzliche Infos", required: true, renderComponent: optionalFields(!canEdit), key: "optional"}
     ]
 
@@ -216,21 +240,21 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     }
 
     const handleAccept = () => {
-        onAccept({ 
-            calendarId: selectedCalendarId,
-            lectureId: selectedLectureId, 
-            start: startDate, 
-            end: endDate, 
-            location, 
-            description, 
-            serieEnd, 
-            repeat: serie, 
-            instructors: selectedInstructors
+        onAccept({
+            calendarId: selectedCalendarId!,
+            lectureId: selectedLectureId!,
+            start: startDate,
+            end: endDate!,
+            location,
+            description,
+            serieEnd,
+            repeat: serie,
+            instructors: selectedInstructors!
         });
     }
-    
+
     const canClickAdd = () =>
-    validateRequiredFields() && validateTimeFields()
+        validateRequiredFields() && validateTimeFields()
 
     return (
         <>

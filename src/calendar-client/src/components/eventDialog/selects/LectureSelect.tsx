@@ -1,37 +1,54 @@
 import { useQuery } from "@tanstack/react-query"
 import { getLectures } from "../../../services/LectureService"
-import { CircularProgress, Grid, MenuItem, TextField } from "@mui/material"
-import { FC } from "react"
-import { DialogInterfaces } from "../DialogInterfaces"
+import { Autocomplete, CircularProgress, Grid, MenuItem, TextField } from "@mui/material"
+import React, { FC, useEffect, useState } from "react"
+import { DialogSelectInterfaces } from "../DialogSelectInterfaces"
 import { useAccount } from "../../../hooks/useAccount"
+import { Calendar } from "../../../models/calendar";
+import { Lecture } from "../../../models/lecture";
 
-export const LectureSelect: FC<DialogInterfaces<string>> = ({value, onChange,readonlyValue,disabled}) => {
+export const LectureSelect: FC<DialogSelectInterfaces<string>> = ({value, onChange, readonlyValue, disabled}) => {
+    const {canEdit} = useAccount();
+    const [selectedValue, setSelectedValue] = useState<Lecture | null>(null)
     const {data, isLoading} = useQuery({
         queryKey: ['lectures'],
         queryFn: getLectures,
-        useErrorBoundary: true
+        useErrorBoundary: true,
+        enabled: canEdit,
     })
-    return disabled ? <TextField disabled label="Vorlesung" value={readonlyValue??"Fehler"}/> :
-        isLoading ? (
-            <Grid container>
-                <Grid item xs={5}/>
-                <Grid item xs={2}><CircularProgress/></Grid>
-                <Grid item xs={5}/>
-            </Grid>
-        ) : (
-            <TextField
-                fullWidth
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                select
-                id={"vorlesung"}
+    useEffect(() => {
+        if(data) {
+            setSelectedValue(data.find((item) => item.id === value) ?? null)
+        }
+    }, [data, value])
+    return (<Autocomplete
+            disabled={disabled}
+            disablePortal
+            value={selectedValue}
+            onChange={(_, v) => {
+                // setSelectedValue(v)
+                onChange(v?.id ?? "")
+            }}
+            options={data ?? []}
+            getOptionLabel={(option) => {
+                let title = option.title;
+                if(option.shortKey) {
+                    title = `${title} (${option.shortKey})`
+                }
+                return title
+            }}
+            renderInput={(params) => <TextField
+                {...params}
                 label="Vorlesung"
-            >
-                {(data ?? []).map((item) => (
-                    <MenuItem key={item.id} value={item.id}>
-                        {item.title}
-                    </MenuItem>
-                ))}
-            </TextField>
-        )
+                InputProps={{
+                    ...params.InputProps,
+                    readOnly: !canEdit,
+                    endAdornment: (<>
+                        {isLoading && <CircularProgress color="inherit" size={20}/>}
+                        {params.InputProps.endAdornment}
+                    </>)
+                }}
+            />}
+        />
+    )
 }

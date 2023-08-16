@@ -1,8 +1,8 @@
 import React from "react";
 
-export interface DialogInterfaces<T> {
-    value: T|undefined;
-    onChange: (value: T) => void;
+export interface DialogSelectInterfaces<T> {
+    value: T | undefined | null;
+    onChange: (value: T | null) => void;
     readonlyValue?: string
     disabled?: boolean
 }

@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Box, Button, Grid, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { LayoutDisplayItem } from "../DialogInterfaces";
+import { LayoutDisplayItem } from "../DialogSelectInterfaces";
 
 interface StepperLayoutProps {
     steps: LayoutDisplayItem[],
@@ -22,6 +22,7 @@ export const StepperLayout: FC<StepperLayoutProps> = ({steps, onSubmit, onCancel
         }
         setCompleted(newCompleted)
     }
+
     const totalSteps = () => {
         return steps.length;
     };
@@ -29,6 +30,7 @@ export const StepperLayout: FC<StepperLayoutProps> = ({steps, onSubmit, onCancel
     const isLastStep = () => {
         return activeStep === totalSteps() - 1;
     };
+
     const handleComplete = () => {
         const newCompleted = completed;
         setCompleted(prevState => {
@@ -37,6 +39,7 @@ export const StepperLayout: FC<StepperLayoutProps> = ({steps, onSubmit, onCancel
         });
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
     }
+
     const singelStep = (x: LayoutDisplayItem, index: number) => {
         const lableProps: {
             optional?: React.ReactNode;
@@ -88,7 +91,7 @@ export const StepperLayout: FC<StepperLayoutProps> = ({steps, onSubmit, onCancel
                                 variant="contained">
                             Hinzufügen
                         </Button>
-                    ) : (<Button onClick={handleComplete} variant={"outlined"} disabled={!canContinue()}>
+                    ) : (<Button onClick={handleComplete} variant={"outlined"} disabled={canContinue()}>
                         Weiter
                     </Button>)}
                 </Grid>

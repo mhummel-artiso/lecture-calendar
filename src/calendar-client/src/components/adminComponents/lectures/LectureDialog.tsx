@@ -11,13 +11,13 @@ import React, { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 
-export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
-    isDialogOpen,
-    onDialogClose,
-    onDialogAdd,
-    onDialogEdit,
-    currentValue: currentLecture,
-}) => {
+export const LectureDialog: FC<DialogComponentProps<Lecture, Lecture, Lecture>> = ({
+                                                                                       isDialogOpen,
+                                                                                       onDialogClose,
+                                                                                       onDialogAdd,
+                                                                                       onDialogEdit,
+                                                                                       currentValue: currentLecture,
+                                                                                   }) => {
     const [title, setTitle] = useState<string>('')
     const [shortKey, setShortKey] = useState<string>('')
     const [description, setDescription] = useState<string>('')
@@ -28,7 +28,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setDescription(currentLecture?.description ?? '')
     }, [currentLecture, isDialogOpen])
 
-    const canAddOrEdit = (): boolean => !!title && !!shortKey
+    const canAddOrEdit = (): boolean => !!title
 
     const handleSubmitClick = () => {
         const l: Lecture = {
@@ -37,9 +37,9 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             shortKey,
             description,
         }
-        if (currentLecture == null && onDialogAdd) {
+        if(currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
-        } else if (onDialogEdit) {
+        } else if(onDialogEdit) {
             onDialogEdit(l)
         }
         onDialogClose()
@@ -49,11 +49,11 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             <DialogTitle>
                 Vorlesung {currentLecture == null ? 'hinzufügen' : 'bearbeiten'}
             </DialogTitle>
-            <DialogContent sx={{ width: '500px' }}>
+            <DialogContent sx={{width: '500px'}}>
                 <Stack>
                     <TextField
                         margin="dense"
-                        id="name"
+                        id="kursname"
                         type="text"
                         label="Kurs Name"
                         value={title}
@@ -65,14 +65,13 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         id="shortKey"
                         label="Kurs Kürzel"
                         type="text"
-                        required
                         value={shortKey}
                         onChange={(e) => setShortKey(e.target.value)}
                     />
                     <TextField
                         multiline
                         margin="dense"
-                        id="description"
+                        id="kursdescription"
                         type="text"
                         label="Kurs beschreibung"
                         minRows={2}

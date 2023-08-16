@@ -1,21 +1,38 @@
 # lecture-calendar
 
+## Logins:
+
+| Username | Password | Gruppen | Kommentar |
+|--- |---|---|---|---|
+| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
+| dozent  | **74RuqICjDPQEFREmhIFaqRf6H** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |   |
+| sekreteriat | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` |   |
+| student1  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |   |
+| student2  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |   |
+| dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
+
 ## Docker container
+
 ### Configurations
 
-path to configs: ./config/\<container-name\>/
+path to configs:
+
+```text
+./config/<container-name>/
+```
 
 ### Postgres Dump
 
-in the postgres container run:
+To create a dump of the keycloak database run in the postgres container:
 
-```bash
+```sh
 pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
 ```
 
 ### Api
+
 #### Environment variables
-(OIDC: open id connect)
+
 - `ASPNETCORE_ENVIRONMENT` : The asp.net core environment (`Production`) [*Optional*]
 - Mongo
   - `API_MONGODB_SERVER` : Server name with protocol and port (`NULL`) [**Required**]
@@ -45,6 +62,8 @@ pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
 - Debug
   - `API_DEBUG_TEST_ENDPOINT_ENABLED` : Enable test endpoint (/test) (`"false"`) [*Optional*]
   - `API_DEBUG_TEST_ENDPOINT_POLICY` : The policy for the test endpoint mögliche werte: [`EDITOR` |  `VIEWER` | `EDITOR_VIEWER`] (`""`) [*Optional*]
+
+(OIDC: open id connect)
 
 ### Client
 

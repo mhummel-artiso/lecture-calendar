@@ -1,35 +1,46 @@
 import { useQuery } from "@tanstack/react-query"
 import { getCalendars } from "../../../services/CalendarService"
-import { CircularProgress, Grid, InputProps, MenuItem, TextField } from "@mui/material"
-import { FC } from "react"
-import { DialogInterfaces } from "../DialogInterfaces"
+import { Autocomplete, CircularProgress, Grid, InputProps, MenuItem, TextField } from "@mui/material"
+import { FC, useEffect, useState } from "react"
+import { DialogSelectInterfaces } from "../DialogSelectInterfaces"
 import { useAccount } from "../../../hooks/useAccount"
+import { Calendar } from "../../../models/calendar";
 
-export const CalendarSelect: FC<DialogInterfaces<string>> = ({value, onChange, readonlyValue, disabled}) => {
+export const CalendarSelect: FC<DialogSelectInterfaces<string>> = ({value, onChange, readonlyValue, disabled}) => {
+    const {canEdit} = useAccount();
+    const [selectedValue, setSelectedValue] = useState<Calendar | null>(null)
     const {data, isLoading} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
-        useErrorBoundary: true
+        useErrorBoundary: true,
+        enabled: canEdit,
     })
-
-    return disabled ? <TextField disabled label="Kurs" value={readonlyValue ?? "null"}/>
-        : isLoading ? (
-            <Grid container>
-                <Grid item xs={5}/>
-                <Grid item xs={2}><CircularProgress/></Grid>
-                <Grid item xs={5}/>
-            </Grid>
-        ) : (<TextField
-            fullWidth
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            select
-            label="Kurs"
-            id={"kurs"}>
-            {(data ?? []).map((item) => (
-                <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                </MenuItem>
-            ))}
-        </TextField>)
+    useEffect(() => {
+        if(data) {
+            setSelectedValue(data.find((item) => item.id === value) ?? null)
+        }
+    }, [data, value])
+    return (
+        <Autocomplete
+            disabled={disabled}
+            disablePortal
+            value={selectedValue}
+            onChange={(_, v) => {
+                setSelectedValue(v)
+                onChange(v?.id ?? "")
+            }}
+            options={data ?? []}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => <TextField
+                {...params}
+                label="Kurs"
+                InputProps={{
+                    ...params.InputProps,
+                    readOnly: !canEdit,
+                    endAdornment: (<>
+                        {isLoading && canEdit && <CircularProgress color="inherit" size={20}/>}
+                        {params.InputProps.endAdornment}
+                    </>)
+                }}
+            />}/>)
 }
