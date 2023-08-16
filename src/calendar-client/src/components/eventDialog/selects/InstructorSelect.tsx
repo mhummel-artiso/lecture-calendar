@@ -1,15 +1,18 @@
-import { FC } from "react";
-import { useQuery } from "@tanstack/react-query"
-import { DialogSelectInterfaces } from "../DialogSelectInterfaces";
-import { CircularProgress, Autocomplete, TextField } from "@mui/material"
-import { Instructor } from "../../../models/instructor";
-import { getInstructors } from "../../../services/KeyCloakService";
-import { useAccount } from "../../../hooks/useAccount";
+import { FC } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { DialogSelectInterfaces } from '../DialogSelectInterfaces'
+import { CircularProgress, Autocomplete, TextField } from '@mui/material'
+import { Instructor } from '../../../models/instructor'
+import { getInstructors } from '../../../services/KeyCloakService'
+import { useAccount } from '../../../hooks/useAccount'
 
-export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({value, onChange}) => {
-    const {canEdit} = useAccount();
+export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({
+    value,
+    onChange,
+}) => {
+    const { canEdit } = useAccount()
 
-    const {data, isLoading} = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['instructors'],
         queryFn: getInstructors,
         useErrorBoundary: true,
@@ -26,19 +29,27 @@ export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({valu
             onChange={(e, newValue) => onChange(newValue)}
             value={value}
             getOptionLabel={(option) => option.name}
-            renderInput={
-                (params) => <TextField
+            renderInput={(params) => (
+                <TextField
                     {...params}
                     label="Dozenten"
                     InputProps={{
                         ...params.InputProps,
                         readOnly: !canEdit,
-                        endAdornment: (<>
-                            {isLoading && canEdit && <CircularProgress color="inherit" size={20}/>}
-                            {params.InputProps.endAdornment}
-                        </>)
+                        endAdornment: (
+                            <>
+                                {isLoading && canEdit && (
+                                    <CircularProgress
+                                        color="inherit"
+                                        size={20}
+                                    />
+                                )}
+                                {params.InputProps.endAdornment}
+                            </>
+                        ),
                     }}
-                />}
+                />
+            )}
         />
-    );
+    )
 }

@@ -1,10 +1,10 @@
 import { Calendar } from './calendar'
 import { Lecture } from './lecture'
 import { Moment } from 'moment/moment'
-import { Instructor } from "./instructor";
+import { Instructor } from './instructor'
 
 export interface CalendarEventBase {
-    location: string,
+    location: string
     description?: string
     start: Moment
     end: Moment

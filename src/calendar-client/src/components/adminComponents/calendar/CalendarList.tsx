@@ -24,7 +24,7 @@ import {
 } from '../../../services/CalendarService'
 import { Calendar } from '../../../models/calendar'
 import AddIcon from '@mui/icons-material/Add'
-import { CalendarDialog } from "./CalendarDialog"
+import { CalendarDialog } from './CalendarDialog'
 
 export const CalendarList: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -37,10 +37,10 @@ export const CalendarList: FC = () => {
         setIsOpen((prevState) => !prevState)
     }
 
-    const {isLoading, data, refetch} = useQuery({
+    const { isLoading, data, refetch } = useQuery({
         queryKey: ['calendarsSettings'],
         queryFn: getAllCalendars,
-        useErrorBoundary: true
+        useErrorBoundary: true,
     })
 
     const deleteCalendarMutation = useMutation({

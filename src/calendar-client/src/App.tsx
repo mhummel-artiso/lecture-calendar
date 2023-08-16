@@ -3,20 +3,19 @@ import { EnvConfig, useEnvironment } from './hooks/useEnvironment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import moment from 'moment';
-import 'moment/dist/locale/de';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import moment from 'moment'
+import 'moment/dist/locale/de'
 
 import { queryClient } from './utils/queryClient'
 import { RouterComponent } from './components/RouterComponent'
 import { ErrorPage } from './components/pages/ErrorPage'
 import { ErrorBoundary } from 'react-error-boundary'
 
-
 function App() {
-    moment.locale('de'); 
+    moment.locale('de')
     const envConfig: EnvConfig = useEnvironment()
-        const oidcConfig: AuthProviderProps = {
+    const oidcConfig: AuthProviderProps = {
         loadUserInfo: true,
         autoSignIn: envConfig.OIDC_AUTO_SIGN_IN,
         authority: envConfig.OIDC_AUTHORITY,

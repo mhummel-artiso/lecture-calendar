@@ -15,16 +15,21 @@ export const ErrorPage: FC<FallbackProps> = ({
     resetErrorBoundary,
 }) => {
     const getError = () => {
-        if(err instanceof AxiosError) {
-            return (<>
-                <Typography sx={{maxWidth: "80%"}}>
-                    {err.message} {err?.statusText}
-                </Typography>
-                {err?.response?.data?.split('\n').map(l => (
-                    <Typography sx={{maxWidth: "80%"}}>
-                        {l}
-                    </Typography>))}
-            </>)
+        if (err instanceof AxiosError) {
+            return (
+                <>
+                    <Typography sx={{ maxWidth: '80%' }}>
+                        {err.message} {err?.statusText}
+                    </Typography>
+                    {err?.response?.data
+                        ?.split('\n')
+                        .map((l) => (
+                            <Typography sx={{ maxWidth: '80%' }}>
+                                {l}
+                            </Typography>
+                        ))}
+                </>
+            )
         }
         if (err instanceof Error) {
             return err?.stack

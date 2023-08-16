@@ -23,13 +23,13 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
     const navigate = useNavigate()
     const [calendars, setCalendars] = useState<Calendar[]>([])
 
-    const {isLoading, data} = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
         useErrorBoundary: true,
     })
     useEffect(() => {
-        setCalendars(data ?? []);
+        setCalendars(data ?? [])
     }, [data])
     return isLoading ? (
         <Box margin={2}>

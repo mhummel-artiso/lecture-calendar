@@ -1,11 +1,9 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Box } from '@mui/material'
 import { NavBar } from './navigation/NavBar'
-import { ErrorBoundary } from 'react-error-boundary'
-import { ErrorPage } from './pages/ErrorPage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
-import { CalendarPage } from './calendar/CalendarPage'
+import { CalendarPage } from './Calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
@@ -27,8 +25,9 @@ export const RouterComponent: FC = () => {
                     <Route path="/" element={<HelloPage />} />
                     {isLoggedIn && (
                         <>
-                            <Route 
-                                path="/calendar" element={<CalendarPage/>}
+                            <Route
+                                path="/calendar"
+                                element={<CalendarPage />}
                             />
                             <Route
                                 path="/calendar/:calendarName"

@@ -4,8 +4,8 @@ import {
     CalendarEvent,
     CreateCalendarEvent,
     UpdateCalendarEvent,
-    UpdateCalendarEventSeries
-} from "../models/calendarEvent";
+    UpdateCalendarEventSeries,
+} from '../models/calendarEvent'
 
 // Calendar functions
 const calendarEndPointName = (calendarId: string | null = null) => {
@@ -26,7 +26,9 @@ export const getCalendars = async (): Promise<Calendar[]> => {
     return Promise.resolve(response.data)
 }
 export const getAllCalendars = async (): Promise<Calendar[]> => {
-    const response = await axiosInstance.get<Calendar[]>(`${calendarEndPointName()}/all`)
+    const response = await axiosInstance.get<Calendar[]>(
+        `${calendarEndPointName()}/all`
+    )
     return Promise.resolve(response.data)
 }
 export const getCalendar = async (calendarId: string): Promise<Calendar> => {
@@ -35,14 +37,24 @@ export const getCalendar = async (calendarId: string): Promise<Calendar> => {
     )
     return Promise.resolve(response.data)
 }
-export const getCalendarByName = async (calendarName: string): Promise<Calendar> => {
-    const path = calendarEndPointName();
-    const response = await axiosInstance.get<Calendar>(`${path}/name/${calendarName}`)
+export const getCalendarByName = async (
+    calendarName: string
+): Promise<Calendar> => {
+    const path = calendarEndPointName()
+    const response = await axiosInstance.get<Calendar>(
+        `${path}/name/${calendarName}`
+    )
     return Promise.resolve(response.data)
 }
 
-export const editCalendar = async (calendarId: string, calendar: Calendar): Promise<Calendar> => {
-    const response = await axiosInstance.put<Calendar>(calendarEndPointName(calendarId), calendar);
+export const editCalendar = async (
+    calendarId: string,
+    calendar: Calendar
+): Promise<Calendar> => {
+    const response = await axiosInstance.put<Calendar>(
+        calendarEndPointName(calendarId),
+        calendar
+    )
     return Promise.resolve(response.data)
 }
 
@@ -54,10 +66,13 @@ export const deleteCalendar = async (calendarId: string): Promise<boolean> => {
 }
 
 // Event calls
-const eventEndPointName = (calendarId: string, eventId: string | null = null) => {
-    const path = `Calendar/${calendarId}/event`;
-    return eventId ? path + `/${eventId}` : path;
-};
+const eventEndPointName = (
+    calendarId: string,
+    eventId: string | null = null
+) => {
+    const path = `Calendar/${calendarId}/event`
+    return eventId ? path + `/${eventId}` : path
+}
 
 export const addEvent = async (
     calendarId: string,
@@ -78,10 +93,16 @@ export const getEvents = async (
     )
     return Promise.resolve(response.data)
 }
-export const getEventsFrom = async (calendarId: string, startDate: string, viewType: 'day' | 'week' | 'month'): Promise<CalendarEvent[]> => {
-    const basePath = eventEndPointName(calendarId);
-    const response = await axiosInstance.get<CalendarEvent[]>(`${basePath}/${startDate}/${viewType}`);
-    return Promise.resolve(response.data);
+export const getEventsFrom = async (
+    calendarId: string,
+    startDate: string,
+    viewType: 'day' | 'week' | 'month'
+): Promise<CalendarEvent[]> => {
+    const basePath = eventEndPointName(calendarId)
+    const response = await axiosInstance.get<CalendarEvent[]>(
+        `${basePath}/${startDate}/${viewType}`
+    )
+    return Promise.resolve(response.data)
 }
 export const getEvent = async (calendarId: string, eventId: string) => {
     const response = await axiosInstance.get<CalendarEvent[]>(
@@ -90,25 +111,45 @@ export const getEvent = async (calendarId: string, eventId: string) => {
     return Promise.resolve(response.data)
 }
 
-export const editEvent = async (calendarId: string, event: UpdateCalendarEvent) => {
-    const response = await axiosInstance.put<CalendarEvent>(eventEndPointName(calendarId, event.id), event);
-    return Promise.resolve(response.data);
+export const editEvent = async (
+    calendarId: string,
+    event: UpdateCalendarEvent
+) => {
+    const response = await axiosInstance.put<CalendarEvent>(
+        eventEndPointName(calendarId, event.id),
+        event
+    )
+    return Promise.resolve(response.data)
 }
 
 export const deleteEvent = async (calendarId: string, event: CalendarEvent) => {
-    const response = await axiosInstance.delete<boolean>(eventEndPointName(calendarId, event.id));
-    return Promise.resolve(response.data);
+    const response = await axiosInstance.delete<boolean>(
+        eventEndPointName(calendarId, event.id)
+    )
+    return Promise.resolve(response.data)
 }
 
 const seriesEndPointName = (calendarId: string, seriesId: string) => {
-    return `Calendar/${calendarId}/series/${seriesId}`;
-};
+    return `Calendar/${calendarId}/series/${seriesId}`
+}
 
-export const editEventSeries = async (calendarId: string, seriesId: string, event: UpdateCalendarEventSeries) => {
-    const response = await axiosInstance.put<CalendarEvent[]>(seriesEndPointName(calendarId, seriesId), event);
+export const editEventSeries = async (
+    calendarId: string,
+    seriesId: string,
+    event: UpdateCalendarEventSeries
+) => {
+    const response = await axiosInstance.put<CalendarEvent[]>(
+        seriesEndPointName(calendarId, seriesId),
+        event
+    )
     return Promise.resolve(response.data)
 }
-export const deleteEventSeries = async (calendarId: string, seriesId: string) => {
-    const response = await axiosInstance.delete<boolean>(seriesEndPointName(calendarId, seriesId));
+export const deleteEventSeries = async (
+    calendarId: string,
+    seriesId: string
+) => {
+    const response = await axiosInstance.delete<boolean>(
+        seriesEndPointName(calendarId, seriesId)
+    )
     return Promise.resolve(response.data)
 }

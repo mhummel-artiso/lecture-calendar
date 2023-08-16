@@ -1,5 +1,6 @@
 import {
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -22,18 +23,20 @@ import { useQuery } from '@tanstack/react-query'
 import { getCalendars } from '../../../services/CalendarService'
 
 import { KeycloakCalendar } from '../../../models/keycloakCalendar'
-import { getCalendarsFromKeycloak } from "../../../services/KeyCloakService";
-import { ArrowDropDownIcon } from "@mui/x-date-pickers";
+import { getCalendarsFromKeycloak } from '../../../services/KeyCloakService'
+import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 
-export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calendar>> = ({
-                                                                                           isDialogOpen,
-                                                                                           onDialogClose,
-                                                                                           onDialogAdd,
-                                                                                           onDialogEdit,
-                                                                                           currentValue: currentCalendar
-                                                                                       }) => {
-    const [name, setName] = useState<string>("");
-    const [startDate, setStartDate] = useState<Moment | null>(moment());
+export const CalendarDialog: FC<
+    DialogComponentProps<Calendar, Calendar, Calendar>
+> = ({
+    isDialogOpen,
+    onDialogClose,
+    onDialogAdd,
+    onDialogEdit,
+    currentValue: currentCalendar,
+}) => {
+    const [name, setName] = useState<string>('')
+    const [startDate, setStartDate] = useState<Moment | null>(moment())
 
     useEffect(() => {
         setName(currentCalendar?.name ?? '')
@@ -43,7 +46,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
     }, [currentCalendar, isDialogOpen])
 
     const handleSubmitClick = () => {
-        if(!startDate) {
+        if (!startDate) {
             return
         }
         const c: Calendar = {
@@ -51,9 +54,9 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
             name,
             startDate: startDate.clone(),
         }
-        if(onDialogAdd && currentCalendar == null) {
+        if (onDialogAdd && currentCalendar == null) {
             onDialogAdd(c)
-        } else if(onDialogEdit) {
+        } else if (onDialogEdit) {
             onDialogEdit(c)
         }
         onDialogClose()
@@ -68,47 +71,37 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
         useErrorBoundary: true,
     })
 
-    const {
-        data: calendarsData,
-        isLoading: isCalendarLoading
-    } = useQuery({
+    const { data: calendarsData, isLoading: isCalendarLoading } = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
         useErrorBoundary: true,
     })
 
     const getPendingCalendars = () => {
-        if(keycloakCalendarsData && calendarsData) {
+        if (keycloakCalendarsData && calendarsData) {
             const calendars = keycloakCalendarsData.filter(
                 (x) =>
                     !calendarsData.some(
                         (y) => y.name.toLowerCase() === x.name.toLowerCase()
                     )
-            );
-            if(calendars.length === 0) {
-                return (<>
-                    <MenuItem
-                        disabled={true}
-                        value={undefined}
-                    >
-                        Keine weiteren Kalender zum Hinzufügen
-                    </MenuItem>
-                </>)
+            )
+            if (calendars.length === 0) {
+                return (
+                    <>
+                        <MenuItem disabled={true} value={undefined}>
+                            Keine weiteren Kalender zum Hinzufügen
+                        </MenuItem>
+                    </>
+                )
             }
             return calendars.map((value, index) => (
-                <MenuItem
-                    key={index}
-                    value={value.name}
-                >
+                <MenuItem key={index} value={value.name}>
                     {value.name}
                 </MenuItem>
             ))
         } else {
             return (
-                <MenuItem
-                    disabled={true}
-                    value={undefined}
-                >
+                <MenuItem disabled={true} value={undefined}>
                     Keine Kalender verfügbar
                 </MenuItem>
             )
@@ -116,10 +109,10 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
     }
 
     const selectLoadingSpinner = () => {
-        if(isKeycloakCalendarsLoading && isCalendarLoading) {
-            return (<CircularProgress/>)
+        if (isKeycloakCalendarsLoading && isCalendarLoading) {
+            return <CircularProgress />
         } else {
-            return (<></>)
+            return <></>
         }
     }
 
@@ -128,7 +121,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
             <DialogTitle>
                 Kalender {currentCalendar == null ? 'hinzufügen' : 'Info'}
             </DialogTitle>
-            <DialogContent sx={{width: '500px'}}>
+            <DialogContent sx={{ width: '500px' }}>
                 <Stack>
                     {currentCalendar ? (
                         <TextField
@@ -138,17 +131,17 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
                             InputProps={{
                                 readOnly: true,
                             }}
-                            sx={{marginTop: 1}}>
-                        </TextField>
+                            sx={{ marginTop: 1 }}
+                        ></TextField>
                     ) : (
                         <>
                             <TextField
                                 fullWidth
                                 value={name}
-                                onChange={e => setName(e.target.value)}
+                                onChange={(e) => setName(e.target.value)}
                                 select
                                 InputProps={{
-                                    startAdornment: selectLoadingSpinner()
+                                    startAdornment: selectLoadingSpinner(),
                                 }}
                                 label="Name"
                             >
@@ -157,7 +150,7 @@ export const CalendarDialog: FC<DialogComponentProps<Calendar, Calendar, Calenda
                         </>
                     )}
                     <DatePicker
-                        sx={{mt: 2}}
+                        sx={{ mt: 2 }}
                         label="Startdatum"
                         value={startDate}
                         onChange={(e) => setStartDate(e)}

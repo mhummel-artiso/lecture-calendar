@@ -37,7 +37,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             shortKey,
             description,
         }
-        if(currentLecture == null && onDialogAdd) {
+        if (currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
         } else if (onDialogEdit) {
             onDialogEdit(l)
@@ -49,7 +49,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
             <DialogTitle>
                 Vorlesung {currentLecture == null ? 'hinzufügen' : 'bearbeiten'}
             </DialogTitle>
-            <DialogContent sx={{width: '500px'}}>
+            <DialogContent sx={{ width: '500px' }}>
                 <Stack>
                     <TextField
                         margin="dense"

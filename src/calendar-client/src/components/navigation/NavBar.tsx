@@ -29,14 +29,15 @@ export const NavBar = () => {
         // TODO: Check if user is authorized
         if (location.pathname.startsWith('/administration')) {
             displayName = 'Übersicht'
-        } else if(location.pathname.startsWith('/calendar/')) {
-            displayName = state?.length == 1 ? `Kalender: ${state[0].name}` : 'Kalender'
+        } else if (location.pathname.startsWith('/calendar/')) {
+            displayName =
+                state?.length == 1 ? `Kalender: ${state[0].name}` : 'Kalender'
         }
         return displayName
     }
 
-    const handleSignOutClick=() => {
-        signOut().then(() => navigate("/"))
+    const handleSignOutClick = () => {
+        signOut().then(() => navigate('/'))
     }
 
     // const isEditor = true
@@ -57,7 +58,9 @@ export const NavBar = () => {
                     {displayText()}
                 </Typography>
                 {isLoggedIn ? (
-                    <AccountButton onLogoutClick={handleSignOutClick}></AccountButton>
+                    <AccountButton
+                        onLogoutClick={handleSignOutClick}
+                    ></AccountButton>
                 ) : (
                     <Button onClick={signIn} color="inherit">
                         Anmelden
