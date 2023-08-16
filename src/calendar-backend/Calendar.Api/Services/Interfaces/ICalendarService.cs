@@ -5,8 +5,8 @@ namespace Calendar.Api.Services.Interfaces;
 
 public interface ICalendarService
 {
-    Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names);
-    Task<UserCalendar?> GetCalendarByIdAsync(string calendarId,bool includeEvents);
+    Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names, bool includeEvents = false);
+    Task<UserCalendar?> GetCalendarByIdAsync(string calendarId,bool includeEvents = false);
     
     Task<UserCalendar> AddCalendarAsync(UserCalendar calendar);
 
@@ -14,7 +14,6 @@ public interface ICalendarService
     Task<UserCalendar?> UpdateCalendarAsync(string calendarId, UserCalendar updateCalendar);
 
     Task<bool> DeleteCalendarByIdAsync(string calendarId);
-
-    // FOR TESTING
+    
     Task<IEnumerable<UserCalendar>> GetCalendars();
 }

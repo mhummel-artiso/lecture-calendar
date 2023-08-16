@@ -1,13 +1,11 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Box } from '@mui/material'
-import { NavBar } from './NavBar'
-import { ErrorBoundary } from 'react-error-boundary'
-import { ErrorPage } from './Pages/ErrorPage'
+import { NavBar } from './navigation/NavBar'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { HelloPage } from './Pages/HelloPage'
-import { CalendarPage } from './Pages/CalendarPage'
-import { AdminPage } from './Pages/AdminPageContainer'
-import { NotFoundPage } from './Pages/NotFoundPage'
+import { HelloPage } from './pages/HelloPage'
+import { CalendarPage } from './Calendar/CalendarPage'
+import { AdminPage } from './adminComponents/AdminPageContainer'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
 
 export const RouterComponent: FC = () => {
@@ -31,7 +29,6 @@ export const RouterComponent: FC = () => {
                                 path="/calendar"
                                 element={<CalendarPage />}
                             />
-                            {/* This page is only for administrator to see specific calendars.*/}
                             <Route
                                 path="/calendar/:calendarName"
                                 element={<CalendarPage />}

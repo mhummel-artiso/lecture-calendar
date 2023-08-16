@@ -17,13 +17,18 @@ public class CalendarService : ICalendarService
         ArgumentNullException.ThrowIfNull(dbCollection);
     }
 
-    public async Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names)
+    public async Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names, bool includeEvents = false)
     {
         var keys = names.ToList();
-        var result = await dbCollection.Find(x => keys.Contains(x.Name)).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
-        return result;
+        var query = dbCollection.Find(x => keys.Contains(x.Name));
+        if (!includeEvents)
+            query = query
+                .Project<UserCalendar>(
+                    Builders<UserCalendar>.Projection
+                        .Exclude(x => x.Events));
+        return await query.ToListAsync();
     }
-    public async Task<UserCalendar?> GetCalendarByIdAsync(string calendarId, bool includeEvents)
+    public async Task<UserCalendar?> GetCalendarByIdAsync(string calendarId, bool includeEvents = false)
     {
         var query = dbCollection
             .Find(x => x.Id == new ObjectId(calendarId));
@@ -41,7 +46,7 @@ public class CalendarService : ICalendarService
                 string.Equals(calendar.Name, x.Name, StringComparison.OrdinalIgnoreCase))
             .FirstOrDefaultAsync();
         if (existed != null)
-            throw new ApplicationException($"the calendar with the name {calendar.Name} already exists");
+            throw new KeyNotFoundException($"the calendar with the name {calendar.Name} already exists");
         calendar.CreatedDate = DateTimeOffset.UtcNow;
         calendar.LastUpdateDate = DateTimeOffset.UtcNow;
         await dbCollection.InsertOneAsync(calendar);
@@ -65,10 +70,12 @@ public class CalendarService : ICalendarService
         var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(calendarId));
         return result.DeletedCount == 1;
     }
-
-    // FOR TESTING, later use GetCalendarsByNamesAsync
+    
     public async Task<IEnumerable<UserCalendar>> GetCalendars()
     {
-        return await dbCollection.Find(x => true).Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events)).ToListAsync();
+        return await dbCollection
+            .Find(x => true)
+            .Project<UserCalendar>(Builders<UserCalendar>.Projection.Exclude(x => x.Events))
+            .ToListAsync();
     }
 }

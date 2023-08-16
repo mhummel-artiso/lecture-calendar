@@ -19,7 +19,7 @@ export const ErrorPage: FC<FallbackProps> = ({
             return (
                 <>
                     <Typography sx={{ maxWidth: '80%' }}>
-                        {err.message} {err.statusText}
+                        {err.message} {err?.statusText}
                     </Typography>
                     {err?.response?.data
                         ?.split('\n')

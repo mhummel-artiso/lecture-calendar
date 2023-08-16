@@ -1,6 +1,6 @@
 import { Box, Container, Stack } from '@mui/material'
-import { CalendarList } from '../Settings/Calendar/CalendarList'
-import { LectureList } from '../Settings/Lectures/LectureList'
+import { CalendarList } from './calendar/CalendarList'
+import { LectureList } from './lectures/LectureList'
 import React from 'react'
 
 export const AdminPage = () => {

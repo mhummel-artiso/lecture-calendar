@@ -23,7 +23,7 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
     const navigate = useNavigate()
     const [calendars, setCalendars] = useState<Calendar[]>([])
 
-    const { isLoading, data, isError, error, isFetching } = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
         useErrorBoundary: true,

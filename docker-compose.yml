@@ -66,6 +66,8 @@ services:
     depends_on:
       postgressdb:
         condition: service_healthy
+      mongodb:
+        condition: service_started
     networks:
       - frontend
       - backend
@@ -76,6 +78,7 @@ services:
   # postgres db
   postgressdb:
       image: "postgres:alpine3.18"
+      restart: always
       networks:
         - backend
         - frontend

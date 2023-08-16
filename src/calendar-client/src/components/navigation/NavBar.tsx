@@ -10,18 +10,19 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import React, { useState } from 'react'
 import { DrawerContent } from './DrawerContent'
-import { useLocation } from 'react-router'
-import { Calendar } from '../models/calendar'
-import { useAccount } from '../hooks/useAccount'
-import { AccountButton } from './utils/AccountButton'
+import { useLocation, useNavigate } from 'react-router'
+import { Calendar } from '../../models/calendar'
+import { useAccount } from '../../hooks/useAccount'
+import { AccountButton } from '../utils/AccountButton'
 
 export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)
     const { signOut, isLoggedIn, signIn, userAccount } = useAccount()
     const location = useLocation()
-    const state: Calendar | undefined = location.state
-        ? (location.state as Calendar)
+    const state: Calendar[] | undefined = location.state
+        ? (location.state as Calendar[])
         : undefined
+    const navigate = useNavigate()
 
     const displayText = () => {
         let displayName = 'Kalender'
@@ -29,9 +30,14 @@ export const NavBar = () => {
         if (location.pathname.startsWith('/administration')) {
             displayName = 'Übersicht'
         } else if (location.pathname.startsWith('/calendar/')) {
-            displayName = state ? `Kalender: ${state.name}` : 'Kalender'
+            displayName =
+                state?.length == 1 ? `Kalender: ${state[0].name}` : 'Kalender'
         }
         return displayName
+    }
+
+    const handleSignOutClick = () => {
+        signOut().then(() => navigate('/'))
     }
 
     // const isEditor = true
@@ -52,7 +58,9 @@ export const NavBar = () => {
                     {displayText()}
                 </Typography>
                 {isLoggedIn ? (
-                    <AccountButton onLogoutClick={signOut}></AccountButton>
+                    <AccountButton
+                        onLogoutClick={handleSignOutClick}
+                    ></AccountButton>
                 ) : (
                     <Button onClick={signIn} color="inherit">
                         Anmelden

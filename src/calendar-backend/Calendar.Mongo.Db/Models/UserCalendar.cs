@@ -9,6 +9,7 @@ namespace Calendar.Mongo.Db.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
         public string Name { get; set; }
+        
         [BsonRepresentation(BsonType.String)]
         public DateTimeOffset StartDate { get; set; }
         public IList<CalendarEvent> Events { get; set; } = new List<CalendarEvent>();

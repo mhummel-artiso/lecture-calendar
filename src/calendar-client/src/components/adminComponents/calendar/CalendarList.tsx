@@ -5,12 +5,8 @@ import {
     Box,
     Button,
     CircularProgress,
-    drawerClasses,
-    Fab,
-    Grid,
     IconButton,
     List,
-    ListItem,
     ListItemButton,
     ListItemSecondaryAction,
     ListItemText,
@@ -24,7 +20,7 @@ import {
     addCalendar,
     deleteCalendar,
     editCalendar,
-    getCalendars,
+    getAllCalendars,
 } from '../../../services/CalendarService'
 import { Calendar } from '../../../models/calendar'
 import AddIcon from '@mui/icons-material/Add'
@@ -42,8 +38,8 @@ export const CalendarList: FC = () => {
     }
 
     const { isLoading, data, refetch } = useQuery({
-        queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryKey: ['calendarsSettings'],
+        queryFn: getAllCalendars,
         useErrorBoundary: true,
     })
 

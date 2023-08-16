@@ -28,7 +28,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
         setDescription(currentLecture?.description ?? '')
     }, [currentLecture, isDialogOpen])
 
-    const canAddOrEdit = (): boolean => !!title && !!shortKey
+    const canAddOrEdit = (): boolean => !!title
 
     const handleSubmitClick = () => {
         const l: Lecture = {
@@ -53,7 +53,7 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                 <Stack>
                     <TextField
                         margin="dense"
-                        id="name"
+                        id="kursname"
                         type="text"
                         label="Kurs Name"
                         value={title}
@@ -65,14 +65,13 @@ export const LectureDialog: FC<DialogComponentProps<Lecture>> = ({
                         id="shortKey"
                         label="Kurs Kürzel"
                         type="text"
-                        required
                         value={shortKey}
                         onChange={(e) => setShortKey(e.target.value)}
                     />
                     <TextField
                         multiline
                         margin="dense"
-                        id="description"
+                        id="kursdescription"
                         type="text"
                         label="Kurs beschreibung"
                         minRows={2}

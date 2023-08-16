@@ -1,4 +1,6 @@
-﻿namespace Calendar.Api.Services.Interfaces;
+﻿using Calendar.Api.Services.Interfaces;
+
+namespace Calendar.Api.Services;
 
 public class KeyGenerator : IKeyGenerator
 {

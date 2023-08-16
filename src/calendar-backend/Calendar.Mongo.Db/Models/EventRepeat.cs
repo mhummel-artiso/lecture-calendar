@@ -1,6 +1,6 @@
 ﻿namespace Calendar.Mongo.Db.Models
 {
-    public enum EventRotation
+    public enum EventRepeat
     {
         None,
         Daily,

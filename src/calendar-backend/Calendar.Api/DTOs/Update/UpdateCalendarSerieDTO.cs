@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calendar.Api.DTOs.Update
 {
-    public class UpdateCalendarSerieDTO
+    public class UpdateCalendarSeriesDTO
     {
         [Required]
         [StringLength(24, MinimumLength = 24)]
-        public string? SerieId { get; set; }
+        public string? SeriesId { get; set; }
 
         [Required()]
         [StringLength(50)]
@@ -23,16 +23,20 @@ namespace Calendar.Api.DTOs.Update
         public DateTimeOffset End { get; set; }
 
         [Required()]
-        [Range(0, 2)]
-        public EventRotation Rotation { get; set; }
+        [Range(0, 3)]
+        public EventRepeat Repeat { get; set; }
 
         [Required()]
         public DateTimeOffset EndSeries { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<InstructorDTO>? Instructors { get; set; }
 
         [Required()]
         [StringLength(24, MinimumLength = 24)]
         public string? LectureId { get; set; }
+
+        public DateTimeOffset LastUpdateDate { get; set; }
+        [Required()]
+        public DateTimeOffset CreatedDate { get; set; }
     }
 }

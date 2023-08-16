@@ -18,10 +18,10 @@ namespace Calendar.Api.DTOs.Create
         [Required()]
         public DateTimeOffset End { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<InstructorDTO>? Instructors { get; set; }
 
-        [Range(0, 2)]
-        public EventRotation? Rotation { get; set; }
+        [Range(0, 3)]
+        public EventRepeat? Repeat { get; set; }
 
         public DateTimeOffset? EndSeries { get; set; }
 

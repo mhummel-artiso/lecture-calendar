@@ -6,5 +6,11 @@ export interface Calendar {
     name: string
     startDate: Moment
     events?: CalendarEvent[]
+    lastUpdateDate?: Moment
     createdDate?: Moment
+}
+
+export interface KeycloakCalendar {
+    keycloakGroupId: string
+    name: string
 }

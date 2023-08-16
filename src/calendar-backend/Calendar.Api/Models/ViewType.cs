@@ -2,9 +2,9 @@
 {
     public enum ViewType
     {
-        Day,
-        Week,
-        Month
+        day,
+        week,
+        month
     }
 
 }

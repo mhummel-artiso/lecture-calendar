@@ -16,48 +16,39 @@ namespace Calendar.Mongo.Db.Models
         public string? Description { get; set; }
 
         [BsonRequired]
+        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset Start { get; set; }
 
         [BsonRequired]
         public TimeSpan Duration { get; set; }
 
-        public ObjectId? SerieId { get; set; }
+        public ObjectId? SeriesId { get; set; }
 
-        public EventRotation? Rotation { get; set; }
+        public EventRepeat Repeat { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset? StartSeries { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset? EndSeries { get; set; }
 
+        // do not ToUniversalTime() because only used in api so not need!
         [BsonRequired]
-        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
-
+        public DateTimeOffset CreatedDate { get; set; }
+        // do not ToUniversalTime() because only used in api so not need!
         [BsonRequired]
-        public DateTimeOffset LastUpdateDate { get; set; } = DateTimeOffset.Now.ToUniversalTime();
+        public DateTimeOffset? LastUpdateDate { get; set; }
 
-        public List<string>? InstructorsIds { get; set; }
+        public List<Instructor>? Instructors { get; set; }
 
         [BsonRequired]
         public string? LectureId { get; set; }
 
+
+        [BsonRequired]
+        public string? CalendarId { get; set; }
+
         public CalendarEvent() { }
 
-        public CalendarEvent(CalendarEvent calendarEvent, ObjectId serieId)
-        {
-            Id = ObjectId.GenerateNewId();
-            Location = calendarEvent.Location;
-            Description = calendarEvent.Description;
-            Start = calendarEvent.Start.ToUniversalTime();
-            Duration = calendarEvent.Duration;
-            LastUpdateDate = calendarEvent.LastUpdateDate.ToUniversalTime();
-            CreatedDate = calendarEvent.CreatedDate.ToUniversalTime();
-            LectureId = calendarEvent.LectureId;
-            Rotation = calendarEvent.Rotation;
-            SerieId = serieId;
-            StartSeries = calendarEvent.StartSeries;
-            EndSeries = calendarEvent.EndSeries;
-            InstructorsIds = calendarEvent.InstructorsIds;
-
-        }
     }
 }
