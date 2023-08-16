@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getLectures } from "../../../services/LectureService"
 import { CircularProgress, Grid, MenuItem, TextField } from "@mui/material"
 import { FC } from "react"
-import { DialogInterfaces } from "../../Calendar/DialogInterfaces"
+import { DialogInterfaces } from "../DialogInterfaces"
 import { useAccount } from "../../../hooks/useAccount"
 
 export const LectureSelect: FC<DialogInterfaces<string>> = ({value, onChange,readonlyValue,disabled}) => {

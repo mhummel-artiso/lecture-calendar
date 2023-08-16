@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useQuery } from "@tanstack/react-query"
-import { DialogInterfaces } from "../../Calendar/DialogInterfaces";
+import { DialogInterfaces } from "../DialogInterfaces";
 import { CircularProgress, Autocomplete, TextField } from "@mui/material"
 import { Instructor } from "../../../models/instructor";
 import { getInstructors } from "../../../services/KeyCloakService";

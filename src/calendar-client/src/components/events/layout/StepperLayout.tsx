@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Box, Button, Grid, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
-import { LayoutDisplayItem } from "../../Calendar/DialogInterfaces";
+import { LayoutDisplayItem } from "../DialogInterfaces";
 
 interface StepperLayoutProps {
     steps: LayoutDisplayItem[],

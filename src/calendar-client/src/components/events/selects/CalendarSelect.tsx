@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getCalendars } from "../../../services/CalendarService"
 import { CircularProgress, Grid, InputProps, MenuItem, TextField } from "@mui/material"
 import { FC } from "react"
-import { DialogInterfaces } from "../../Calendar/DialogInterfaces"
+import { DialogInterfaces } from "../DialogInterfaces"
 import { useAccount } from "../../../hooks/useAccount"
 
 export const CalendarSelect: FC<DialogInterfaces<string>> = ({value, onChange, readonlyValue, disabled}) => {
