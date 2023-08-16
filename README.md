@@ -45,6 +45,13 @@ pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
 - Debug
   - `API_DEBUG_TEST_ENDPOINT_ENABLED` : Enable test endpoint (/test) (`"false"`) [*Optional*]
   - `API_DEBUG_TEST_ENDPOINT_POLICY` : The policy for the test endpoint mögliche werte: [`EDITOR` |  `VIEWER` | `EDITOR_VIEWER`] (`""`) [*Optional*]
+- Keycloak REST
+  - `KEYCLOAK_REST_PASSWORD` : Password for admin account [**Required**]
+  - `KEYCLOAK_REST_USER` : User [*Optional*] (default: "admin")
+  - `KEYCLOAK_BASE_URL` : URL to Keycloak [*Optional*] (default: "http://localhost:8080")
+  - `KEYCLOAK_REALM` : Realm in Keycloak [*Optional*] (default: "Calendar")
+  - `KEYCLOAK_CALENDARS_GROUP_NAME` : Groupname for Calendars [*Optional*] (default: "Semesters")
+  - `KEYCLOAK_INSTRUCTOR_GROUP_NAME` : Instructorgroupname [*Optional*] (default: "Instructors")
 
 ### Client
 ### Build errors
