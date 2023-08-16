@@ -32,17 +32,17 @@ import { Moment } from "moment/moment";
 import moment from "moment";
 import { deleteEvent, deleteEventSeries } from "../../services/CalendarService";
 import { DialogComponentProps } from "../../models/dialogComponentProps";
-import DeleteIcon from '@mui/icons-material/Delete'
-import { Instructor } from '../../models/instructor'
-import { LectureSelect } from './selects/LectureSelect'
-import { CalendarSelect } from './selects/CalendarSelect'
-import { InstructorSelect } from './selects/InstructorSelect'
 import { EditSeriesDialogContent } from './EditSeriesDialogContent'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { useAccount } from '../../hooks/useAccount'
-import { StepperLayout } from "./layout/StepperLayout";
-import { AccordionLayout } from "./layout/AccordionLayout";
+import { Instructor } from '../../models/instructor'
+import { CalendarSelect } from "./selects/CalendarSelect";
+import { LectureSelect } from "./selects/LectureSelect";
+import { InstructorSelect } from "./selects/InstructorSelect";
 import { LayoutDisplayItem } from "./DialogInterfaces";
+import { AccordionLayout } from "./layout/AccordionLayout";
+import { StepperLayout } from "./layout/StepperLayout";
+
 
 const serialList = [
     // dnr = do not repeat

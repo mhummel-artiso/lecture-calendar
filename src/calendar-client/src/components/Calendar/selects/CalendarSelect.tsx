@@ -6,7 +6,6 @@ import { DialogInterfaces } from "../DialogInterfaces"
 import { useAccount } from "../../../hooks/useAccount"
 
 export const CalendarSelect: FC<DialogInterfaces<string>> = ({value, onChange, readonlyValue, disabled}) => {
-    const {canEdit} = useAccount();
     const {data, isLoading} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
@@ -20,7 +19,6 @@ export const CalendarSelect: FC<DialogInterfaces<string>> = ({value, onChange, r
                 <Grid item xs={2}><CircularProgress/></Grid>
                 <Grid item xs={5}/>
             </Grid>
-
         ) : (<TextField
             fullWidth
             value={value}

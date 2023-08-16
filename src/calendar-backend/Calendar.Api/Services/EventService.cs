@@ -13,12 +13,10 @@ namespace Calendar.Api.Services
     {
         private readonly IMongoCollection<UserCalendar> dbCollection;
         private readonly ILogger<ICalendarService> logger;
-        private readonly IKeyGenerator keyGenerator;
 
-        public EventService(ILogger<ICalendarService> logger, IMongoDatabase db, IKeyGenerator keyGenerator)
+        public EventService(ILogger<ICalendarService> logger, IMongoDatabase db)
         {
             this.logger = logger;
-            this.keyGenerator = keyGenerator;
             dbCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }

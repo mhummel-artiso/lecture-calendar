@@ -9,10 +9,6 @@ namespace Calendar.Api.DTOs.Update
         [StringLength(24, MinimumLength = 24)]
         public string? Id { get; set; }
 
-        [StringLength(24, MinimumLength = 24)]
-        [Range(0, 3)]
-        public EventRotation Rotation { get; set; }
-
         [Required()]
         [StringLength(50)]
         public string? Location { get; set; }

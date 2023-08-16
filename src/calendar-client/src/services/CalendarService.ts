@@ -112,13 +112,3 @@ export const deleteEventSeries = async (calendarId: string, seriesId: string) =>
     const response = await axiosInstance.delete<boolean>(seriesEndPointName(calendarId, seriesId));
     return Promise.resolve(response.data)
 }
-export const deleteEventSeries = async (
-    calendarId: string,
-    eventSerieId: string
-) => {
-    const path = eventEndPointName(calendarId)
-    const response = await axiosInstance.delete<boolean>(
-        `${path}/serie/${eventSerieId}`
-    )
-    return Promise.resolve(response.data)
-}
