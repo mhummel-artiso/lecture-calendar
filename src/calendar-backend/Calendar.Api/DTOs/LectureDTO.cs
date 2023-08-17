@@ -11,6 +11,6 @@ namespace Calendar.Api.DTOs
     public string? Description { get; set; }
     public string? ShortKey { get; set; }
     public DateTimeOffset CreatedDate { get; set; }
-    public DateTimeOffset LastUpdateDate { get; set; }
+    public DateTimeOffset? LastUpdateDate { get; set; }
     }
 }
