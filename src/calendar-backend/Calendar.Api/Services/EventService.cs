@@ -5,9 +5,7 @@ using Calendar.Mongo.Db.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Servers;
 using MongoDB.Driver.Linq;
-using Polly;
 
 namespace Calendar.Api.Services
 {
@@ -93,59 +91,81 @@ namespace Calendar.Api.Services
 
         public async Task<(CalendarEvent?, bool)> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
-            var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
             ArgumentNullException.ThrowIfNull(calendarId);
+            var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
 
-            var itemToUpdate = calendar.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
-            if (itemToUpdate == null) return (null, false);
+            var eventToUpdate = calendar.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
+            
+            if (eventToUpdate == null) return (null, false);
 
-            if (itemToUpdate.LastUpdateDate != calendarEvent.LastUpdateDate) return (itemToUpdate, true);
+            // Check for conflict.
+            if (eventToUpdate.LastUpdateDate != calendarEvent.LastUpdateDate) return (eventToUpdate, true);
 
-            itemToUpdate.LastUpdateDate = DateTimeOffset.UtcNow;
-            itemToUpdate.Location = calendarEvent.Location;
-            itemToUpdate.Description = calendarEvent.Description;
-            itemToUpdate.Start = calendarEvent.Start;
-            itemToUpdate.Duration = calendarEvent.Duration;
-            itemToUpdate.Instructors = calendarEvent.Instructors;
 
-            // Can update lecture only, if its no serie.
-            if (!itemToUpdate.SeriesId.HasValue)
+            var eventsToUpdate = new List<CalendarEvent>();
+            var sharedUtc = DateTimeOffset.UtcNow;
+            if (eventToUpdate.SeriesId.HasValue)
             {
-                itemToUpdate.LectureId = calendarEvent.LectureId;
+                eventsToUpdate = calendar.Events.Where(x => x.SeriesId == eventToUpdate.SeriesId).ToList();
+                eventToUpdate = eventsToUpdate.First(x => x.Id == calendarEvent.Id);
+                foreach (var item in eventsToUpdate)
+                {
+                    item.LastUpdateDate = sharedUtc;
+                }
             }
-            var filterBuilder = Builders<UserCalendar>.Filter;
-            var filter = filterBuilder.Eq(x => x.Id, new ObjectId(calendarId)) &
-                         filterBuilder.ElemMatch(x => x.Events, el => el.Id == itemToUpdate.Id);
+            else
+            {
+                eventsToUpdate.Add(eventToUpdate);
+                eventToUpdate.LectureId = calendarEvent.LectureId;
+            }
 
-            var updateBuilder = Builders<UserCalendar>.Update;
-            var update = updateBuilder.Set(x => x.Events.FirstMatchingElement(), itemToUpdate);
+            eventToUpdate.LastUpdateDate = sharedUtc;
+            eventToUpdate.Location = calendarEvent.Location;
+            eventToUpdate.Description = calendarEvent.Description;
+            eventToUpdate.Start = calendarEvent.Start;
+            eventToUpdate.Duration = calendarEvent.Duration;
+            eventToUpdate.Instructors = calendarEvent.Instructors;
+
+            var filter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
+            var update = Builders<UserCalendar>.Update.Set(x => x.Events, eventsToUpdate);
             var result = await dbCollection.UpdateOneAsync(filter, update);
 
-            return result.ModifiedCount > 0 ? (itemToUpdate, false) : (null, false);
+            return result.ModifiedCount > 0 ? (eventToUpdate, false) : (null, false);
         }
 
-        public async Task<IEnumerable<CalendarEvent>?> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)
+        public async Task<(IEnumerable<CalendarEvent>?, bool)> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)
         {
             ArgumentNullException.ThrowIfNull(calendarId);
             calendarEvent.ValidateSeriesId();
             var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
             if (calendar == null)
-                return null;
+                return (null,false);
             var oldSeriesEvents = calendar.Events
                 .Where(x => x.SeriesId == calendarEvent.SeriesId)
                 .ToList();
+
             // empty list is a valid 
-            if (oldSeriesEvents.IsNullOrEmpty()) return new List<CalendarEvent>();
+            if (oldSeriesEvents.IsNullOrEmpty()) return (new List<CalendarEvent>(),false);
+
+            // If LastUpdateDate not the same, a conflict is occured.
+            if (oldSeriesEvents.First().LastUpdateDate != calendarEvent.LastUpdateDate) return (oldSeriesEvents, true);
 
             var eventsToUpdate = new List<CalendarEvent>();
             var filter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
-            UpdateDefinition<UserCalendar>? eventUpdate;
-            // delete all old events if the repeat changed
+            
+            // delete all old events if the repeat changed or EndSeriesDate changed
             var firstEvent = oldSeriesEvents.First();
             if (firstEvent.Repeat != calendarEvent.Repeat || firstEvent.EndSeries != calendarEvent.EndSeries)
             {
+                // Es tritt immer ein Konflikt in MongoDB auf wenn man Delete und Push gleichzeitig machen möchte. Wenn du eine bessere Lösung gefunden hast, bitte ändern.
+                // Habe schon probiert eine Transaktion um beide zu machen, aber um eigene Transaktion zu ermöglichen, braucht man verteilte Datenbank.
+                calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
                 eventsToUpdate.AddRange(CreateEvents(calendarEvent, true));
-                eventUpdate = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents).PushEach(x => x.Events, eventsToUpdate);
+                var update = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
+                var delete = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents);
+                var resultUpdate = await dbCollection.UpdateOneAsync(filter, update);
+                var resultDelete = await dbCollection.UpdateOneAsync(filter, delete);
+                return resultUpdate.ModifiedCount > 0 && resultDelete.ModifiedCount > 0 ? (eventsToUpdate, false) : (null, false);
             }
             else
             {
@@ -159,10 +179,10 @@ namespace Calendar.Api.Services
                     oldEvent.Duration = calendarEvent.Duration;
                     oldEvent.Instructors = calendarEvent.Instructors;
                 }
-                eventUpdate = Builders<UserCalendar>.Update.Set(x => x.Events, oldSeriesEvents);
+                var update = Builders<UserCalendar>.Update.Set(x => x.Events, oldSeriesEvents);
+                var result = await dbCollection.UpdateOneAsync(filter, update);
+                return result.ModifiedCount > 0 ? (oldSeriesEvents, false) : (null, false);
             }
-            var result = await dbCollection.UpdateOneAsync(filter, eventUpdate);
-            return result.ModifiedCount > 0 ? eventsToUpdate : null;
         }
 
         public async Task<bool> DeleteEventSeriesByIdAsync(string calendarId, string seriesId)
@@ -224,9 +244,16 @@ namespace Calendar.Api.Services
                 yield return firstEvent;
                 yield break;
             }
+
+            if(!firstEvent.EndSeries.HasValue) throw new NullReferenceException(nameof(firstEvent.EndSeries));
+
+
+            var shardUtcNow = DateTimeOffset.UtcNow;
+            var endEvent = firstEvent.Start + firstEvent.Duration;
             var seriesId = firstEvent.SeriesId ?? ObjectId.GenerateNewId();
             var seriesStart = firstEvent.StartSeries ?? throw new NullReferenceException(nameof(firstEvent.StartSeries));
-            var seriesEnd = firstEvent.EndSeries ?? throw new NullReferenceException(nameof(firstEvent.EndSeries));
+            // Need this seriesEnd Date which contains the event also on the day of series end.
+            var seriesEnd = new DateTimeOffset(firstEvent.EndSeries.Value.Year, firstEvent.EndSeries.Value.Month, firstEvent.EndSeries.Value.Day, endEvent.Hour, endEvent.Minute, endEvent.Second, TimeSpan.Zero);
             while (seriesStart <= seriesEnd)
             {
                 var calendarEvent = new CalendarEvent()
@@ -237,8 +264,8 @@ namespace Calendar.Api.Services
                     LectureId = firstEvent.LectureId,
                     Instructors = firstEvent.Instructors,
                     CalendarId = firstEvent.CalendarId,
-                    CreatedDate = !isUpdate ? DateTimeOffset.UtcNow : firstEvent.CreatedDate,
-                    LastUpdateDate = DateTimeOffset.UtcNow,
+                    CreatedDate = !isUpdate ? shardUtcNow : firstEvent.CreatedDate,
+                    LastUpdateDate = shardUtcNow,
                     Start = seriesStart,
                     Duration = firstEvent.Duration,
                     Repeat = firstEvent.Repeat,
@@ -255,7 +282,6 @@ namespace Calendar.Api.Services
                 };
                 yield return calendarEvent
                     .ValidateSeriesId()
-                    .ValidateCalendarId()
                     .ValidateLocation();
             }
         }

@@ -8,6 +8,7 @@ using Calendar.Mongo.Db.Models;
 using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace Calendar.Api.Controllers;
@@ -287,16 +288,17 @@ public class CalendarController : ControllerBase
             return BadRequest("serie id not the same");
 
 
-        var result = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        if (result == null)
+        (IEnumerable<CalendarEvent>? updatedCalendar, bool hasConflict) = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+        if (updatedCalendar == null)
             return NotFound();
 
-        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
+        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(updatedCalendar);
 
         foreach (var mappedDto in mappedResult)
         {
             await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
         }
+        if(hasConflict) return Conflict(mappedResult);
         return Ok(mappedResult);
     }
     [HttpDelete("{calendarId}/series/{serieId}")]
