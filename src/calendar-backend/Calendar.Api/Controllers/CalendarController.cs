@@ -247,13 +247,15 @@ public class CalendarController : ControllerBase
         if (eventId != calendarEvent.Id)
             return BadRequest("event id not the same like in body");
 
+        
         try
         {
-            var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-            if (result == null)
+            (CalendarEvent? updatedCalendar, bool hasConflict) = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+            if (updatedCalendar == null)
                 return NotFound();
-            var mappedDto = mapper.Map<CalendarEventDTO>(result);
+            var mappedDto = mapper.Map<CalendarEventDTO>(updatedCalendar);
             await AddLectureToEventAsync(mappedDto);
+            if (hasConflict) return Conflict(mappedDto);
             return Ok(mappedDto);
         }
         catch (ArgumentException ex)

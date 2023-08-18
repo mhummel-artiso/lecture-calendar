@@ -35,6 +35,7 @@ namespace Calendar.Api.DTOs.Update
         [StringLength(24, MinimumLength = 24)]
         public string? LectureId { get; set; }
 
+        [Required()]
         public DateTimeOffset LastUpdateDate { get; set; }
         [Required()]
         public DateTimeOffset CreatedDate { get; set; }

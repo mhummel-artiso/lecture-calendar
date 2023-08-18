@@ -5,7 +5,9 @@ using Calendar.Mongo.Db.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Servers;
 using MongoDB.Driver.Linq;
+using Polly;
 
 namespace Calendar.Api.Services
 {
@@ -70,20 +72,34 @@ namespace Calendar.Api.Services
             calendarEvent.CalendarId = calendarId;
 
             var eventsToAdd = new List<CalendarEvent>();
+            
             // Creating one or more Events
-            eventsToAdd.AddRange(CreateEvents(calendarEvent, false));
+            if (calendarEvent.Repeat == EventRepeat.None)
+            {
+                eventsToAdd.Add(CreateEvent(calendarEvent));
+            }
+            else
+            {
+                eventsToAdd.AddRange(CreateEvents(calendarEvent, false));
+            }
+                
             var update = new UpdateDefinitionBuilder<UserCalendar>().AddToSetEach(x => x.Events, eventsToAdd);
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
 
             return result.IsAcknowledged ? eventsToAdd : null;
         }
-        public async Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
+
+        
+
+        public async Task<(CalendarEvent?, bool)> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
             ArgumentNullException.ThrowIfNull(calendarId);
 
             var itemToUpdate = calendar.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
-            if (itemToUpdate == null) return null;
+            if (itemToUpdate == null) return (null, false);
+
+            if (itemToUpdate.LastUpdateDate != calendarEvent.LastUpdateDate) return (itemToUpdate, true);
 
             itemToUpdate.LastUpdateDate = DateTimeOffset.UtcNow;
             itemToUpdate.Location = calendarEvent.Location;
@@ -105,7 +121,7 @@ namespace Calendar.Api.Services
             var update = updateBuilder.Set(x => x.Events.FirstMatchingElement(), itemToUpdate);
             var result = await dbCollection.UpdateOneAsync(filter, update);
 
-            return result.ModifiedCount > 0 ? itemToUpdate : null;
+            return result.ModifiedCount > 0 ? (itemToUpdate, false) : (null, false);
         }
 
         public async Task<IEnumerable<CalendarEvent>?> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)
@@ -183,6 +199,24 @@ namespace Calendar.Api.Services
             return seriesEvents;
         }
 
+        private CalendarEvent CreateEvent(CalendarEvent calendarEvent)
+        {
+            return new CalendarEvent()
+            {
+                Id = ObjectId.GenerateNewId(),
+                Description = calendarEvent.Description,
+                Location = calendarEvent.Location,
+                Start = calendarEvent.Start,
+                Duration = calendarEvent.Duration,
+                LectureId = calendarEvent.LectureId,
+                Instructors = calendarEvent.Instructors,
+                CalendarId = calendarEvent.CalendarId,
+                CreatedDate = DateTimeOffset.UtcNow,
+                LastUpdateDate = DateTimeOffset.UtcNow,
+                Repeat = EventRepeat.None,
+            };
+        }
+
         private static IEnumerable<CalendarEvent> CreateEvents(CalendarEvent firstEvent, bool isUpdate)
         {
             if (firstEvent.Repeat == EventRepeat.None)
@@ -204,7 +238,7 @@ namespace Calendar.Api.Services
                     Instructors = firstEvent.Instructors,
                     CalendarId = firstEvent.CalendarId,
                     CreatedDate = !isUpdate ? DateTimeOffset.UtcNow : firstEvent.CreatedDate,
-                    LastUpdateDate = isUpdate ? DateTimeOffset.UtcNow : firstEvent.LastUpdateDate,
+                    LastUpdateDate = DateTimeOffset.UtcNow,
                     Start = seriesStart,
                     Duration = firstEvent.Duration,
                     Repeat = firstEvent.Repeat,

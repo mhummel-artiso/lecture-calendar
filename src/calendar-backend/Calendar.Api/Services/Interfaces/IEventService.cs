@@ -12,7 +12,7 @@ namespace Calendar.Api.Services.Interfaces
 
         Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent);
 
-        Task<CalendarEvent?> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent);
+        Task<(CalendarEvent?, bool)> UpdateEventAsync(string calendarId, CalendarEvent lectureEvent);
         Task<IEnumerable<CalendarEvent>?> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent);
 
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
