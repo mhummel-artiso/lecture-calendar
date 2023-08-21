@@ -33,6 +33,8 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../utils/queryClient'
 import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
+import { ConflictDialog } from '../conflictDialog/ConflictDialog'
+import { AxiosError } from 'axios'
 
 type CalendarViewType = 'month' | 'week' | 'day'
 
@@ -202,8 +204,11 @@ export const CalendarPage = () => {
             await refetch()
         },
     })
+
+    // { mutate: mutateEdit, data: mutateEditResponse, error: mutateEditError, isError }
     const eventEditMutation = useMutation({
         mutationFn: async (e: EditEventCallback) => {
+            console.log('mutate', e)
             if (e.event) {
                 return await editEvent(e.calendarId, e.event)
             } else if (e.eventSeries) {
@@ -215,6 +220,11 @@ export const CalendarPage = () => {
             }
         },
     })
+
+    // useEffect(() => {
+    //     console.log("error", mutateEditError);
+    //     console.log("response", mutateEditResponse)
+    // }, [mutateEditResponse, mutateEditError])
 
     return (
         <>
@@ -330,7 +340,6 @@ export const CalendarPage = () => {
                     onDialogAdd={addEventMutation.mutate}
                     // TODO: Edit to be able to edit Event
                     onDialogEdit={eventEditMutation.mutate}
-                    isEditConflict={eventEditMutation.isError }
                     onDeletedEvent={async (event: CalendarEvent) => {
                         await queryClient.invalidateQueries({
                             queryKey: ['events'],
@@ -338,6 +347,20 @@ export const CalendarPage = () => {
                     }}
                 />
             )}
+
+            <ConflictDialog
+                title={'Datenkonflikt'}
+                error={eventEditMutation.error as AxiosError}
+                conflictStatus={409}
+            >
+                <Typography>
+                    Ihre Änderungen konnten nicht gespeichert werden, da Sie
+                    sonst neue Änderungen von einem Kollegen überschreiben
+                    würden. Bitte schließen Sie den Dialog, und schauen Sie sich
+                    die neuen Änderungen an und probieren Sie es gegebenenfalls
+                    erneut.
+                </Typography>
+            </ConflictDialog>
         </>
     )
 }
