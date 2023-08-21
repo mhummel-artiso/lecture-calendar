@@ -143,6 +143,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const timeFields = (disabled: boolean) => {
         return (
             <Stack spacing={2}>
+                <Typography variant="body2" color="textSecondary">Angaben in lokaler Zeit</Typography>
                 <DatePicker
                     disabled={disabled}
                     key={'day'}
