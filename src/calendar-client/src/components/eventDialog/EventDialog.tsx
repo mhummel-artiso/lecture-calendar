@@ -58,12 +58,10 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
         value: PassedDialogValues | undefined,
         editSeries: boolean | undefined = undefined
     ) => {
-        console.log('value', value);
         if(!value) return
         const base: CalendarEventBase = {
             ...value,
         }
-        console.log('base',base);
         if(currentValue) {
             if(onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
@@ -72,7 +70,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     endSeries: value.serieEnd,
                     lectureId: value.lectureId,
                 }
-                console.log('onDialogEdit data',data);
                 onDialogEdit({
                     calendarId: currentValue.calendarId,
                     eventSeries: data,
@@ -86,7 +83,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     endSeries: value.serieEnd,
                     lectureId: value.lectureId,
                 }
-                console.log('onDialogEdit data',data);
                 onDialogEdit({
                     calendarId: currentValue.calendarId,
                     event: data,
@@ -100,7 +96,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                 description: value.description ?? undefined,
                 endSeries: value.serieEnd ?? undefined,
             }
-            console.log('onDialogAdd data',data);
             onDialogAdd(data)
         }
         handleClose()
