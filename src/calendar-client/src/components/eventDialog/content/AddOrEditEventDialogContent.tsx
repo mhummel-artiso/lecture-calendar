@@ -51,6 +51,7 @@ interface Props {
     onCancel: () => void
     calendarId: string
     isSeries: boolean
+    isConflict: boolean
 }
 
 export const AddOrEditEventDialogContent: FC<Props> = (props) => {
@@ -62,6 +63,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         onCancel,
         onAccept,
         onDelete,
+        isConflict,
     } = props
     const { canEdit } = useAccount()
 
@@ -296,6 +298,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                         canUpdate={canClickAdd()}
                         onDelete={onDelete}
                         onUpdate={handleAccept}
+                        isConflict={isConflict}
                     />
                 ) : (
                     <StepperLayout

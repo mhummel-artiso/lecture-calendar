@@ -22,6 +22,7 @@ interface AccordionLayoutProps {
     onCancel: () => void
     onUpdate: () => void
     canUpdate: boolean
+    isConflict: boolean
 }
 
 export const AccordionLayout: FC<AccordionLayoutProps> = ({
@@ -30,6 +31,7 @@ export const AccordionLayout: FC<AccordionLayoutProps> = ({
     onCancel,
     onDelete,
     canUpdate,
+    isConflict
 }) => {
     const { canEdit } = useAccount()
     const [expanded, setExpanded] = React.useState<string | boolean>('required')
@@ -60,7 +62,7 @@ export const AccordionLayout: FC<AccordionLayoutProps> = ({
                     <Grid item>
                         <Button
                             onClick={onUpdate}
-                            disabled={!canUpdate}
+                            disabled={!canUpdate || isConflict}
                             variant="contained"
                         >
                             Bearbeiten

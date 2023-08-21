@@ -31,6 +31,7 @@ interface EventDialogComponentProps
     > {
     calendarId: string
     onDeletedEvent: (event: CalendarEvent) => void
+    isEditConflict: boolean
 }
 
 export type TextFieldViewType = 'required' | 'time' | 'optional'
@@ -42,6 +43,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     onDialogEdit,
     currentValue,
     calendarId,
+    isEditConflict,
 }: EventDialogComponentProps) => {
     const [askEditSeries, setAskEditSeries] = useState<
         PassedDialogValues | undefined
@@ -153,7 +155,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
 
     const handleCancelAskDialog = () => {
         setAskDeleteSeries(false)
-        setAskDeleteSeries(false)
     }
 
     return (
@@ -184,7 +185,23 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     </Typography>
                 </EditEventSeriesDialogContent>
             )}
-            {!askEditSeries && !askDeleteSeries && (
+
+            {isEditConflict && (
+                <EditEventSeriesDialogContent
+                    title="Datenkonflikt"
+                    onCanceled={handleCancelAskDialog}
+                >
+                    <Typography>
+                        Ihre Änderungen konnten nicht gespeichert werden, da Sie
+                        sonst neue Änderungen von einem Kollegen überschreiben
+                        würden. Bitte schließen Sie den Dialog, und schauen Sie
+                        sich die neuen Änderungen an und probieren Sie es
+                        gegebenenfalls erneut.
+                    </Typography>
+                </EditEventSeriesDialogContent>
+            )}
+
+            {!askEditSeries && !askDeleteSeries && !isEditConflict && (
                 <AddOrEditEventDialogContent
                     isSeries={isSeries}
                     calendarId={calendarId}
@@ -203,6 +220,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                             : handleAddOrEditEvent(value)
                     }
                     onCancel={handleClose}
+                    isConflict={isEditConflict}
                 />
             )}
         </Dialog>
