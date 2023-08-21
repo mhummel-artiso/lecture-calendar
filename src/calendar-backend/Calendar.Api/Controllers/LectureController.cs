@@ -7,6 +7,7 @@ using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Calendar.Api.Controllers;
 
@@ -65,14 +66,16 @@ public class LectureController : ControllerBase
     [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<LectureDTO>> EditLecture(string lectureId, [FromBody] UpdateLectureDTO lecture)
     {
-        if (lecture == null)
-        {
-            return BadRequest();
-        }
+        if (lectureId != lecture.Id)
+            return BadRequest("lecture id not the same like in body");
 
-        var result = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
+        (Lecture? updatedLecture, bool hasConflict) = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
 
-        return Ok(mapper.Map<LectureDTO>(result));
+        if (updatedLecture == null) return NotFound(lectureId);
+
+        var mappedResult = mapper.Map<LectureDTO>(updatedLecture);
+        if (hasConflict) return Conflict(mappedResult);
+        return Ok(mappedResult);
     }
 
     [HttpDelete("{lectureId}")]
