@@ -155,17 +155,12 @@ namespace Calendar.Api.Services
             
             // delete all old events if the repeat changed or EndSeriesDate changed
             var firstEvent = oldSeriesEvents.First();
-            if (firstEvent.Repeat != calendarEvent.Repeat || firstEvent.EndSeries != calendarEvent.EndSeries)
+            if (firstEvent.Repeat != calendarEvent.Repeat ||
+                firstEvent.Start.Date != calendarEvent.Start.Date ||
+                firstEvent.EndSeries != calendarEvent.EndSeries)
             {
-                // Es tritt immer ein Konflikt in MongoDB auf wenn man Delete und Push gleichzeitig machen möchte. Wenn du eine bessere Lösung gefunden hast, bitte ändern.
-                // Habe schon probiert eine Transaktion um beide zu machen, aber um eigene Transaktion zu ermöglichen, braucht man verteilte Datenbank.
+                calendarEvent.ValidateSeriesTimes();
                 calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
-                eventsToUpdate.AddRange(CreateEvents(calendarEvent, true));
-                var update = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
-                var delete = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents);
-                var resultUpdate = await dbCollection.UpdateOneAsync(filter, update);
-                var resultDelete = await dbCollection.UpdateOneAsync(filter, delete);
-                return resultUpdate.ModifiedCount > 0 && resultDelete.ModifiedCount > 0 ? (eventsToUpdate, false) : (null, false);
             }
             else
             {
@@ -175,7 +170,16 @@ namespace Calendar.Api.Services
                     oldEvent.LectureId = calendarEvent.LectureId;
                     oldEvent.Location = calendarEvent.Location;
                     oldEvent.Description = calendarEvent.Description;
-                    oldEvent.Start = calendarEvent.Start;
+                    var oldStart = oldEvent.Start;
+                    var newStart = calendarEvent.Start;
+                    oldEvent.Start = new DateTimeOffset(
+                        oldStart.Year,
+                        oldStart.Month,
+                        oldStart.Day,
+                        newStart.Hour,
+                        newStart.Minute,
+                        newStart.Second,
+                        oldStart.Offset).ToUniversalTime();
                     oldEvent.Duration = calendarEvent.Duration;
                     oldEvent.Instructors = calendarEvent.Instructors;
                 }
