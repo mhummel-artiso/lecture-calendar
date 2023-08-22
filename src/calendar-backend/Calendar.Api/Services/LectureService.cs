@@ -29,7 +29,7 @@ namespace Calendar.Api.Services
             await dbCollection.InsertOneAsync(lecture);
             return lecture;
         }
-        public async Task<(Lecture?, bool)> UpdateLectureAsync(string lectureId, Lecture lecture)
+        public async Task<(Lecture? updatedLecture, bool hasConflict)> UpdateLectureAsync(string lectureId, Lecture lecture)
         {
             var lectureToUpdate = await dbCollection.Find(x => x.Id == new ObjectId(lectureId)).FirstOrDefaultAsync();
 
@@ -46,7 +46,6 @@ namespace Calendar.Api.Services
                 .Set(x => x.Title, lecture.Title)
                 .Set(x => x.LastUpdateDate, lecture.LastUpdateDate);
             
-
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(lectureId), update);
             return result.ModifiedCount == 1 ? (lecture, false) : (null, false);
         }

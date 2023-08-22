@@ -288,11 +288,11 @@ public class CalendarController : ControllerBase
             return BadRequest("serie id not the same");
 
 
-        (IEnumerable<CalendarEvent>? updatedCalendar, bool hasConflict) = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        if (updatedCalendar == null)
+        (IEnumerable<CalendarEvent>? updatedEvents, bool hasConflict) = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+        if (updatedEvents == null)
             return NotFound();
 
-        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(updatedCalendar);
+        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(updatedEvents);
 
         foreach (var mappedDto in mappedResult)
         {
