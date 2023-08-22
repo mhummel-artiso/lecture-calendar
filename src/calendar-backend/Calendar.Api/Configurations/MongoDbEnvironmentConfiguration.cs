@@ -11,7 +11,7 @@ namespace Calendar.Api.Configurations
         public MongoDbEnvironmentConfiguration Validate()
         {
             new EnvironmentConfigurationValidator()
-                .CheckEnvironment(MONGODB_SERVER)
+                .CheckEnvironmentUri(MONGODB_SERVER)
                 .CheckEnvironment(MONGODB_DB_NAME);
             return this;
         }

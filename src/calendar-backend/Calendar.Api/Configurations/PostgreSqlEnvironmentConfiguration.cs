@@ -19,7 +19,7 @@ namespace Calendar.Api.Configurations
         public PostgreSqlEnvironmentConfiguration Validate()
         {
             new EnvironmentConfigurationValidator()
-                .CheckEnvironment(POSTGRESQL_HOST)
+                .CheckEnvironmentUri(POSTGRESQL_HOST)
                 .CheckEnvironmentValue(POSTGRESQL_PORT)
                 .CheckEnvironment(POSTGRESQL_DATABASE)
                 .CheckEnvironment(POSTGRESQL_USER_NAME).CheckEnvironment(POSTGRESQL_USER_PASSWORD);

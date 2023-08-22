@@ -18,12 +18,12 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
     public SwaggerEnvironmentConfiguration Validate()
     {
         new EnvironmentConfigurationValidator()
-            .CheckEnvironment(SWAGGER_OIDC_URL)
-            .CheckEnvironment(SWAGGER_REDIRECT_URL)
+            .CheckEnvironmentUri(SWAGGER_OIDC_URL)
+            .CheckEnvironmentUri(SWAGGER_REDIRECT_URL)
             .CheckEnvironment(SWAGGER_CLIENT_SECRET)
             .CheckEnvironment(SWAGGER_CLIENT_ID)
-            .CheckEnvironment(SWAGGER_AUTHORIZATION_URL)
-            .CheckEnvironment(SWAGGER_OIDC_TOKEN_URL);
+            .CheckEnvironmentUri(SWAGGER_AUTHORIZATION_URL, true)
+            .CheckEnvironmentUri(SWAGGER_OIDC_TOKEN_URL, true);
         return this;
     }
 }
