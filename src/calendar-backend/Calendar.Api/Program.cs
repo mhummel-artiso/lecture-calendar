@@ -38,7 +38,7 @@ try
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
     builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
-    builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
+    // builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
     builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
@@ -57,7 +57,7 @@ try
     );
 
     #endregion
-    
+
     #region Mongo db
 
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();
@@ -138,6 +138,7 @@ try
         .AddTransient<IConfigureOptions<SwaggerGenOptions>, InitializeSwaggerGenOptions>()
         .AddTransient<IKeycloakService, KeycloakService>()
         .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+        .AddHttpClient()
         .AddKeycloakAdminHttpClient(configuration);
 
     #endregion
@@ -150,16 +151,18 @@ try
     #endregion
 
     #region Keycloak Rest
+
     var keycloakRestConfig = configuration.Get<KeycloakRestEnvironmentConfiguration>()?.Validate();
     if (keycloakRestConfig != null)
     {
-        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER, keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
+        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER,
+            keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
     }
+
     #endregion
 
     var app = builder.Build();
 
-  
 
     app.UseHttpLogging();
     // app.UseW3CLogging();
@@ -181,11 +184,12 @@ try
     }
 
     app.UseSerilogRequestLogging();
-
     app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
+    app.MapHealthChecks("/health");
+
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)

@@ -284,7 +284,6 @@ public class CalendarController : ControllerBase
         if (serieId != calendarEvent.SeriesId)
             return BadRequest("serie id not the same");
 
-
         var result = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
         if (result == null)
             return NotFound();
