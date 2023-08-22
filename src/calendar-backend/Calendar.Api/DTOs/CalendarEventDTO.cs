@@ -13,7 +13,7 @@ namespace Calendar.Api.DTOs
         public DateTimeOffset End { get; set; }
         public EventRepeat? Repeat { get; set; }
         public string? SeriesId { get; set; }
-        public DateTimeOffset LastUpdateDate { get; set; }
+        public DateTimeOffset? LastUpdateDate { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
 
         // Fill in controller
