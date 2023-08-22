@@ -3,7 +3,7 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import React from "react";
 import moment, { Moment } from "moment/moment";
-import { CalendarViewType, formatCurrentDateView } from "../../services/dateService";
+import { CalendarViewType, formatCurrentDateView } from "../../services/DateService";
 
 interface Props {
     currentDate: Moment

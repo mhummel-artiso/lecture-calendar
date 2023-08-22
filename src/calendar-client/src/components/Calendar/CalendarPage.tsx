@@ -36,12 +36,11 @@ import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
 import { CalendarDateNavigation } from "./CalendarDateNavigation";
 import { CalendarViewSwitch } from "./CalendarViewSwitch";
 import { CalendarScheduler } from "./CalendarScheduler";
-import { CalendarViewType } from "../../services/dateService";
+import { CalendarViewType } from "../../services/DateService";
 
 export const CalendarPage = () => {
     const {canEdit} = useAccount()
     const {calendarName} = useParams()
-    const location = useLocation()
     const [calendarView, setCalendarView] = useState<CalendarViewType>('week')
     const [currentDate, setCurrentDate] = useState<Moment>(moment())
     const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
@@ -49,7 +48,6 @@ export const CalendarPage = () => {
         null
     )
     const [claendarId, setCalendarId] = useState<string>('')
-
 
     const addEventMutation = useMutation({
         mutationFn: async (event: CreateCalendarEvent) => {
@@ -122,7 +120,7 @@ export const CalendarPage = () => {
                         onDialogEdit={eventEditMutation.mutate}
                         onDeletedEvent={async (event: CalendarEvent) => {
                             await queryClient.invalidateQueries({
-                                queryKey: ['events', calendarName, calendarView]
+                                queryKey: ['events', calendarName, calendarView,currentDate]
                             })
                         }}
                     />

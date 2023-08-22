@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCalendarByName, getEventsFrom } from "../../services/CalendarService";
 import { CalendarEvent } from "../../models/calendarEvent";
 import { Calendar } from "../../models/calendar";
-import { CalendarViewType, getStartDateFromCurrentDate } from "../../services/dateService";
+import { CalendarViewType, getStartDateFromCurrentDate } from "../../services/DateService";
 import { useLocation, useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { queryClient } from "../../utils/queryClient";
@@ -48,10 +48,8 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
     const location = useLocation()
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null
-
         if(state) {
             const calendar = state
-
             const startDate = getStartDateFromCurrentDate(currentDate, calendarView)
             const events: CalendarEvent[] = []
             if(calendar.length === 1) {
@@ -63,6 +61,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                     startDate,
                     calendarView
                 )
+                console.log('events',events);
                 events.push(...result)
             }
             return events
@@ -80,14 +79,14 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         return []
     }
     const {data: events, refetch} = useQuery({
-        queryKey: ['events', calendarName, calendarView],
+        queryKey: ['events', calendarName, calendarView,currentDate.startOf("day")],
         queryFn: getEvents,
         useErrorBoundary: true,
     })
 
     // Invalidates events when parameters change
     useEffect(() => {
-        queryClient.invalidateQueries({queryKey: ['events']})
+        queryClient.invalidateQueries({queryKey: ['events', calendarName, calendarView,currentDate.startOf("day")]})
     }, [calendarName, location.state, calendarView, currentDate])
 
     const getAppointment = (c: CalendarEvent) => {

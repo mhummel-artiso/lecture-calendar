@@ -136,7 +136,6 @@ namespace Calendar.Api.Services
                 eventUpdate = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
                 var deleteOldEventsUpdate = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents);
                 await dbCollection.UpdateOneAsync(filter, deleteOldEventsUpdate);
-
             }
             else
             {

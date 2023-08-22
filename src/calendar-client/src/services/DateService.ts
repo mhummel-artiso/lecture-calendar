@@ -23,8 +23,8 @@ export const formatCurrentDateView = (currentDate: Moment, calendarView: Calenda
         case 'day':
             return currentDate.format('dddd, DD. MMMM YYYY')
         case 'week': {
-            const firstDayOfWeek = currentDate.clone().weekday(1)
-            const lastDayOfWeek = currentDate.clone().weekday(7)
+            const firstDayOfWeek = currentDate.clone().startOf("week")//.weekday(1)
+            const lastDayOfWeek = currentDate.clone().weekday(6)
             return `${firstDayOfWeek.format(
                 'D.MM'
             )} - ${lastDayOfWeek.format('D.MM.YYYY')}`
