@@ -5,11 +5,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl,
-    InputLabel,
     MenuItem,
-    Select,
-    SelectChangeEvent,
     Stack,
     TextField,
 } from '@mui/material'
@@ -21,10 +17,7 @@ import moment from 'moment'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 import { useQuery } from '@tanstack/react-query'
 import { getCalendars } from '../../../services/CalendarService'
-
-import { KeycloakCalendar } from '../../../models/keycloakCalendar'
 import { getCalendarsFromKeycloak } from '../../../services/KeyCloakService'
-import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 
 export const CalendarDialog: FC<
     DialogComponentProps<Calendar, Calendar, Calendar>

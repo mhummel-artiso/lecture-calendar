@@ -126,10 +126,17 @@ namespace Calendar.Api.Services
             UpdateDefinition<UserCalendar>? eventUpdate;
             // delete all old events if the repeat changed
             var firstEvent = oldSeriesEvents.First();
-            if (firstEvent.Repeat != calendarEvent.Repeat || firstEvent.EndSeries != calendarEvent.EndSeries)
+            if (firstEvent.Repeat != calendarEvent.Repeat ||
+                firstEvent.Start.Date != calendarEvent.Start.Date ||
+                firstEvent.EndSeries != calendarEvent.EndSeries)
             {
+                calendarEvent.ValidateSeriesTimes();
+                calendarEvent.CalendarId = firstEvent.CalendarId;
                 eventsToUpdate.AddRange(CreateEvents(calendarEvent, true));
-                eventUpdate = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents).PushEach(x => x.Events, eventsToUpdate);
+                eventUpdate = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
+                var deleteOldEventsUpdate = Builders<UserCalendar>.Update.PullAll(x => x.Events, oldSeriesEvents);
+                await dbCollection.UpdateOneAsync(filter, deleteOldEventsUpdate);
+
             }
             else
             {
@@ -139,7 +146,16 @@ namespace Calendar.Api.Services
                     oldEvent.LectureId = calendarEvent.LectureId;
                     oldEvent.Location = calendarEvent.Location;
                     oldEvent.Description = calendarEvent.Description;
-                    oldEvent.Start = calendarEvent.Start;
+                    var oldStart = oldEvent.Start;
+                    var newStart = calendarEvent.Start;
+                    oldEvent.Start = new DateTimeOffset(
+                        oldStart.Year,
+                        oldStart.Month,
+                        oldStart.Day,
+                        newStart.Hour,
+                        newStart.Minute,
+                        newStart.Second,
+                        oldStart.Offset).ToUniversalTime();
                     oldEvent.Duration = calendarEvent.Duration;
                     oldEvent.Instructors = calendarEvent.Instructors;
                 }
