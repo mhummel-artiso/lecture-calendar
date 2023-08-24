@@ -15,5 +15,6 @@ namespace Calendar.Api.Configurations
                 .CheckEnvironment(MONGODB_DB_NAME);
             return this;
         }
+        public string GetConnectionString() => MONGODB_SERVER.EndsWith('/') ? MONGODB_SERVER + MONGODB_DB_NAME : $"{MONGODB_SERVER}/{MONGODB_DB_NAME}";
     }
 }
