@@ -1,4 +1,5 @@
-﻿using Calendar.Api.Models;
+﻿using Calendar.Api.Exceptions;
+using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Api.Validation;
 using Calendar.Mongo.Db.Models;
@@ -88,57 +89,66 @@ namespace Calendar.Api.Services
         }
 
 
-        public async Task<(CalendarEvent? updatedEvent, bool hasConflict)> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
+
+        public async Task<CalendarEvent> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             ArgumentNullException.ThrowIfNull(calendarId);
             var calendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
+            if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
 
             var eventToUpdate = calendar.Events.FirstOrDefault(x => x.Id == calendarEvent.Id);
-
-            if (eventToUpdate == null) return (null, false);
+            if (eventToUpdate == null) throw new KeyNotFoundException("Event was not found.");
 
             // Check for conflict.
-            if (eventToUpdate.LastUpdateDate != calendarEvent.LastUpdateDate) return (eventToUpdate, true);
+            if (eventToUpdate.LastUpdateDate != calendarEvent.LastUpdateDate) throw new ConflictException<CalendarEvent>(eventToUpdate);
 
-            FilterDefinition<UserCalendar> filter;
-            UpdateDefinition<UserCalendar> update;
+            var sharedUtc = DateTimeOffset.UtcNow;
 
-            if (eventToUpdate.SeriesId.HasValue)
-            {
-                var eventsToUpdate = new List<CalendarEvent>();
-                var sharedUtc = DateTimeOffset.UtcNow;
-                eventsToUpdate = calendar.Events.Where(x => x.SeriesId == eventToUpdate.SeriesId).ToList();
-                eventToUpdate = eventsToUpdate.First(x => x.Id == calendarEvent.Id);
-                foreach (var item in eventsToUpdate)
-                {
-                    item.LastUpdateDate = sharedUtc;
-                }
-                eventToUpdate.Location = calendarEvent.Location;
-                eventToUpdate.Description = calendarEvent.Description;
-                eventToUpdate.Start = calendarEvent.Start;
-                eventToUpdate.Duration = calendarEvent.Duration;
-                eventToUpdate.Instructors = calendarEvent.Instructors;
-
-                filter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
-                update = Builders<UserCalendar>.Update.Set(x => x.Events, eventsToUpdate);
-            }
-            else
-            {
-                filter = Builders<UserCalendar>.Filter.And(
-                    Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId)),
-                    Builders<UserCalendar>.Filter.ElemMatch(x => x.Events, e => e.Id == eventToUpdate.Id));
-                update = Builders<UserCalendar>.Update
-                .Set(x => x.Events.FirstMatchingElement().LastUpdateDate, DateTimeOffset.UtcNow)
-                .Set(x => x.Events.FirstMatchingElement().LectureId, calendarEvent.LectureId)
+            var filter = Builders<UserCalendar>.Filter.And(
+                Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId)),
+                Builders<UserCalendar>.Filter.ElemMatch(x => x.Events, e => e.Id == eventToUpdate.Id));
+            
+            UpdateDefinition<UserCalendar> update = Builders<UserCalendar>.Update
                 .Set(x => x.Events.FirstMatchingElement().Location, calendarEvent.Location)
                 .Set(x => x.Events.FirstMatchingElement().Description, calendarEvent.Description)
                 .Set(x => x.Events.FirstMatchingElement().Start, calendarEvent.Start)
                 .Set(x => x.Events.FirstMatchingElement().Duration, calendarEvent.Duration)
-                .Set(x => x.Events.FirstMatchingElement().Instructors, calendarEvent.Instructors);
+                .Set(x => x.Events.FirstMatchingElement().Instructors, calendarEvent.Instructors)
+                .Set(x => x.Events.FirstMatchingElement().LastUpdateDate, DateTimeOffset.UtcNow)
+                .Set(x => x.Events.FirstMatchingElement().LectureId, calendarEvent.LectureId);
+
+            if (eventToUpdate.SeriesId.HasValue)
+            {
+                var serieFilter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
+                var arrayFilters = new List<ArrayFilterDefinition<UserCalendar>>
+                {
+                    new BsonDocumentArrayFilterDefinition<UserCalendar>(new BsonDocument("$and", 
+                    new BsonArray
+                    {
+                        new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", eventToUpdate.SeriesId),
+                        new BsonDocument($"element.{nameof(CalendarEvent.Id)}", new BsonDocument("$ne", eventToUpdate.Id))
+                    }))
+                };
+
+                var serieUpdate = Builders<UserCalendar>.Update.Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.LastUpdateDate)}", sharedUtc);
+
+                var updateOptions = new UpdateOptions { ArrayFilters = arrayFilters };
+                
+                await dbCollection.UpdateOneAsync(serieFilter, serieUpdate, updateOptions);
             }
 
             var result = await dbCollection.UpdateOneAsync(filter, update);
-            return result.ModifiedCount > 0 ? (eventToUpdate, false) : (null, false);
+
+
+            if (result.ModifiedCount > 0)
+            {
+                var resultCalendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
+                return resultCalendar.Events.First(x => x.Id == eventToUpdate.Id);
+            }
+            else
+            {
+                throw new Exception("Problem with updating event");
+            }
         }
 
         public async Task<(IEnumerable<CalendarEvent>? updatedEvents, bool hasConflict)> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)

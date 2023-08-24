@@ -2,6 +2,7 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Exceptions;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
@@ -236,6 +237,8 @@ public class CalendarController : ControllerBase
 
     }
 
+
+
     [HttpPut("{calendarId}/event/{eventId}")]
     [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<CalendarEventDTO>> EditEvent(string calendarId, string eventId, [FromBody] UpdateCalendarEventDTO calendarEvent)
@@ -243,19 +246,23 @@ public class CalendarController : ControllerBase
         if (eventId != calendarEvent.Id)
             return BadRequest("event id not the same like in body");
 
-        
         try
         {
-            (CalendarEvent? updatedEvent, bool hasConflict) = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-            if (updatedEvent == null)
-                return NotFound();
+            var updatedEvent = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
             var mappedDto = mapper.Map<CalendarEventDTO>(updatedEvent);
             await AddLectureToEventAsync(mappedDto);
             await AddCalendarToEventAsync(mappedDto);
-            if (hasConflict) return Conflict(mappedDto);
             return Ok(mappedDto);
         }
-        catch (ArgumentException ex)
+        catch (KeyNotFoundException ex) 
+        { 
+            return NotFound(ex.Message); 
+        }
+        catch (ConflictException<CalendarEvent> ex)
+        {
+            return Conflict(ex.NewestEvent);
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
