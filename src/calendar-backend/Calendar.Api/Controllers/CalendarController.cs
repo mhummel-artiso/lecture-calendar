@@ -176,9 +176,6 @@ public class CalendarController : ControllerBase
         try
         {
             var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
-            if (calendarEvents is null)
-                return BadRequest("Calendar not Found");
-
             var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
 
             foreach (var mappedDto in mappedDtos)
@@ -188,9 +185,9 @@ public class CalendarController : ControllerBase
             }
             return Ok(mappedDtos);
         }
-        catch (ArgumentException ex)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
 
     }
@@ -227,16 +224,13 @@ public class CalendarController : ControllerBase
         try
         {
             var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
-
-            if (calendarEvent == null)
-                return NotFound();
             var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
             await AddLectureToEventAsync(mappedDto);
             return Ok(mappedDto);
         }
-        catch (Exception ex)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
 
     }

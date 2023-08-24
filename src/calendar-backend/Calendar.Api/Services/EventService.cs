@@ -22,9 +22,10 @@ namespace Calendar.Api.Services
         }
         public async Task<CalendarEvent?> GetEventAsync(string calendarId, string eventId)
         {
-            var result = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync() ??
-                         throw new KeyNotFoundException("Calendar was not found.");
-            return result.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
+            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
+            if(calendar == null) throw new KeyNotFoundException("Calendar was not found.");
+            var resultEvent = calendar.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
+            return resultEvent == null ? throw new KeyNotFoundException("Event was not found.") : resultEvent;
         }
         public async Task<IEnumerable<CalendarEvent>?> GetEventsAsync(string calendarId, ViewType viewType, DateTimeOffset date)
         {
@@ -56,11 +57,10 @@ namespace Calendar.Api.Services
 
             return result.Events.Where(x => x.Start >= start && (x.Start + x.Duration) <= end);
         }
-        public async Task<IEnumerable<CalendarEvent>?> GetAllEventsFromCalendarAsync(string calendarId)
+        public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
         {
-            var result = await dbCollection
-                .Find(x => x.Id == new ObjectId(calendarId))
-                .FirstOrDefaultAsync();
+            var result = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
+            if (result == null) throw new KeyNotFoundException("Calendar was not found.");
             return result.Events;
         }
 
