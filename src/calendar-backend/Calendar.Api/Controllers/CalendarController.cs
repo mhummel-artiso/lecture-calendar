@@ -226,6 +226,7 @@ public class CalendarController : ControllerBase
             var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
             var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
             await AddLectureToEventAsync(mappedDto);
+            await AddCalendarToEventAsync(mappedDto);
             return Ok(mappedDto);
         }
         catch (KeyNotFoundException ex)
