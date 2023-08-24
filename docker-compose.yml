@@ -18,7 +18,7 @@ services:
         condition: service_started
       postgressdb:
         condition: service_healthy
-      seq:
+      grafana:
         condition: service_started
     restart: on-failure:5
     networks:
@@ -58,7 +58,16 @@ services:
       - mongodb-data:/data/db
       - ./config/mongodb/logs:/var/log/mongodb:rw
       - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
-
+  mongodbexporter:
+    image: percona/mongodb_exporter:0.39
+    depends_on:
+      mongodb:
+        condition: service_started
+    networks:
+      - backend
+    ports:
+      - 9216:9216
+    
   # keycloak authentication
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.1
@@ -67,6 +76,8 @@ services:
       postgressdb:
         condition: service_healthy
       mongodb:
+        condition: service_started
+      grafana:
         condition: service_started
     networks:
       - frontend
@@ -81,31 +92,68 @@ services:
       restart: always
       networks:
         - backend
-        - frontend
       ports:
         - "5432:5432"
       volumes:
         - postgress-data:/var/lib/postgresql/data
         - ./config/postgres/:/docker-entrypoint-initdb.d/:wr
         # - ./config/postgres/logs:/var/log/postgresql:rw
+  
   # seq logging
-  seq:
-    image: datalust/seq:latest
+  grafana:
+    image: grafana/grafana-oss
     restart: always
+    depends_on:
+      - promtail
+      - prometheus
     ports:
-      - "5341:80"
+      - "5700:3000"
     volumes:
-      - seq-data:/data
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./config/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml:ro
     networks:
       - backend
 
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    depends_on:
+      - mongodbexporter
+    networks:
+      - backend
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  loki:
+    image: grafana/loki
+    networks:
+      - backend
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yml:ro
+  
+  promtail:
+    image: grafana/promtail
+    depends_on:
+      - loki
+    networks:
+      - backend
+    volumes:
+      - ./config/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    
 volumes:
   mongodb-data:
     driver: local
   postgress-data:
     driver: local
-  seq-data:
+  grafana-data:
     driver: local
+  
 
 networks:
   backend:
