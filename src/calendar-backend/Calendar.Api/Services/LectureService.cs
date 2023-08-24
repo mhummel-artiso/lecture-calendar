@@ -1,4 +1,5 @@
-﻿using Calendar.Api.Services.Interfaces;
+﻿using Calendar.Api.Exceptions;
+using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -29,14 +30,14 @@ namespace Calendar.Api.Services
             await dbCollection.InsertOneAsync(lecture);
             return lecture;
         }
-        public async Task<(Lecture? updatedLecture, bool hasConflict)> UpdateLectureAsync(string lectureId, Lecture lecture)
+        public async Task<Lecture> UpdateLectureAsync(string lectureId, Lecture lecture)
         {
             var lectureToUpdate = await dbCollection.Find(x => x.Id == new ObjectId(lectureId)).FirstOrDefaultAsync();
 
-            if (lectureToUpdate == null) return (null,false);
+            if (lectureToUpdate == null) throw new KeyNotFoundException("Lecture was not found.");
 
             // Check for conflict.
-            if (lectureToUpdate.LastUpdateDate != lecture.LastUpdateDate) return (lectureToUpdate, true);
+            if (lectureToUpdate.LastUpdateDate != lecture.LastUpdateDate) throw new ConflictException<Lecture>(lecture);
 
             lecture.LastUpdateDate = DateTimeOffset.UtcNow;
             lecture.CreatedDate = lectureToUpdate.CreatedDate;
@@ -47,7 +48,7 @@ namespace Calendar.Api.Services
                 .Set(x => x.LastUpdateDate, lecture.LastUpdateDate);
             
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(lectureId), update);
-            return result.ModifiedCount == 1 ? (lecture, false) : (null, false);
+            return result.ModifiedCount == 1 ? lecture : throw new Exception("Problem with updating lecture");
         }
         public async Task<bool> DeleteLectureByIdAsync(string lectureId)
         {

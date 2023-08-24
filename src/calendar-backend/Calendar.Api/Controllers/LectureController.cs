@@ -2,6 +2,7 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Exceptions;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
@@ -69,13 +70,23 @@ public class LectureController : ControllerBase
         if (lectureId != lecture.Id)
             return BadRequest("lecture id not the same like in body");
 
-        (Lecture? updatedLecture, bool hasConflict) = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
-
-        if (updatedLecture == null) return NotFound(lectureId);
-
-        var mappedResult = mapper.Map<LectureDTO>(updatedLecture);
-        if (hasConflict) return Conflict(mappedResult);
-        return Ok(mappedResult);
+        try
+        {
+            var updatedLecture = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
+            return Ok(mapper.Map<LectureDTO>(updatedLecture));
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch(ConflictException<Lecture> ex)
+        {
+            return Conflict(mapper.Map<LectureDTO>(ex.NewestEvent));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{lectureId}")]

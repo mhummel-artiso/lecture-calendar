@@ -9,7 +9,7 @@ namespace Calendar.Api.Services.Interfaces
 
         Task<Lecture> AddLectureAsync(Lecture lecture);
 
-        Task<(Lecture? updatedLecture, bool hasConflict)> UpdateLectureAsync(string lectureId, Lecture lecture);
+        Task<Lecture> UpdateLectureAsync(string lectureId, Lecture lecture);
 
         Task<bool> DeleteLectureByIdAsync(string lectureId);
     }
