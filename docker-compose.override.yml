@@ -25,7 +25,11 @@ services:
       API_DEBUG_TEST_ENDPOINT_POLICY: EDITOR_VIEWER
       KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: Europe/Berlin
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   client:
     environment:
      TZ: Europe/Berlin

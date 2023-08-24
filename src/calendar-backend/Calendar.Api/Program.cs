@@ -1,5 +1,6 @@
 using Amazon.Runtime.Internal.Transform;
 using Calendar.Api.Configurations;
+using Calendar.Api.HealthChecks;
 using Calendar.Api.Initializations;
 using Calendar.Api.Models;
 using Calendar.Api.Services;
@@ -13,13 +14,16 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Serilog;
+using Serilog.AspNetCore;
 using Serilog.Enrichers.AspNetCore;
+using Serilog.Events;
 using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
@@ -138,15 +142,25 @@ try
         .AddTransient<IConfigureOptions<SwaggerGenOptions>, InitializeSwaggerGenOptions>()
         .AddTransient<IKeycloakService, KeycloakService>()
         .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-        .AddHttpClient()
-        .AddKeycloakAdminHttpClient(configuration);
+        .AddHttpClient();
 
     #endregion
 
     #region Controller
 
     builder.Services.AddControllers();
-    builder.Services.AddHealthChecks();
+
+    #endregion
+
+    #region Health Checks
+
+    builder.Services.AddHealthChecks()
+        .AddMongoDb(
+            mongoConfig.MONGODB_SERVER,
+            mongoConfig.MONGODB_DB_NAME,
+            HealthStatus.Unhealthy)
+        .AddCheck<KeyCloakHealthCheck>(KeyCloakHealthCheck.Name)
+        ;
 
     #endregion
 
@@ -162,10 +176,6 @@ try
     #endregion
 
     var app = builder.Build();
-
-
-    app.UseHttpLogging();
-    // app.UseW3CLogging();
 
     // Configure the HTTP request pipeline.
     if (swaggerConfig.USE_SWAGGER)
@@ -183,13 +193,27 @@ try
             });
     }
 
-    app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging(o =>
+    {
+        o.IncludeQueryInRequestPath = true;
+        o.GetLevel = (ctx, _, ex) =>
+        {
+            if (ex != null)
+                return LogEventLevel.Error;
+            return ctx.Response.StatusCode switch
+            {
+                < 400 => LogEventLevel.Debug,
+                <= 499 => LogEventLevel.Information,
+                _ => LogEventLevel.Error,
+            };
+        };
+    });
     app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
     app.MapHealthChecks("/health");
-
+    app.UseHealthChecksPrometheusExporter("/metrics");
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
@@ -200,6 +224,7 @@ try
             return user.Identity?.Name ?? "NULL";
         }).RequireAuthorization(debugConf.DEBUG_TEST_ENDPOINT_POLICY);
     }
+
     app.Run();
 }
 catch (ArgumentException ex)
