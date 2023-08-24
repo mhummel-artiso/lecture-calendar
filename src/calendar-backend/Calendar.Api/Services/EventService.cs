@@ -151,66 +151,91 @@ namespace Calendar.Api.Services
             }
         }
 
-        public async Task<(IEnumerable<CalendarEvent>? updatedEvents, bool hasConflict)> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)
+        public async Task<IEnumerable<CalendarEvent>> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent)
         {
             ArgumentNullException.ThrowIfNull(calendarId);
             calendarEvent.ValidateSeriesId();
 
             var calendar = await dbCollection.AsQueryable().FirstOrDefaultAsync(x => x.Id == new ObjectId(calendarId));
             
-            if (calendar == null) return (null, false);
+            if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
 
             var oldSeriesEvents = calendar.Events.Where(x => x.SeriesId == calendarEvent.SeriesId).ToList();
 
-            if (oldSeriesEvents.IsNullOrEmpty()) return (null, false);
+            if (oldSeriesEvents.IsNullOrEmpty()) throw new KeyNotFoundException("Series was not found.");
 
             // If LastUpdateDate not the same, a conflict is occured.
-            if (oldSeriesEvents!.Max(x => x.LastUpdateDate) != calendarEvent.LastUpdateDate) return (oldSeriesEvents, true);
+            if (oldSeriesEvents!.Max(x => x.LastUpdateDate) != calendarEvent.LastUpdateDate) throw new ConflictException<IEnumerable<CalendarEvent>>(oldSeriesEvents);
 
 
             FilterDefinition<UserCalendar> filter;
             UpdateDefinition<UserCalendar> update;
             List<CalendarEvent>? eventsToUpdate = null;
 
+            var isModified = false;
+            
+
             // delete all old events if the repeat changed or EndSeriesDate changed
             var firstEvent = oldSeriesEvents.First();
             if (firstEvent.Repeat != calendarEvent.Repeat ||
                 firstEvent.Start.Date != calendarEvent.Start.Date ||
-                firstEvent.EndSeries != calendarEvent.EndSeries)
+                firstEvent.EndSeries != calendarEvent.EndSeries ||
+                firstEvent.Duration != calendarEvent.Duration)
             {
-                calendarEvent.ValidateSeriesTimes();
-                calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
-                calendarEvent.CalendarId = calendarId;
-                eventsToUpdate = CreateEvents(calendarEvent, true).ToList();
+                throw new Exception("Muss noch drüber gesprochen werden");
+                //calendarEvent.ValidateSeriesTimes();
+                //calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
+                //calendarEvent.CalendarId = calendarId;
+                //calendarEvent.SeriesId = oldSeriesEvents.First().SeriesId;
 
-                filter = Builders<UserCalendar>.Filter.Where(x => x.Id == new ObjectId(calendarId));
-                update = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
-                var updatePull = Builders<UserCalendar>.Update.PullFilter(x => x.Events, e => e.SeriesId == calendarEvent.SeriesId);
-                await dbCollection.UpdateOneAsync(filter, updatePull);
+                //eventsToUpdate = CreateEvents(calendarEvent, true).ToList();
+
+                //filter = Builders<UserCalendar>.Filter.Where(x => x.Id == new ObjectId(calendarId));
+                //update = Builders<UserCalendar>.Update.PushEach(x => x.Events, eventsToUpdate);
+                //var updatePull = Builders<UserCalendar>.Update.PullFilter(x => x.Events, e => e.SeriesId == calendarEvent.SeriesId);
+                //await dbCollection.UpdateOneAsync(filter, updatePull);
+                //var result = await dbCollection.UpdateOneAsync(filter, update);
+                //isModified = result.ModifiedCount > 0;
             }
             else
             {
-                filter = Builders<UserCalendar>.Filter.Where(x => x.Id == new ObjectId(calendarId) && x.Events.Any(e => e.SeriesId == calendarEvent.SeriesId));
+                var sharedUtc = DateTimeOffset.UtcNow;
+                var serieFilter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
+                var arrayFilters = new List<ArrayFilterDefinition<UserCalendar>>
+                {
+                    new BsonDocumentArrayFilterDefinition<UserCalendar>(new BsonDocument("$and",
+                    new BsonArray
+                    {
+                        new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", oldSeriesEvents.First().SeriesId)
+                    }))
+                };
 
-                var updateTime = DateTimeOffset.UtcNow;
-                update = Builders<UserCalendar>.Update
-                .Set(x => x.Events.AllElements().LastUpdateDate, updateTime)
-                .Set(x => x.Events.AllElements().LectureId, calendarEvent.LectureId)
-                .Set(x => x.Events.AllElements().Location, calendarEvent.Location)
-                .Set(x => x.Events.AllElements().Description, calendarEvent.Description)
-                .Set(x => x.Events.AllElements().Start, calendarEvent.Start)
-                .Set(x => x.Events.AllElements().Duration, calendarEvent.Duration)
-                .Set(x => x.Events.AllElements().Instructors, calendarEvent.Instructors);
+                var serieUpdate = Builders<UserCalendar>.Update
+                    .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.LastUpdateDate)}", sharedUtc)
+                    .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.LectureId)}", calendarEvent.LectureId)
+                    .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.Location)}", calendarEvent.Location)
+                    .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.Description)}", calendarEvent.Description)
+                    .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.Instructors)}", calendarEvent.Instructors);
+
+                var updateOptions = new UpdateOptions { ArrayFilters = arrayFilters };
+
+                var result = await dbCollection.UpdateOneAsync(serieFilter, serieUpdate, updateOptions);
+                isModified = result.ModifiedCount > 0;
             }
 
-            var result = await dbCollection.UpdateOneAsync(filter, update);
-            
-            if(result.ModifiedCount > 0)
+            if (isModified)
             {
                 var resultCalendar = await dbCollection.AsQueryable().FirstAsync(x => x.Id == new ObjectId(calendarId));
-                return (resultCalendar.Events.Where(x => x.SeriesId == calendarEvent.SeriesId),false);
+                return resultCalendar.Events.Where(x => x.SeriesId == calendarEvent.SeriesId);
             }
-            return (null, false);
+            else
+            {
+                throw new Exception("Problem with updating series");
+            }
+
+
+            
+
         }
 
         public async Task<bool> DeleteEventSeriesByIdAsync(string calendarId, string seriesId)
