@@ -158,9 +158,7 @@ export const LectureList: FC = () => {
                 <Typography>
                     Ihre Änderungen konnten nicht gespeichert werden, da Sie
                     sonst neue Änderungen von einem Kollegen überschreiben
-                    würden. Bitte schließen Sie den Dialog, und schauen Sie sich
-                    die neuen Änderungen an und probieren Sie es gegebenenfalls
-                    erneut.
+                    würden.
                 </Typography>
             </ConflictDialog>
         </>

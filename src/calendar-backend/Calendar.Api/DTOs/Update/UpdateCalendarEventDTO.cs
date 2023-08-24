@@ -28,7 +28,5 @@ namespace Calendar.Api.DTOs.Update
 
         [Required()]
         public DateTimeOffset LastUpdateDate { get; set; }
-        [Required()]
-        public DateTimeOffset CreatedDate { get; set; }
     }
 }

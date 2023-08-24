@@ -21,6 +21,7 @@ export interface CalendarEvent extends CalendarEventBase {
     calendar: Calendar
     lecture: Lecture
     seriesId: string
+    startSeries?: Moment
 }
 
 export interface CreateCalendarEvent extends CalendarEventBase {

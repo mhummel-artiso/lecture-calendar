@@ -36,9 +36,9 @@ namespace Calendar.Api.Profiles
                     opt.MapFrom(src => src.End.ToUniversalTime() - src.Start.ToUniversalTime());
                 })
                 .ForMember(x => x.EndSeries, opt => opt.MapFrom(src => src.EndSeries.ToUniversalTime()))
-                .ForMember(x => x.StartSeries, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
+                .ForMember(x => x.Start, opt => opt.MapFrom(src => src.Start.ToUniversalTime()))
+                .ForMember(x => x.StartSeries, opt => opt.MapFrom(src => src.StartSeries.ToUniversalTime()))
                 .ForMember(x => x.Repeat, opt => opt.MapFrom(x => x.Repeat))
-                .ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => x.CreatedDate))
                 .ForMember(x => x.LastUpdateDate, opt => opt.MapFrom(x => x.LastUpdateDate));
 
             CreateMap<UpdateCalendarEventDTO, CalendarEvent>()
@@ -48,7 +48,6 @@ namespace Calendar.Api.Profiles
                     opt.Condition(x => x.End.ToUniversalTime() >= x.Start.ToUniversalTime());
                     opt.MapFrom(src => src.End.ToUniversalTime() - src.Start.ToUniversalTime());
                 })
-                .ForMember(x => x.CreatedDate, opt => opt.MapFrom(x => x.CreatedDate))
                 .ForMember(x => x.LastUpdateDate, opt => opt.MapFrom(x => x.LastUpdateDate));
 
 

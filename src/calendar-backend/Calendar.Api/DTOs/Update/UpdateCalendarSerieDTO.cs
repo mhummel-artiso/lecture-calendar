@@ -27,6 +27,9 @@ namespace Calendar.Api.DTOs.Update
         public EventRepeat Repeat { get; set; }
 
         [Required()]
+        public DateTimeOffset StartSeries { get; set; }
+
+        [Required()]
         public DateTimeOffset EndSeries { get; set; }
 
         public List<InstructorDTO>? Instructors { get; set; }
@@ -37,7 +40,5 @@ namespace Calendar.Api.DTOs.Update
 
         [Required()]
         public DateTimeOffset LastUpdateDate { get; set; }
-        [Required()]
-        public DateTimeOffset CreatedDate { get; set; }
     }
 }

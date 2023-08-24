@@ -39,7 +39,7 @@ namespace Calendar.Mongo.Db.Models
         // do not ToUniversalTime() because only used in api so not need!
         [BsonRequired]
         [BsonRepresentation(BsonType.String)]
-        public DateTimeOffset? LastUpdateDate { get; set; }
+        public DateTimeOffset LastUpdateDate { get; set; }
 
         public List<Instructor>? Instructors { get; set; }
 

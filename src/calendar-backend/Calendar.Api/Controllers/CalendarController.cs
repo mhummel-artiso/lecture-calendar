@@ -251,11 +251,12 @@ public class CalendarController : ControllerBase
         
         try
         {
-            (CalendarEvent? updatedCalendar, bool hasConflict) = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-            if (updatedCalendar == null)
+            (CalendarEvent? updatedEvent, bool hasConflict) = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+            if (updatedEvent == null)
                 return NotFound();
-            var mappedDto = mapper.Map<CalendarEventDTO>(updatedCalendar);
+            var mappedDto = mapper.Map<CalendarEventDTO>(updatedEvent);
             await AddLectureToEventAsync(mappedDto);
+            await AddCalendarToEventAsync(mappedDto);
             if (hasConflict) return Conflict(mappedDto);
             return Ok(mappedDto);
         }
@@ -281,7 +282,7 @@ public class CalendarController : ControllerBase
     }
     [HttpPut("{calendarId}/series/{serieId}")]
     [Authorize(AuthPolicies.EDITOR)]
-    public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSeriesDTO calendarEvent)
+    public async Task<ActionResult<IEnumerable<UpdateCalendarSeriesDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSeriesDTO calendarEvent)
     {
 
         if (serieId != calendarEvent.SeriesId)
@@ -289,14 +290,15 @@ public class CalendarController : ControllerBase
 
 
         (IEnumerable<CalendarEvent>? updatedEvents, bool hasConflict) = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        if (updatedEvents == null)
-            return NotFound();
+        
+        if (updatedEvents == null) return NotFound();
 
         var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(updatedEvents);
 
         foreach (var mappedDto in mappedResult)
         {
             await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
         }
         if(hasConflict) return Conflict(mappedResult);
         return Ok(mappedResult);
