@@ -277,7 +277,7 @@ public class CalendarController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
     [HttpPut("{calendarId}/series/{serieId}")]
@@ -314,7 +314,7 @@ public class CalendarController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 

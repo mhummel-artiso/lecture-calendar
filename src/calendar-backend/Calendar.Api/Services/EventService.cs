@@ -2,7 +2,6 @@
 using Calendar.Api.Services.Interfaces;
 using Calendar.Api.Validation;
 using Calendar.Mongo.Db.Models;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -206,36 +205,20 @@ namespace Calendar.Api.Services
 
         public async Task<bool> DeleteEventSeriesByIdAsync(string calendarId, string seriesId)
         {
-            var eventsToDelete = await GetSeriesEventsAsync(calendarId, new ObjectId(seriesId));
-            if (eventsToDelete == null) return false;
-            var update = new UpdateDefinitionBuilder<UserCalendar>().PullAll(x => x.Events, eventsToDelete);
+            var countCalendars = await dbCollection.CountDocumentsAsync(x => x.Id == new ObjectId(calendarId));
+            if (countCalendars == 0) throw new KeyNotFoundException("Calendar was not found.");
+            var update = new UpdateDefinitionBuilder<UserCalendar>().PullFilter(x => x.Events, e => e.SeriesId == new ObjectId(seriesId));
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), update);
             return result.ModifiedCount > 0;
         }
 
         public async Task<bool> DeleteEventByIdAsync(string calendarId, string eventId)
         {
-            var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
-
-            if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
-
-            var calendarEvent = calendar.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
-
-            if (calendarEvent == null) return false;
-
-            var deleteEventUpdate = new UpdateDefinitionBuilder<UserCalendar>().Pull(x => x.Events, calendarEvent);
+            var countCalendars = await dbCollection.CountDocumentsAsync(x => x.Id == new ObjectId(calendarId));
+            if (countCalendars == 0) throw new KeyNotFoundException("Calendar was not found.");
+            var deleteEventUpdate = new UpdateDefinitionBuilder<UserCalendar>().PullFilter(x => x.Events, e => e.Id == new ObjectId(eventId));
             var result = await dbCollection.UpdateOneAsync(x => x.Id == new ObjectId(calendarId), deleteEventUpdate);
             return result.ModifiedCount > 0;
-        }
-
-        private async Task<IEnumerable<CalendarEvent>?> GetSeriesEventsAsync(string calendarId, ObjectId seriesId)
-        {
-            var calendar = await dbCollection
-                .Find(x => x.Id == new ObjectId(calendarId))
-                .FirstOrDefaultAsync();
-
-            var seriesEvents = calendar?.Events.Where(x => x.SeriesId == seriesId);
-            return seriesEvents;
         }
 
         private CalendarEvent CreateEvent(CalendarEvent calendarEvent)
@@ -256,6 +239,8 @@ namespace Calendar.Api.Services
             };
         }
 
+
+        // Prüfen
         private static IEnumerable<CalendarEvent> CreateEvents(CalendarEvent firstEvent, bool isUpdate)
         {
             if (firstEvent.Repeat == EventRepeat.None)
