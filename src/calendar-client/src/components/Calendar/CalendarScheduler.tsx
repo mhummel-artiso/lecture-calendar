@@ -19,8 +19,7 @@ import { useLocation, useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { queryClient } from "../../utils/queryClient";
 import { useAccount } from "../../hooks/useAccount";
-import { addPositionPropertiesToSections } from "@mui/x-date-pickers/internals";
-import { AppointmentTooltipContent, AppointmentTooltipHeader } from "./AppointmentTooltipContent";
+import { AppointmentTooltipContent, AppointmentTooltipHeader } from "./AppointmentTooltip";
 
 interface Props {
     currentDate: Moment
@@ -61,7 +60,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                     startDate,
                     calendarView
                 )
-                console.log('events',events);
+                console.log('events', events);
                 events.push(...result)
             }
             return events
@@ -79,14 +78,14 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         return []
     }
     const {data: events, refetch} = useQuery({
-        queryKey: ['events', calendarName, calendarView,currentDate.startOf("day")],
+        queryKey: ['events', calendarName, calendarView, currentDate.startOf("day")],
         queryFn: getEvents,
         useErrorBoundary: true,
     })
 
     // Invalidates events when parameters change
     useEffect(() => {
-        queryClient.invalidateQueries({queryKey: ['events', calendarName, calendarView,currentDate.startOf("day")]})
+        queryClient.invalidateQueries({queryKey: ['events', calendarName, calendarView, currentDate.startOf("day")]})
     }, [calendarName, location.state, calendarView, currentDate])
 
     const getAppointment = (c: CalendarEvent) => {

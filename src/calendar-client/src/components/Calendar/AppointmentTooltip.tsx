@@ -18,7 +18,7 @@ export const AppointmentTooltipContent: React.FC<AppointmentTooltip.ContentProps
                         <Typography fontWeight="bold">Raum:</Typography>
                         <Typography sx={{ml: 2}}> {appointmentData?.location}</Typography>
                     </Grid>)}
-                <Grid item container spacing={1}>
+                {event.instructors.length > 0 && (<Grid item container spacing={1}>
                     <Grid item>
                         <Typography fontWeight="bold">Dozenten:</Typography>
                     </Grid>
@@ -29,9 +29,9 @@ export const AppointmentTooltipContent: React.FC<AppointmentTooltip.ContentProps
                             </Grid>
                         ))}
                     </Grid>
-                </Grid>
+                </Grid>)}
                 {event.description && (<Grid item>
-                    <Typography fontWeight="bold">Beschreibung:</Typography>
+                    <Typography fontWeight="bold">Hinweis:</Typography>
                     <Typography sx={{ml: 2}}>{event.description}</Typography>
                 </Grid>)}
             </Grid>
@@ -47,11 +47,20 @@ export const AppointmentTooltipHeader: React.FC<AppointmentTooltip.HeaderProps> 
     const event = appointmentData?.event as CalendarEvent
     return (
         <AppointmentTooltip.Header {...restProps} appointmentData={appointmentData}>
-
             <Grid sx={{mt: 1, ml: 1}} container alignItems="Center" direction="column" spacing={1}>
-                <Typography variant={"h5"}>Veranstaltung</Typography>
+                <Grid item>
+                    <Typography variant={"h5"}>Veranstaltung</Typography>
+                </Grid>
                 {event.lecture.shortKey && (
-                    <Typography sx={{ml: 2}} fontWeight="bold">{event.lecture.title}</Typography>)}
+                    <Grid item>
+                        <Typography fontWeight="bold">{event.lecture.title}</Typography>
+                    </Grid>
+                )}
+                {event.lecture.description && (
+                    <Grid item>
+                        <Typography>{event.lecture.description}</Typography>
+                    </Grid>
+                )}
             </Grid>
         </AppointmentTooltip.Header>
     )
