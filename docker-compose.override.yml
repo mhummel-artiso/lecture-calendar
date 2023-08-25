@@ -4,7 +4,7 @@ volumes:
   redisinsight:
 
 services:
-  calendar.api:
+  calendar-api:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       #               protocol://user:password@host:port
@@ -32,13 +32,13 @@ services:
       retries: 5
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
+      logging_jobname: "calendar-api"
   client:
     environment:
      TZ: Europe/Berlin
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
+      logging_jobname: "client"
   mongodb:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -58,7 +58,7 @@ services:
       TZ: Europe/Berlin
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
+      logging_jobname: "mongodb"
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
   keycloak:
@@ -67,30 +67,27 @@ services:
       - "start-dev"
       - "--import-realm"
       - "--features=token-exchange"
-      # - "--hostname-admin-url=http://${localhost}:8080"
-      # - "--hostname=${localhost}"
-      # - "--hostname-url=http://localhost:8080"
     environment:
       TZ: Europe/Berlin
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
       KC_HEALTH_ENABLED: true
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgressdb/keycloak
+      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/keycloak
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
-    # healthcheck:
-    #   test: ["CMD", "curl --fail -s http://localhost:8080/health | jq 'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
-    #   interval: 30s
-    #   timeout: 3s
-    #   start_period: 10s
-    #   retries: 10
+      logging_jobname: "keycloak"
+    healthcheck:
+      test: ["CMD", "curl --fail -s http://localhost:8080/health | jq 'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 10
 
-  postgressdb:
+  postgressdb-keycloak:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
       interval: 10s
@@ -104,22 +101,58 @@ services:
       POSTGRES_DB: keycloak
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
+      logging_jobname: "postgressdb-keycloak"
+  postgressdb-grafana:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      TZ: Europe/Berlin
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${MASTER_PW}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: grafana
+    labels:
+      logging: "promtail"
+      logging_jobname: "postgressdb-grafana"
   grafana:
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl", "-f", "http://localhost:3000/api/health"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
     environment:
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: ${MASTER_PW}
-      GF_DATABASE_url: postgresql://postgres:${MASTER_PW}@postgressdb:5432/grafana
+      GF_DATABASE_SSL_MODE: disable
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-      GF_INSTALL_PLUGINS: grafana-clock-panel, grafana-mongodb-datasource
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: postgressdb-grafana:5432
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: ${POSTGRES_USER}
+      GF_DATABASE_PASSWORD: ${MASTER_PW}
+      GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
       TZ: Europe/Berlin
   prometheus:
     environment:
       TZ: Europe/Berlin=value
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
+      logging_jobname: "prometheus"
+  loki:
+    environment:
+      TZ: Europe/Berlin
+    command: -config.file=/etc/loki/loki-config.yml
+    labels:
+      logging: "promtail"
+      logging_jobname: "loki"
+  promtail:
+    environment:
+      TZ: Europe/Berlin
+    command: -config.file=/etc/promtail/promtail.yml
   # to debug mongo docker container
   mongo-express:
     image: mongo-express
@@ -140,15 +173,4 @@ services:
       - backend
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
-  loki:
-    environment:
-      TZ: Europe/Berlin
-    command: -config.file=/etc/loki/loki-config.yml
-    labels:
-      logging: "promtail"
-      logging_jobname: "containerlogs"
-  promtail:
-    environment:
-      TZ: Europe/Berlin
-    command: -config.file=/etc/promtail/promtail.yml
+      logging_jobname: "mongo-express"

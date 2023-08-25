@@ -7,7 +7,7 @@ version: "3.9"
 
 services:
   # calendar api
-  calendar.api:
+  calendar-api:
     build:
       context: src/calendar-backend
       dockerfile: Calendar.Api/Dockerfile
@@ -16,8 +16,6 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
-      postgressdb:
-        condition: service_healthy
       grafana:
         condition: service_started
     restart: on-failure:5
@@ -73,7 +71,7 @@ services:
     image: quay.io/keycloak/keycloak:22.0.1
     restart: on-failure:1
     depends_on:
-      postgressdb:
+      postgressdb-keycloak:
         condition: service_healthy
       mongodb:
         condition: service_started
@@ -87,7 +85,7 @@ services:
     ports:
       - 8080:8080
   # postgres db
-  postgressdb:
+  postgressdb-keycloak:
       image: "postgres:alpine3.18"
       restart: always
       networks:
@@ -96,16 +94,26 @@ services:
         - "5432:5432"
       volumes:
         - postgress-data:/var/lib/postgresql/data
-        - ./config/postgres/:/docker-entrypoint-initdb.d/:wr
-        # - ./config/postgres/logs:/var/log/postgresql:rw
-  
+        - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/initKeyCloak.sql:wr
+  postgressdb-grafana:
+    image: postgres:alpine3.18
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - grafana-data:/var/lib/postgresql/data
+      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/initGrafana.sql:wr
   # seq logging
   grafana:
     image: grafana/grafana-oss
     restart: always
     depends_on:
-      - promtail
-      - prometheus
+      promtail:
+        condition: service_started
+      prometheus:
+        condition: service_started
+      postgressdb-grafana:
+        condition: service_healthy
     ports:
       - "5700:3000"
     volumes:
@@ -125,6 +133,7 @@ services:
       - "9090:9090"
     volumes:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /var/run/docker.sock:/var/run/docker.sock
 
   loki:
     image: grafana/loki

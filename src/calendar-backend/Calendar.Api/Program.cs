@@ -28,10 +28,12 @@ using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
 
-var builder = WebApplication.CreateBuilder(args);
-
 try
 {
+
+    #region Configure Services
+
+    var builder = WebApplication.CreateBuilder(args);
 
     #region Configuration
 
@@ -122,12 +124,6 @@ try
         options.AddPolicy(AuthPolicies.EDITOR_VIEWER, p =>
             p.RequireRealmRoles(roleEditor, roleViewer)
                 .RequireRole(roleEditor, roleViewer));
-        // test policy
-        options.AddPolicy("IsAdmin", b =>
-        {
-            b.RequireRealmRoles("admin")
-                .RequireRole("admin");
-        });
     }).AddKeycloakAuthorization(configuration);
 
     #endregion
@@ -175,9 +171,14 @@ try
 
     #endregion
 
+    #endregion
+
+    #region configure App
+
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    #region Swagger
+
     if (swaggerConfig.USE_SWAGGER)
     {
         // https://www.camiloterevinto.com/post/oauth-pkce-flow-for-asp-net-core-with-swagger
@@ -192,6 +193,12 @@ try
                 options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
             });
     }
+
+    #endregion
+
+    // Configure the HTTP request pipeline.
+
+    #region Logging
 
     app.UseSerilogRequestLogging(o =>
     {
@@ -208,12 +215,32 @@ try
             };
         };
     });
+
+    #endregion
+
+    #region Access controll
+
     app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
+
+    #endregion
+
+    #region endpoints
+
     app.MapControllers();
+
+    #endregion
+
+    #region Health check
+
     app.MapHealthChecks("/health");
     app.UseHealthChecksPrometheusExporter("/metrics");
+
+    #endregion
+
+    #region Test endpoint
+
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
@@ -225,10 +252,20 @@ try
         }).RequireAuthorization(debugConf.DEBUG_TEST_ENDPOINT_POLICY);
     }
 
+    #endregion
+
     app.Run();
+
+    #endregion
+
 }
 catch (ArgumentException ex)
 {
     Log.Logger.Error(ex, "Error on startup");
     throw new ArgumentException("Error on startup", ex);
+}
+catch (Exception ex)
+{
+    Log.Logger.Error(ex, "Error on startup");
+    throw new ApplicationException("Error on startup", ex);
 }
