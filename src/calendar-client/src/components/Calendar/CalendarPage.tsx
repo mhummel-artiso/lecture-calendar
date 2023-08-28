@@ -116,7 +116,6 @@ export const CalendarPage = () => {
                         currentValue={selectedEvent}
                         calendarId={claendarId}
                         onDialogAdd={addEventMutation.mutate}
-                        // TODO: Edit to be able to edit Event
                         onDialogEdit={eventEditMutation.mutate}
                         onDeletedEvent={async (event: CalendarEvent) => {
                             await queryClient.invalidateQueries({

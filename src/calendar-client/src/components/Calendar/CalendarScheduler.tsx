@@ -60,7 +60,6 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                     startDate,
                     calendarView
                 )
-                console.log('events', events);
                 events.push(...result)
             }
             return events
