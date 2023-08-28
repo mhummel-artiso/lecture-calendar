@@ -132,10 +132,6 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                 />
-                <InstructorSelect
-                    value={selectedInstructors}
-                    onChange={setSelectedInstructors}
-                />
             </Stack>
         )
     }
@@ -221,8 +217,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         return (
             (selectedCalendarId?.length ?? 0) > 0 &&
             (selectedLectureId?.length ?? 0) > 0 &&
-            location?.length > 0 &&
-            (selectedInstructors?.length ?? 0) > 0
+            location?.length > 0
         )
     }
 
@@ -246,6 +241,10 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                     maxRows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                />
+                <InstructorSelect
+                    value={selectedInstructors}
+                    onChange={setSelectedInstructors}
                 />
             </Stack>
         )

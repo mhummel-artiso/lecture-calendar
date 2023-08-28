@@ -19,11 +19,11 @@ interface Props {
     disablePadding?: boolean
 }
 
-export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
+export const AvailableCalendarsList: FC<Props> = ({disablePadding}) => {
     const navigate = useNavigate()
     const [calendars, setCalendars] = useState<Calendar[]>([])
 
-    const { isLoading, data } = useQuery({
+    const {isLoading, data} = useQuery({
         queryKey: ['calendars'],
         queryFn: getCalendars,
         useErrorBoundary: true,
@@ -33,7 +33,7 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
     }, [data])
     return isLoading ? (
         <Box margin={2}>
-            <CircularProgress />
+            <CircularProgress/>
         </Box>
     ) : (
         <List>
@@ -41,7 +41,7 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
             {!calendars ||
                 (data?.length == 0 && (
                     <ListItem disablePadding={disablePadding}>
-                        <ListItemText primary={'Kein Kalender verfügbar'} />
+                        <ListItemText primary={'Kein Kalender verfügbar'}/>
                     </ListItem>
                 ))}
             {/* Display option if more than one calendar is visible */}
@@ -55,9 +55,9 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
                         }
                     >
                         <ListItemIcon>
-                            <CalendarTodayIcon />
+                            <CalendarTodayIcon/>
                         </ListItemIcon>
-                        <ListItemText primary={'Alle Events anzeigen'} />
+                        <ListItemText primary={'Alle Events anzeigen'}/>
                     </ListItemButton>
                 </ListItem>
             )}
@@ -72,9 +72,9 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
                         }
                     >
                         <ListItemIcon>
-                            <CalendarTodayIcon />
+                            <CalendarTodayIcon/>
                         </ListItemIcon>
-                        <ListItemText primary={calendar.name} />
+                        <ListItemText primary={calendar.name}/>
                     </ListItemButton>
                 </ListItem>
             ))}
