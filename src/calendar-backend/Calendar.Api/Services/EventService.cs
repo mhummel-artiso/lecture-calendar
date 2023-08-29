@@ -185,7 +185,7 @@ namespace Calendar.Api.Services
                 firstEvent.Start != calendarEvent.Start
                 )
             {
-                //calendarEvent.ValidateSeriesTimes();
+                calendarEvent.ValidateSeriesTimes();
                 calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
                 calendarEvent.CalendarId = calendarId;
                 calendarEvent.SeriesId = oldSeriesEvents.First().SeriesId;
