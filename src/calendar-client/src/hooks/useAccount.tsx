@@ -3,7 +3,6 @@ import { useAuth, User } from 'oidc-react'
 import { axiosInstance } from '../utils/axiosInstance'
 import { UserProfile } from 'oidc-client-ts'
 import { queryClient } from '../utils/queryClient'
-import { drawerClasses } from "@mui/material";
 import { useErrorBoundary } from "react-error-boundary";
 
 const _canEdit = (user: User | null | undefined): boolean => {

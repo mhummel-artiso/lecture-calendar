@@ -6,7 +6,7 @@
 version: "3.9"
 
 services:
-  # calendar api
+# calendar api
   calendar-api:
     build:
       context: src/calendar-backend
@@ -25,7 +25,7 @@ services:
     ports:
       - 4000:80
 
-  # calendar client
+# calendar client
   client:
     build: 
       context: ./src/calendar-client
@@ -44,32 +44,10 @@ services:
     ports:
       - 3000:80
 
-  # mongo db
-  mongodb:
-    image: mongo
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb-data:/data/db
-      - ./config/mongodb/logs:/var/log/mongodb:rw
-      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
-  mongodbexporter:
-    image: percona/mongodb_exporter:0.39
-    depends_on:
-      mongodb:
-        condition: service_started
-    networks:
-      - backend
-    ports:
-      - 9216:9216
-    
-  # keycloak authentication
+# keycloak authentication
   keycloak:
     image: quay.io/keycloak/keycloak:22.0.1
-    restart: on-failure:1
+    restart: always
     depends_on:
       postgressdb-keycloak:
         condition: service_healthy
@@ -84,17 +62,29 @@ services:
       - ./config/keycloak/import:/opt/keycloak/data/import:ro
     ports:
       - 8080:8080
-  # postgres db
+
+# databases
+  mongodb:
+    image: mongo
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+      - ./config/mongodb/logs:/var/log/mongodb:rw
+      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
+
   postgressdb-keycloak:
       image: "postgres:alpine3.18"
       restart: always
       networks:
         - backend
-      ports:
-        - "5432:5432"
       volumes:
         - postgress-data:/var/lib/postgresql/data
-        - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/initKeyCloak.sql:wr
+        - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/init.sql:wr
+
   postgressdb-grafana:
     image: postgres:alpine3.18
     restart: always
@@ -102,8 +92,9 @@ services:
       - backend
     volumes:
       - grafana-data:/var/lib/postgresql/data
-      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/initGrafana.sql:wr
-  # seq logging
+      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/init.sql:wr
+
+# monitoring
   grafana:
     image: grafana/grafana-oss
     restart: always
@@ -121,7 +112,18 @@ services:
       - ./config/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml:ro
     networks:
       - backend
-
+  
+  mongodbexporter:
+    image: percona/mongodb_exporter:0.39
+    restart: always
+    depends_on:
+      mongodb:
+        condition: service_started
+    networks:
+      - backend
+    ports:
+      - 9216:9216
+  
   prometheus:
     image: prom/prometheus
     restart: always
@@ -135,8 +137,10 @@ services:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
 
+# logging
   loki:
     image: grafana/loki
+    restart: always
     networks:
       - backend
     ports:
@@ -146,6 +150,7 @@ services:
   
   promtail:
     image: grafana/promtail
+    restart: always
     depends_on:
       - loki
     networks:
@@ -162,7 +167,6 @@ volumes:
     driver: local
   grafana-data:
     driver: local
-  
 
 networks:
   backend:

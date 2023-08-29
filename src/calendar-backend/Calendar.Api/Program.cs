@@ -155,8 +155,7 @@ try
             mongoConfig.MONGODB_SERVER,
             mongoConfig.MONGODB_DB_NAME,
             HealthStatus.Unhealthy)
-        .AddCheck<KeyCloakHealthCheck>(KeyCloakHealthCheck.Name)
-        ;
+        .AddCheck<KeyCloakHealthCheck>(KeyCloakHealthCheck.Name);
 
     #endregion
 
