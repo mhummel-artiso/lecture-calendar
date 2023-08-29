@@ -35,6 +35,8 @@ import { queryClient } from '../../utils/queryClient'
 import { CalendarEvent, CreateCalendarEvent } from '../../models/calendarEvent'
 import { ConflictDialog } from '../conflictDialog/ConflictDialog'
 import { AxiosError } from 'axios'
+import { Simulate } from 'react-dom/test-utils'
+import error = Simulate.error
 
 type CalendarViewType = 'month' | 'week' | 'day'
 
@@ -221,6 +223,11 @@ export const CalendarPage = () => {
         },
         onSuccess: async (_) => {
             await refetch()
+        },
+        onError: async (error: AxiosError) => {
+            if (error.status === 409) {
+                await refetch()
+            }
         },
     })
 
