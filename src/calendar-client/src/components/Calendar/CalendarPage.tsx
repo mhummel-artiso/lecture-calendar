@@ -219,6 +219,9 @@ export const CalendarPage = () => {
                 )
             }
         },
+        onSuccess: async (_) => {
+            await refetch()
+        },
     })
 
     // useEffect(() => {
