@@ -10,8 +10,10 @@ services:
     container_name: client-loadbalancer
     ports:
       - 8080:8080
+      - 4000:4000
     depends_on:
       - client
+      - calendarapi
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
@@ -56,12 +58,12 @@ services:
       mongodb:
         condition: service_started
     restart: always
-    ports:
-      - 4000:80
     networks:
       - backend
+      - loadbalancer-network
     environment:
       MONGODB_CONNECTIONSTRING: mongodb://mongodb:27017/
+    scale: 4
 
 volumes:
   noSqlData:
