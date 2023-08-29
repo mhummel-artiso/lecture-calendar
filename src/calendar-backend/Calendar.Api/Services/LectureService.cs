@@ -1,5 +1,6 @@
 ﻿using Calendar.Api.Exceptions;
 using Calendar.Api.Services.Interfaces;
+using Calendar.Api.Utilities.ExtensionMethods;
 using Calendar.Mongo.Db.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -37,7 +38,7 @@ namespace Calendar.Api.Services
             if (lectureToUpdate == null) throw new KeyNotFoundException("Lecture was not found.");
 
             // Check for conflict.
-            if (lectureToUpdate.LastUpdateDate != lecture.LastUpdateDate) throw new ConflictException<Lecture>(lecture);
+            if (lectureToUpdate.LastUpdateDate.TrimMilliseconds() != lecture.LastUpdateDate.TrimMilliseconds()) throw new ConflictException<Lecture>(lecture);
 
             lecture.LastUpdateDate = DateTimeOffset.UtcNow;
             lecture.CreatedDate = lectureToUpdate.CreatedDate;

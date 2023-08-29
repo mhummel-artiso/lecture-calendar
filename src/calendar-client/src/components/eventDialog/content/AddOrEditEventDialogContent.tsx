@@ -3,7 +3,8 @@ import {
     DialogTitle,
     MenuItem,
     Stack,
-    TextField, Typography,
+    TextField,
+    Typography,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DateTimePicker, TimePicker } from '@mui/x-date-pickers'
@@ -25,10 +26,10 @@ import { Calendar } from '../../../models/calendar'
 import { Lecture } from '../../../models/lecture'
 
 const serialList = [
-    {value: 0, label: 'Nicht wiederholen'},
-    {value: 1, label: 'Täglich wiederholen'},
-    {value: 2, label: 'Wöchentlich wiederholen'},
-    {value: 3, label: 'Monatlich wiederholen'},
+    { value: 0, label: 'Nicht wiederholen' },
+    { value: 1, label: 'Täglich wiederholen' },
+    { value: 2, label: 'Wöchentlich wiederholen' },
+    { value: 3, label: 'Monatlich wiederholen' },
 ]
 
 export interface PassedDialogValues {
@@ -38,6 +39,7 @@ export interface PassedDialogValues {
     end: Moment
     location: string
     description: string
+    serieStart: Moment
     serieEnd: Moment
     repeat: number
     instructors: Instructor[]
@@ -63,7 +65,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         onAccept,
         onDelete,
     } = props
-    const {canEdit} = useAccount()
+    const { canEdit } = useAccount()
 
     const [selectedCalendarId, setSelectedCalendarId] = React.useState<
         string | null
@@ -76,13 +78,14 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const [location, setLocation] = useState<string>('')
     const [description, setDescription] = useState<string>('')
     const [serieEnd, setSerieEnd] = useState<Moment>(moment())
+    const [serieStart, setSerieStart] = useState<Moment>(moment())
     const [serie, setSerie] = useState<number>(serialList[0].value)
     const [selectedInstructors, setSelectedInstructors] = useState<
         Instructor[] | null
     >([])
 
     useEffect(() => {
-        if(!currentValue) {
+        if (!currentValue) {
             resetValues()
         } else {
             setStartDate(moment(currentValue.start))
@@ -91,6 +94,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             setLocation(currentValue.location)
             setDescription(currentValue.description ?? '')
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
+            setSerieStart(moment(currentValue.startSeries ?? moment()))
             setSerie(currentValue.repeat)
             setSelectedLectureId(currentValue.lecture.id!)
             setSelectedInstructors(currentValue.instructors)
@@ -103,6 +107,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         setSerie(serialList[0].value)
         setLocation('')
         setDescription('')
+        setSerieStart(moment())
         setSerieEnd(moment())
         setSelectedCalendarId(calendarId ?? '')
         setSelectedLectureId('')
@@ -110,7 +115,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
 
     const requiredFields = (disabled: boolean) => {
         return (
-            <Stack direction="column" spacing={2} sx={{margin: 1, mt: 2}}>
+            <Stack direction="column" spacing={2} sx={{ margin: 1, mt: 2 }}>
                 <CalendarSelect
                     disabled={disabled || isEdit}
                     readonlyValue={currentValue?.calendar?.name}
@@ -143,7 +148,9 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const timeFields = (disabled: boolean) => {
         return (
             <Stack spacing={2}>
-                <Typography variant="body2" color="textSecondary">Angaben in lokaler Zeit</Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Angaben in lokaler Zeit
+                </Typography>
                 <DatePicker
                     disabled={disabled}
                     key={'day'}
@@ -160,7 +167,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                         disabled={disabled}
                         onChange={(value) => {
                             setStartDate(value!)
-                            if(!isEdit) {
+                            if (!isEdit) {
                                 setEndDate(value!)
                             }
                         }}
@@ -168,7 +175,8 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                         viewRenderers={{
                             hours: renderTimeViewClock,
                             minutes: renderTimeViewClock,
-                        }}/>
+                        }}
+                    />
                     <TimePicker
                         value={endDate}
                         disabled={disabled}
@@ -189,29 +197,40 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         const shouldRender = !isEdit || isSeries
         return (
             shouldRender && (
-                <Stack direction="row" spacing={1}>
-                    <TextField
-                        disabled={disabled || isEdit}
-                        select
-                        fullWidth
-                        defaultValue={serialList[0].value}
-                        value={serie}
-                        onChange={(event) =>
-                            setSerie(Number(event?.target?.value))
-                        }
-                    >
-                        {serialList.map((item, index) => (
-                            <MenuItem key={index} value={item.value}>
-                                {item.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                    <DatePicker
-                        label="Serienende"
-                        disabled={serie === serialList[0].value || disabled}
-                        value={serieEnd}
-                        onChange={(e) => setSerieEnd(e!)}
-                    />
+                <Stack spacing={2}>
+                    {isEdit && (
+                        <DatePicker
+                            label="Serienstart"
+                            disabled={serie === serialList[0].value || disabled}
+                            value={serieStart}
+                            onChange={(e) => setSerieStart(e!)}
+                        />
+                    )}
+
+                    <Stack direction="row" spacing={1}>
+                        <TextField
+                            disabled={disabled || isEdit}
+                            select
+                            fullWidth
+                            defaultValue={serialList[0].value}
+                            value={serie}
+                            onChange={(event) =>
+                                setSerie(Number(event?.target?.value))
+                            }
+                        >
+                            {serialList.map((item, index) => (
+                                <MenuItem key={index} value={item.value}>
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <DatePicker
+                            label="Serienende"
+                            disabled={serie === serialList[0].value || disabled}
+                            value={serieEnd}
+                            onChange={(e) => setSerieEnd(e!)}
+                        />
+                    </Stack>
                 </Stack>
             )
         )
@@ -228,15 +247,18 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
 
     const validateTimeFields = (): boolean => {
         let isValidSerie = true
-        if(serie !== serialList[0].value) {
-            isValidSerie = !!serieEnd && serieEnd > startDate && serieEnd.day() > startDate.day();
+        if (serie !== serialList[0].value) {
+            isValidSerie =
+                !!serieEnd &&
+                serieEnd > serieStart &&
+                serieEnd.day() > serieStart.day()
         }
         return startDate && !!endDate && endDate > startDate && isValidSerie
     }
 
     const optionalFields = (disabled: boolean) => {
         return (
-            <Stack spacing={2} sx={{margin: 1}}>
+            <Stack spacing={2} sx={{ margin: 1 }}>
                 <TextField
                     disabled={disabled}
                     multiline
@@ -289,6 +311,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             end: endDate!,
             location,
             description,
+            serieStart,
             serieEnd,
             repeat: serie,
             instructors: selectedInstructors!,
@@ -302,7 +325,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             <DialogTitle>
                 Event {isEdit ? 'bearbeiten' : 'hinzufügen'}
             </DialogTitle>
-            <DialogContent sx={{width: '500px'}}>
+            <DialogContent sx={{ width: '500px' }}>
                 {isEdit ? (
                     <AccordionLayout
                         sections={layoutElement}

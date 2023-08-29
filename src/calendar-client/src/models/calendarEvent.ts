@@ -46,6 +46,7 @@ export interface UpdateCalendarEventSeries extends CalendarEventBase {
     calendarId: string
     seriesId: string
     endSeries: Moment
+    startSeries: Moment
     lectureId: string
     lastUpdateDate?: Moment
     createdDate?: Moment
