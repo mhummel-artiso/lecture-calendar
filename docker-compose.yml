@@ -38,13 +38,15 @@ services:
         - VITE_OIDC_AUTHORITY=http://localhost:8080/realms/Calendar
         - VITE_OIDC_REDIRECT_URL=http://localhost:3000
     restart: always
-    depends_on:
-      keycloak:
-        condition: service_started
     networks:
       - frontend
     ports:
-      - 3000:80
+      - 80:80
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 # keycloak authentication
   keycloak:
