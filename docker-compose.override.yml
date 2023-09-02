@@ -52,13 +52,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "containerlogs"
-  mongodbexporter:
-    command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
-    environment:
-      TZ: Europe/Berlin
-    labels:
-      logging: "promtail"
-      logging_jobname: "mongodb"
+
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
   keycloak:
@@ -102,6 +96,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-keycloak"
+  
   postgressdb-grafana:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
@@ -117,6 +112,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-grafana"
+  
   grafana:
     # healthcheck:
     #   test: ["CMD-SHELL", "curl", "-f", "http://localhost:3000/api/health"]
@@ -136,12 +132,29 @@ services:
       GF_DATABASE_PASSWORD: ${MASTER_PW}
       GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
       TZ: Europe/Berlin
+  
   prometheus:
     environment:
       TZ: Europe/Berlin=value
     labels:
       logging: "promtail"
       logging_jobname: "prometheus"
+  
+  mongodb-exporter:
+    command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
+    environment:
+      TZ: Europe/Berlin
+    labels:
+      logging: "promtail"
+      logging_jobname: "mongodb"
+  postgressdb-grafana-exporter:
+    environment:
+      TZ: Europe/Berlin
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-grafana:5432/grafana"
+  postgressdb-keycloak-exporter:
+    environment:
+      TZ: Europe/Berlin
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-keycloak:5432/keycloak"
   loki:
     environment:
       TZ: Europe/Berlin
@@ -154,23 +167,23 @@ services:
       TZ: Europe/Berlin
     command: -config.file=/etc/promtail/promtail.yml
   # to debug mongo docker container
-  mongo-express:
-    image: mongo-express
-    ports:
-        - '8081:8081'
-    depends_on:
-      - mongodb
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_PORT=27017
-      # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
-      # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
-      - ME_CONFIG_MONGODB_AUTH_USERNAME=root
-      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
-      - ME_CONFIG_BASICAUTH_USERNAME=root
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
-    networks:
-      - backend
-    labels:
-      logging: "promtail"
-      logging_jobname: "mongo-express"
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #       - '8081:8081'
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=mongodb
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+  #     # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
+  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=root
+  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
+  #     - ME_CONFIG_BASICAUTH_USERNAME=root
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
+  #   networks:
+  #     - backend-api
+  #   labels:
+  #     logging: "promtail"
+  #     logging_jobname: "mongo-express"
