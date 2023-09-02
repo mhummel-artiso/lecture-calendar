@@ -48,14 +48,14 @@ services:
 
 # keycloak authentication
   keycloak:
-    image: quay.io/keycloak/keycloak:22.0.1
+    build:
+      context: ./config/keycloak
+      dockerfile: Dockerfile
     restart: always
     depends_on:
       postgressdb-keycloak:
         condition: service_healthy
       mongodb:
-        condition: service_started
-      grafana:
         condition: service_started
     networks:
       - frontend
@@ -122,9 +122,14 @@ services:
     image: prom/prometheus
     restart: always
     depends_on:
-      - mongodb-exporter
-      - postgressdb-grafana-exporter
-      - postgressdb-keycloak-exporter
+      mongodb-exporter:
+        condition: service_started
+      postgressdb-grafana-exporter:
+        condition: service_started
+      postgressdb-keycloak-exporter:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     networks:
       - backend-monitoring
     ports:
