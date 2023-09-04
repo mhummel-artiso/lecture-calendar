@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Prometheus;
+using Prometheus.SystemMetrics;
 using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Enrichers.AspNetCore;
@@ -131,6 +133,7 @@ try
     #region Services and automapper
 
     builder.Services
+        .AddSystemMetrics()
         .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
@@ -235,7 +238,8 @@ try
 
     app.MapHealthChecks("/health");
     app.UseHealthChecksPrometheusExporter("/metrics");
-
+    app.UseMetricServer();
+    app.UseHttpMetrics();
     #endregion
 
     #region Test endpoint
@@ -256,7 +260,6 @@ try
     app.Run();
 
     #endregion
-
 }
 catch (ArgumentException ex)
 {
