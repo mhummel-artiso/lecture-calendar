@@ -1,12 +1,12 @@
 import { QueryClient } from '@tanstack/react-query'
 
 export const queryClient: QueryClient = new QueryClient({
-    defaultOptions:{
+    defaultOptions: {
         queries: {
             useErrorBoundary: true,
         },
-        mutations:{
-            useErrorBoundary:true
-        }
-    }
-});
+        mutations: {
+            useErrorBoundary: true,
+        },
+    },
+})

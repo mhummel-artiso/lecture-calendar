@@ -2,10 +2,10 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Exceptions;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
-using Keycloak.AuthServices.Sdk.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -175,9 +175,6 @@ public class CalendarController : ControllerBase
         try
         {
             var calendarEvents = await eventService.GetAllEventsFromCalendarAsync(calendarId);
-            if (calendarEvents is null)
-                return BadRequest("Calendar not Found");
-
             var mappedDtos = mapper.Map<IEnumerable<CalendarEventDTO>>(calendarEvents);
 
             foreach (var mappedDto in mappedDtos)
@@ -187,9 +184,9 @@ public class CalendarController : ControllerBase
             }
             return Ok(mappedDtos);
         }
-        catch (ArgumentException ex)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
 
     }
@@ -226,19 +223,19 @@ public class CalendarController : ControllerBase
         try
         {
             var calendarEvent = await eventService.GetEventAsync(calendarId, eventId);
-
-            if (calendarEvent == null)
-                return NotFound();
             var mappedDto = mapper.Map<CalendarEventDTO>(calendarEvent);
             await AddLectureToEventAsync(mappedDto);
+            await AddCalendarToEventAsync(mappedDto);
             return Ok(mappedDto);
         }
-        catch (Exception ex)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
 
     }
+
+
 
     [HttpPut("{calendarId}/event/{eventId}")]
     [Authorize(AuthPolicies.EDITOR)]
@@ -249,14 +246,25 @@ public class CalendarController : ControllerBase
 
         try
         {
-            var result = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-            if (result == null)
-                return NotFound();
-            var mappedDto = mapper.Map<CalendarEventDTO>(result);
+            var updatedEvent = await eventService.UpdateEventAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+            var mappedDto = mapper.Map<CalendarEventDTO>(updatedEvent);
             await AddLectureToEventAsync(mappedDto);
+            await AddCalendarToEventAsync(mappedDto);
             return Ok(mappedDto);
         }
-        catch (ArgumentException ex)
+        catch (KeyNotFoundException ex) 
+        { 
+            return NotFound(ex.Message); 
+        }
+        catch (ConflictException<CalendarEvent> ex)
+        {
+            var unmappedConflict = ex.NewestEvent;
+            var mappedResult = mapper.Map<CalendarEventDTO>(unmappedConflict);
+            await AddLectureToEventAsync(mappedResult);
+            await AddCalendarToEventAsync(mappedResult);
+            return Conflict(mappedResult);
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -273,30 +281,48 @@ public class CalendarController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
     [HttpPut("{calendarId}/series/{serieId}")]
     [Authorize(AuthPolicies.EDITOR)]
-    public async Task<ActionResult<IEnumerable<CalendarEventDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSeriesDTO calendarEvent)
+    public async Task<ActionResult<IEnumerable<UpdateCalendarSeriesDTO>>> EditSerie(string calendarId, string serieId, [FromBody] UpdateCalendarSeriesDTO calendarEvent)
     {
-
         if (serieId != calendarEvent.SeriesId)
             return BadRequest("serie id not the same");
 
-
-        var result = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
-        if (result == null)
-            return NotFound();
-
-        var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
-
-        foreach (var mappedDto in mappedResult)
+        try
         {
-            await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+            var updatedEvents = await eventService.UpdateEventSeriesAsync(calendarId, mapper.Map<CalendarEvent>(calendarEvent));
+            var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(updatedEvents);
+            foreach (var mappedDto in mappedResult)
+            {
+                await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+                await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
+            }
+            return Ok(mappedResult);
         }
-        return Ok(mappedResult);
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch(ConflictException<IEnumerable<CalendarEvent>> ex)
+        {
+            var unmappedConflict = ex.NewestEvent;
+            var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(unmappedConflict);
+            foreach (var mappedDto in mappedResult)
+            {
+                await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);
+                await AddCalendarToEventAsync(mappedDto).ConfigureAwait(false);
+            }
+            return Conflict(mappedResult);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
     [HttpDelete("{calendarId}/series/{serieId}")]
     [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<bool>> DeleteEventSerie(string calendarId, string serieId)
@@ -308,7 +334,7 @@ public class CalendarController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 

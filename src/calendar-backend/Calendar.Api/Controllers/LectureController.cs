@@ -2,11 +2,13 @@
 using Calendar.Api.DTOs;
 using Calendar.Api.DTOs.Create;
 using Calendar.Api.DTOs.Update;
+using Calendar.Api.Exceptions;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
 using Calendar.Mongo.Db.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Calendar.Api.Controllers;
 
@@ -65,14 +67,26 @@ public class LectureController : ControllerBase
     [Authorize(AuthPolicies.EDITOR)]
     public async Task<ActionResult<LectureDTO>> EditLecture(string lectureId, [FromBody] UpdateLectureDTO lecture)
     {
-        if (lecture == null)
+        if (lectureId != lecture.Id)
+            return BadRequest("lecture id not the same like in body");
+
+        try
         {
-            return BadRequest();
+            var updatedLecture = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
+            return Ok(mapper.Map<LectureDTO>(updatedLecture));
         }
-
-        var result = await service.UpdateLectureAsync(lectureId, mapper.Map<Lecture>(lecture));
-
-        return Ok(mapper.Map<LectureDTO>(result));
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch(ConflictException<Lecture> ex)
+        {
+            return Conflict(mapper.Map<LectureDTO>(ex.NewestEvent));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{lectureId}")]

@@ -5,6 +5,9 @@ import {
     Box,
     Button,
     CircularProgress,
+    Dialog,
+    DialogContent,
+    DialogTitle,
     Fab,
     Grid,
     IconButton,
@@ -15,7 +18,7 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -28,6 +31,8 @@ import {
 import { Lecture } from '../../../models/lecture'
 import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
+import { AxiosErrorInformation } from '../../ErrorContent/AxiosErrorInformation'
+import { AxiosError } from 'axios'
 
 export const LectureList: FC = () => {
     const [expanded, setExpanded] = useState('')
