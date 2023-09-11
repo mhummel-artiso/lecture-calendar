@@ -8,9 +8,9 @@ interface Props {
     onLogoutClick: () => void
 }
 
-export const AccountButton: FC<Props> = ({onLogoutClick}) => {
-    const {getAuthorityUrl} = useEnvironment()
-    const {userAccount} = useAccount()
+export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
+    const { getAuthorityUrl } = useEnvironment()
+    const { userAccount } = useAccount()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,7 +29,7 @@ export const AccountButton: FC<Props> = ({onLogoutClick}) => {
     const handelMyAccountClick = () => {
         handleClose()
         const url = getAuthorityUrl()
-        if(url) {
+        if (url) {
             window.open(`${url}/#/personal-info`, '_blank')
         }
     }

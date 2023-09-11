@@ -12,18 +12,18 @@ export interface EnvConfig {
 }
 
 export const useEnvironment = () => {
-    const env = getGlobalEnv();
+    const env = getGlobalEnv()
     return {
         ...env,
-        getAuthorityUrl: ():string => `${env.OIDC_URL}${env.OIDC_AUTHORITY}`,
-        getAccountUrl: ():string => `${env.OIDC_URL}${env.OIDC_ACCOUNT_URL}`,
+        getAuthorityUrl: (): string => `${env.OIDC_URL}${env.OIDC_AUTHORITY}`,
+        getAccountUrl: (): string => `${env.OIDC_URL}${env.OIDC_ACCOUNT_URL}`,
     }
 }
 
 export const getGlobalEnv = (): EnvConfig => {
     return {
         API_HOST: import.meta.env.VITE_API_HOST as string,
-        API_URL: import.meta.env.VITE_API_URL as string??"/v1/api",
+        API_URL: (import.meta.env.VITE_API_URL as string) ?? '/v1/api',
         OIDC_AUTO_SIGN_IN: (import.meta.env.VITE_OIDC_AUTO_SIGN_IN ??
             false) as boolean,
         OIDC_URL: import.meta.env.VITE_OIDC_URL as string,
