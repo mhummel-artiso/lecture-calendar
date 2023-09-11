@@ -7,12 +7,9 @@ import { CalendarPage } from './Calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
-import { ErrorPage } from './pages/ErrorPage'
-import { ErrorBoundary } from 'react-error-boundary'
-import { AxiosErrorInformation } from './ErrorContent/AxiosErrorInformation'
 
 export const RouterComponent: FC = () => {
-    const { canEdit, isLoggedIn } = useAccount()
+    const { canEdit, isLoggedIn, isLoading } = useAccount()
 
     return (
         <BrowserRouter>
@@ -46,7 +43,9 @@ export const RouterComponent: FC = () => {
                             )}
                         </>
                     )}
-                    <Route path="*" element={<NotFoundPage />} />
+                    {!isLoading && (
+                        <Route path="*" element={<NotFoundPage />} />
+                    )}
                 </Routes>
             </Box>
         </BrowserRouter>

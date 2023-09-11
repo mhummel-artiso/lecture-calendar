@@ -38,7 +38,7 @@ export const LectureDialog: FC<
             title,
             shortKey,
             description,
-            lastUpdateDate : currentLecture?.lastUpdateDate
+            lastUpdateDate: currentLecture?.lastUpdateDate,
         }
         if (currentLecture == null && onDialogAdd) {
             onDialogAdd(l)
