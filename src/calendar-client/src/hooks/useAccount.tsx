@@ -39,13 +39,13 @@ export const useAccount = () => {
 
     const _signOut = async () => {
         const idToken = userData?.id_token
-        await signOut()
-        await userManager.removeUser()
         if (idToken) {
             await signOutRedirect({
                 id_token_hint: idToken,
             }).catch(showBoundary)
         }
+        await userManager.removeUser()
+        await signOut()
     }
     return {
         userAccount: userData?.profile ?? null,
