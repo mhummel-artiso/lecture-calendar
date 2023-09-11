@@ -31,7 +31,7 @@ import {
 import { Lecture } from '../../../models/lecture'
 import { LectureDialog } from './LectureDialog'
 import AddIcon from '@mui/icons-material/Add'
-import { ConflictDialog } from '../../conflictDialog/ConflictDialog'
+import { AxiosErrorInformation } from '../../ErrorContent/AxiosErrorInformation'
 import { AxiosError } from 'axios'
 
 export const LectureList: FC = () => {
@@ -149,18 +149,6 @@ export const LectureList: FC = () => {
                 onDialogAdd={addLectureMutation.mutate}
                 onDialogEdit={editLectureMutation.mutate}
             />
-
-            <ConflictDialog
-                title={'Datenkonflikt'}
-                conflictStatus={409}
-                error={editLectureMutation.error as AxiosError}
-            >
-                <Typography>
-                    Ihre Änderungen konnten nicht gespeichert werden, da Sie
-                    sonst neue Änderungen von einem Kollegen überschreiben
-                    würden.
-                </Typography>
-            </ConflictDialog>
         </>
     )
 }

@@ -11,12 +11,9 @@ import React, { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 
-interface LectureDialogComponentProps
-    extends DialogComponentProps<Lecture, any, any> {
-    isEditConflict: boolean
-}
-
-export const LectureDialog: FC<LectureDialogComponentProps> = ({
+export const LectureDialog: FC<
+    DialogComponentProps<Lecture, Lecture, Lecture>
+> = ({
     isDialogOpen,
     onDialogClose,
     onDialogAdd,
