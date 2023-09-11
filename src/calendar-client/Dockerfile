@@ -1,5 +1,5 @@
 # build environment
-FROM node:20.4.0-alpine as build
+FROM node:18.17.1-alpine as build
 ARG VITE_API_URL=""
 ARG VITE_OIDC_CLIENT_ID=""
 ARG VITE_OIDC_AUTHORITY=""
