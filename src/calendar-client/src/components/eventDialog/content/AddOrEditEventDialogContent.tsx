@@ -131,7 +131,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                 <TextField
                     disabled={disabled}
                     margin="dense"
-                    label="Eventort"
+                    label="Veranstaltungsort"
                     id="location"
                     type="text"
                     value={location}
@@ -336,7 +336,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     return (
         <>
             <DialogTitle>
-                Event {isEdit ? 'bearbeiten' : 'hinzufügen'}
+                Veranstaltung {isEdit ? 'bearbeiten' : 'hinzufügen'}
             </DialogTitle>
             <DialogContent sx={{ width: '500px' }}>
                 {isEdit ? (

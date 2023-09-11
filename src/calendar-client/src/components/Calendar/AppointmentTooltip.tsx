@@ -31,7 +31,7 @@ export const AppointmentTooltipContent: React.FC<
             >
                 {appointmentData?.location && (
                     <Grid item>
-                        <Typography fontWeight="bold">Raum:</Typography>
+                        <Typography fontWeight="bold">Veranstaltungsort:</Typography>
                         <Typography sx={{ ml: 2 }}>
                             {' '}
                             {appointmentData?.location}
