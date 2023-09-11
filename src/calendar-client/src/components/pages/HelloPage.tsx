@@ -4,8 +4,8 @@ import { Button, Grid, Typography } from '@mui/material'
 import { useAccount } from '../../hooks/useAccount'
 
 export const HelloPage = () => {
-    const {isLoggedIn, signIn} = useAccount()
-    const handelSignIn = ()=> {
+    const { isLoggedIn, signIn } = useAccount()
+    const handelSignIn = () => {
         signIn().then()
     }
     return isLoggedIn ? (
@@ -13,11 +13,11 @@ export const HelloPage = () => {
             container
             alignItems="center"
             justifyContent="center"
-            style={{height: '100vh'}}
+            style={{ height: '100vh' }}
         >
             <Grid item>
                 <Typography variant="h3">Deine Kurse</Typography>
-                <AvailableCalendarsList/>
+                <AvailableCalendarsList />
             </Grid>
         </Grid>
     ) : (
@@ -25,7 +25,7 @@ export const HelloPage = () => {
             container
             alignItems="center"
             justifyContent="center"
-            style={{height: '100vh'}}
+            style={{ height: '100vh' }}
         >
             <Grid item alignContent="center" textAlign="center">
                 <Typography variant="h3">Bitte Anmelden</Typography>

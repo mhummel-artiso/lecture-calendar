@@ -2,6 +2,7 @@
 
 namespace Calendar.Api.Configurations;
 
+[Obsolete]
 public class JwtEnvironmentConfiguration : IEnvironmentConfiguration<JwtEnvironmentConfiguration>
 {
     public string? JWT_AUDIENCE { get; set; } = "http://localhost:8080/realms/calendar";
@@ -11,9 +12,9 @@ public class JwtEnvironmentConfiguration : IEnvironmentConfiguration<JwtEnvironm
     public JwtEnvironmentConfiguration Validate()
     {
         new EnvironmentConfigurationValidator()
-            .CheckEnvironment(JWT_AUTHORITY)
-            .CheckEnvironment(JWT_AUDIENCE)
-            .CheckEnvironment(JWT_METADATA_ADDRESS);
+            .CheckEnvironmentUri(JWT_AUTHORITY)
+            .CheckEnvironmentUri(JWT_AUDIENCE)
+            .CheckEnvironmentUri(JWT_METADATA_ADDRESS);
         return this;
     }
 }

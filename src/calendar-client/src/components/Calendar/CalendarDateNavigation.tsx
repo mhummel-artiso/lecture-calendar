@@ -5,6 +5,7 @@ import React from "react";
 import moment, { Moment } from "moment/moment";
 import { CalendarViewType, formatCurrentDateView } from "../../services/DateService";
 
+
 interface Props {
     currentDate: Moment
     calendarView: CalendarViewType
@@ -14,17 +15,22 @@ interface Props {
 export const CalendarDateNavigation: React.FC<Props> = ({
                                                             calendarView,
                                                             currentDate,
-                                                            onCurrentDateChanged
+                                                            onCurrentDateChanged,
                                                         }) => {
-
     const handleDataNavigation = (isForward: boolean) => {
         // adds or remove 1 day or week or month
         currentDate.add(isForward ? 1 : -1, calendarView)
         onCurrentDateChanged(moment(currentDate))
     }
-    return (<Grid item xl={10} md={9} xs={12} container
-                  justifyContent="space-between"
-                  alignItems="center">
+
+    return (<Grid
+        item
+        xl={10}
+        md={9}
+        xs={12}
+        container
+        justifyContent="space-between"
+        alignItems="center">
         <Fab
             color="primary"
             onClick={() => handleDataNavigation(false)}

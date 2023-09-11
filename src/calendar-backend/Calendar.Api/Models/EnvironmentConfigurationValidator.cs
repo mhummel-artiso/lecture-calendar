@@ -16,19 +16,35 @@ public class EnvironmentConfigurationValidator
             throw new EnvironmentConfigurationException(prefix + paramName);
         return this;
     }
-    public EnvironmentConfigurationValidator CheckEnvironmentValue([NotNull] int? argument,
-        bool allowNegative = false,
-        [CallerArgumentExpression("argument")] string? paramName = null)
-    {
-        if (argument != null || allowNegative && argument >= 0)
-            throw new EnvironmentConfigurationException(prefix + paramName);
-        return this;
-    }
-    public EnvironmentConfigurationValidator CheckEnvironmentValue([NotNull] bool? argument,
+    public EnvironmentConfigurationValidator CheckEnvironmentBoolean([NotNull] bool? argument,
         [CallerArgumentExpression("argument")] string? paramName = null)
     {
         if (argument == null)
             throw new EnvironmentConfigurationException(prefix + paramName);
         return this;
+    }
+
+    public EnvironmentConfigurationValidator CheckEnvironmentNumber([NotNull] int? argument,
+        bool allowNegative = false,
+        [CallerArgumentExpression("argument")] string? paramName = null)
+    {
+        var ex = new EnvironmentConfigurationException(prefix + paramName);
+        if (argument == null)
+            throw ex;
+        if (allowNegative || argument >= 0)
+            return this;
+        throw ex;
+    }
+
+    public EnvironmentConfigurationValidator CheckEnvironmentUri([NotNull] string? argument,
+        bool isRelative = false,
+        [CallerArgumentExpression("argument")] string? paramName = null)
+    {
+        if (string.IsNullOrWhiteSpace(argument))
+            throw new EnvironmentConfigurationException(prefix + paramName);
+        if (Uri.TryCreate(argument, isRelative ? UriKind.Relative : UriKind.Absolute, out var uri))
+            return this;
+        throw new EnvironmentConfigurationException(prefix + paramName, argument);
+
     }
 }

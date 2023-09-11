@@ -6,6 +6,7 @@ import {
     UpdateCalendarEvent,
     UpdateCalendarEventSeries,
 } from '../models/calendarEvent'
+import { AxiosError } from 'axios'
 
 // Calendar functions
 const calendarEndPointName = (calendarId: string | null = null) => {

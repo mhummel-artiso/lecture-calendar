@@ -35,14 +35,14 @@ interface EventDialogComponentProps
 
 export type TextFieldViewType = 'required' | 'time' | 'optional'
 export const EventDialog: FC<EventDialogComponentProps> = ({
-                                                               isDialogOpen,
-                                                               onDialogClose,
-                                                               onDeletedEvent,
-                                                               onDialogAdd,
-                                                               onDialogEdit,
-                                                               currentValue,
-                                                               calendarId,
-                                                           }: EventDialogComponentProps) => {
+    isDialogOpen,
+    onDialogClose,
+    onDeletedEvent,
+    onDialogAdd,
+    onDialogEdit,
+    currentValue,
+    calendarId,
+}: EventDialogComponentProps) => {
     const [askEditSeries, setAskEditSeries] = useState<
         PassedDialogValues | undefined
     >()
@@ -58,16 +58,17 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
         value: PassedDialogValues | undefined,
         editSeries: boolean | undefined = undefined
     ) => {
-        if(!value) return
+        if (!value) return
         const base: CalendarEventBase = {
             ...value,
         }
-        if(currentValue) {
-            if(onDialogEdit && editSeries) {
+        if (currentValue) {
+            if (onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
                     ...currentValue,
                     ...base,
                     endSeries: value.serieEnd,
+                    startSeries: value.serieStart,
                     lectureId: value.lectureId,
                 }
                 onDialogEdit({
@@ -75,7 +76,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     eventSeries: data,
                     event: undefined,
                 })
-            } else if(onDialogEdit && !editSeries) {
+            } else if (onDialogEdit && !editSeries) {
                 const data: UpdateCalendarEvent = {
                     ...currentValue,
                     ...base,
@@ -89,7 +90,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     eventSeries: undefined,
                 })
             }
-        } else if(onDialogAdd) {
+        } else if (onDialogAdd) {
             const data: CreateCalendarEvent = {
                 ...base,
                 lectureId: value.lectureId,
@@ -103,9 +104,9 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
 
     const deleteEventMutation = useMutation({
         mutationFn: async ({
-                               calendarId,
-                               event,
-                           }: {
+            calendarId,
+            event,
+        }: {
             calendarId: string
             event: CalendarEvent
         }) => {
@@ -119,9 +120,9 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     })
     const deleteEventSeriesMutation = useMutation({
         mutationFn: async ({
-                               calendarId,
-                               event,
-                           }: {
+            calendarId,
+            event,
+        }: {
             calendarId: string
             event: CalendarEvent
         }) => {
@@ -135,10 +136,10 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     })
 
     const handleDeleteClick = (deleteSeries = false) => {
-        if(!currentValue) {
+        if (!currentValue) {
             return
         }
-        if(deleteSeries) {
+        if (deleteSeries) {
             deleteEventSeriesMutation.mutate({
                 calendarId: currentValue.calendarId,
                 event: currentValue,
@@ -152,7 +153,6 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
     }
 
     const handleCancelAskDialog = () => {
-        setAskDeleteSeries(false)
         setAskDeleteSeries(false)
     }
 
@@ -185,6 +185,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     </Typography>
                 </EditEventSeriesDialogContent>
             )}
+
             {!askEditSeries && !askDeleteSeries && (
                 <AddOrEditEventDialogContent
                     isSeries={isSeries}
@@ -192,7 +193,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     isEdit={isEdit}
                     currentValue={currentValue}
                     onDelete={() => {
-                        if(isSeries) {
+                        if (isSeries) {
                             setAskDeleteSeries(true)
                         } else {
                             handleDeleteClick(false)

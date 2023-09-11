@@ -3,12 +3,13 @@
 ## Logins:
 
 | Username | Password | Gruppen | Kommentar |
-|--- |---|---|---|---|
+| --- | --- | --- | --- |
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
-| dozent  | **74RuqICjDPQEFREmhIFaqRf6H** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |   |
-| sekreteriat | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` |   |
-| student1  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |   |
-| student2  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |   |
+| admin  | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` | Grafana Admin |
+| dozent  | **74RuqICjDPQEFREmhIFaqRf6H** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| sekreteriat | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` |
+| student1  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |
+| student2  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
 
 ## Docker container
@@ -23,10 +24,16 @@ path to configs:
 
 ### Postgres Dump
 
-To create a dump of the keycloak database run in the postgres container:
+To create a dump of the **keycloak** database run in the **postgressdb-keycloak** container:
 
 ```sh
 pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
+```
+
+To create a dump of the **grafana** database run in the **postgressdb-grafana** container:
+
+```sh
+pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 ```
 
 ### Api

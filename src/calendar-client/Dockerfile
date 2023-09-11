@@ -1,5 +1,5 @@
 # build environment
-FROM node:20.4.0-alpine as build
+FROM node:18.17.1-alpine as build
 ARG VITE_API_URL=""
 ARG VITE_OIDC_CLIENT_ID=""
 ARG VITE_OIDC_AUTHORITY=""
@@ -20,5 +20,7 @@ RUN npm run build
 FROM nginx:stable-alpine
 COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
+RUN mkdir -p /usr/share/nginx/html/health
+RUN echo "healthy" > /usr/share/nginx/html/health/index.html
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
