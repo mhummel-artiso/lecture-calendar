@@ -29,7 +29,7 @@ import {
     AppointmentTooltipContent,
     AppointmentTooltipHeader,
 } from './AppointmentTooltip'
-import { useErrorBoundary } from "react-error-boundary";
+import { useErrorBoundary } from 'react-error-boundary'
 
 interface Props {
     currentDate: Moment
@@ -42,27 +42,28 @@ interface Props {
 }
 
 export const CalendarScheduler: React.FC<Props> = (porps) => {
-    const {showBoundary} = useErrorBoundary();
-    const {currentDate, calendarView, onEventSelected, onCalendarIdChanged} = porps
+    const { showBoundary } = useErrorBoundary()
+    const { currentDate, calendarView, onEventSelected, onCalendarIdChanged } =
+        porps
     const startDayHour = porps.startDayHour ?? 7
     const endDayHour = porps.endDayHour ?? 17
-    const {canEdit} = useAccount()
-    const {calendarName} = useParams()
+    const { canEdit } = useAccount()
+    const { calendarName } = useParams()
     const navigate = useNavigate()
     const location = useLocation()
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null
-        if(state) {
+        if (state) {
             const calendar = state
             const startDate = getStartDateFromCurrentDate(
                 currentDate,
                 calendarView
             )
             const events: CalendarEvent[] = []
-            if(calendar.length === 1) {
+            if (calendar.length === 1) {
                 onCalendarIdChanged(calendar[0].id!)
             }
-            for(const c of calendar) {
+            for (const c of calendar) {
                 const result = await getEventsFrom(
                     c.id!,
                     startDate,
@@ -71,11 +72,11 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                 events.push(...result)
             }
             return events
-        } else if(calendarName) {
+        } else if (calendarName) {
             try {
                 const c = await getCalendarByName(calendarName)
                 onCalendarIdChanged(c.id!)
-                navigate(`/calendar/${calendarName}`, {state: [c]})
+                navigate(`/calendar/${calendarName}`, { state: [c] })
             } catch (error) {
                 navigate(`*`)
             }
@@ -84,7 +85,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         }
         return []
     }
-    const {data: events} = useQuery({
+    const { data: events } = useQuery({
         queryKey: [
             'events',
             calendarName,
@@ -97,14 +98,16 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
 
     // Invalidates events when parameters change
     useEffect(() => {
-        queryClient.invalidateQueries({
-            queryKey: [
-                'events',
-                calendarName,
-                calendarView,
-                currentDate.startOf('day'),
-            ],
-        }).catch(showBoundary);
+        queryClient
+            .invalidateQueries({
+                queryKey: [
+                    'events',
+                    calendarName,
+                    calendarView,
+                    currentDate.startOf('day'),
+                ],
+            })
+            .catch(showBoundary)
     }, [calendarName, location.state, calendarView, currentDate])
 
     const getAppointment = (c: CalendarEvent) => {
@@ -120,8 +123,8 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
             location: c.location,
             event: c,
         }
-        if(c.repeat > 0) {
-            switch(c.repeat) {
+        if (c.repeat > 0) {
+            switch (c.repeat) {
                 case 1:
                     a.rRule = 'FREQ=DAILY;COUNT=1'
                     break
@@ -136,23 +139,25 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
     }
 
     const CustomAppointment: React.FC<Appointments.AppointmentProps> = ({
-                                                                            onClick,
-                                                                            children,
-                                                                            ...restProps
-                                                                        }) => {
+        onClick,
+        children,
+        ...restProps
+    }) => {
         return (
             <Appointments.Appointment
                 {...restProps}
-                onClick={(e: { data: { event: CalendarEvent | undefined } }) => {
-                    if(canEdit) {
+                onClick={(e: {
+                    data: { event: CalendarEvent | undefined }
+                }) => {
+                    if (canEdit) {
                         const {
-                            data: {event},
+                            data: { event },
                         } = e
-                        if(!event) {
+                        if (!event) {
                             return
                         }
                         onEventSelected(event)
-                    } else if(onClick) {
+                    } else if (onClick) {
                         onClick(e)
                     }
                 }}
@@ -192,8 +197,8 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                     startDayHour={startDayHour}
                     endDayHour={endDayHour}
                 />
-                <MonthView name={'month'}/>
-                <Appointments appointmentComponent={CustomAppointment}/>
+                <MonthView name={'month'} />
+                <Appointments appointmentComponent={CustomAppointment} />
                 <AppointmentTooltip
                     showCloseButton
                     contentComponent={AppointmentTooltipContent}

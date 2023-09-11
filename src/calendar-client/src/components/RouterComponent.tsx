@@ -44,7 +44,16 @@ export const RouterComponent: FC = () => {
                         </>
                     )}
                     {!isLoading && (
-                        <Route path="*" element={isLoggedIn ? <NotFoundPage/> : <Navigate to="/" replace />} />
+                        <Route
+                            path="*"
+                            element={
+                                isLoggedIn ? (
+                                    <NotFoundPage />
+                                ) : (
+                                    <Navigate to="/" replace />
+                                )
+                            }
+                        />
                     )}
                 </Routes>
             </Box>
