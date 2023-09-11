@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Box } from '@mui/material'
 import { NavBar } from './navigation/NavBar'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
 import { CalendarPage } from './Calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'
@@ -44,7 +44,7 @@ export const RouterComponent: FC = () => {
                         </>
                     )}
                     {!isLoading && (
-                        <Route path="*" element={<NotFoundPage />} />
+                        <Route path="*" element={isLoggedIn ? <NotFoundPage/> : <Navigate to="/" replace />} />
                     )}
                 </Routes>
             </Box>
