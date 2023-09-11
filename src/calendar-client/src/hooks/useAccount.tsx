@@ -6,7 +6,7 @@ import { queryClient } from '../utils/queryClient'
 import { useErrorBoundary } from 'react-error-boundary'
 
 const _canEdit = (user: User | null | undefined): boolean => {
-    if (user?.profile?.realm_access) {
+    if(user?.profile?.realm_access) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const realm_access = user.profile.realm_access as [claim: string]
         const roles = (realm_access[0]['roles'] as string[]) ?? []
@@ -17,8 +17,8 @@ const _canEdit = (user: User | null | undefined): boolean => {
 }
 
 export const useAccount = () => {
-    const errorBoundary = useErrorBoundary()
-    const { userData, signOut, signIn, signOutRedirect, userManager } =
+    const {showBoundary} = useErrorBoundary()
+    const {userData, signOut, signIn, signOutRedirect, userManager} =
         useAuth()
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [userAccount, setUserAccount] = useState<UserProfile | null>(null)
@@ -32,7 +32,7 @@ export const useAccount = () => {
         setUserAccount(userData?.profile ?? null)
         setCanEdit(_canEdit(userData))
 
-        if (!loggedIn) {
+        if(!loggedIn) {
             queryClient.clear()
         }
     }, [userData])
@@ -40,10 +40,11 @@ export const useAccount = () => {
         const idToken = userData?.id_token
         await signOut()
         await userManager.removeUser()
-        if (idToken)
+        if(idToken) {
             await signOutRedirect({
                 id_token_hint: idToken,
-            })
+            }).catch(showBoundary)
+        }
     }
     return {
         userAccount,
