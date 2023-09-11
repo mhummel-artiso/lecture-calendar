@@ -243,10 +243,24 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const validateTimeFields = (): boolean => {
         let isValidSerie = true
         if (serie !== serialList[0].value) {
+            serieEnd.set({
+                hour: serieStart.hour(),
+                minute: serieStart.minute(),
+                millisecond: serieStart.millisecond(),
+            })
+
+            const minSerieEndDate = serieStart.clone()
+
+            if (serie > 0 && serie < 3) {
+                minSerieEndDate.add(1, serie === 1 ? 'day' : 'week')
+            } else {
+                minSerieEndDate.add(4, 'weeks')
+            }
+
             isValidSerie =
                 !!serieEnd &&
                 serieEnd > serieStart &&
-                serieEnd.day() > serieStart.day()
+                minSerieEndDate <= serieEnd
         }
         return startDate && !!endDate && endDate > startDate && isValidSerie
     }
