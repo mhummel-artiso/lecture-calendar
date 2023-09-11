@@ -1,0 +1,189 @@
+version: '3.9'
+
+volumes:
+  redisinsight:
+
+services:
+  calendar-api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      #               protocol://user:password@host:port
+      API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@localhost:27017
+      API_MONGODB_DB_NAME: lecture-calendar
+      API_POSTGRESQL_HOST: localhost      
+      API_POSTGRESQL_USER_NAME: ${POSTGRES_USER}
+      API_POSTGRESQL_USER_PASSWORD: ${MASTER_PW}
+      API_OIDC_URL: http://localhost:8080/realms/Calendar
+      API_USE_SWAGGER: true
+      API_SWAGGER_CLIENT_SECRET: hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR
+      API_SWAGGER_REDIRECT_URL: http://localhost:4000/swagger/index.html
+      API_SWAGGER_OIDC_URL: http://localhost:8080/realms/Calendar
+      API_JWT_AUDIENCE: http://localhost:8080/realms/Calendar
+      API_JWT_AUTHORITY: http://localhost:8080/realms/Calendar
+      API_JWT_METADATA_ADDRESS: http://localhost:8080/realms/Calendar
+      API_DEBUG_TEST_ENDPOINT_ENABELD: true
+      API_DEBUG_TEST_ENDPOINT_POLICY: EDITOR_VIEWER
+      KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
+      TZ: Europe/Berlin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      logging: "promtail"
+      logging_jobname: "calendar-api"
+  client:
+    environment:
+     TZ: Europe/Berlin
+    labels:
+      logging: "promtail"
+      logging_jobname: "client"
+  mongodb:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MASTER_PW}
+      TZ: Europe/Berlin
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+
+  # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
+  # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
+  keycloak:
+    command:
+      - "--verbose"
+      - "start-dev" 
+      - "--import-realm"
+      - "--features=token-exchange"
+    environment:
+      TZ: Europe/Berlin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
+      KC_HEALTH_ENABLED: true
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${MASTER_PW}
+      KC_METRICS_ENABLED: true
+      KC_OTEL: true
+    labels:
+      logging: "promtail"
+      logging_jobname: "keycloak"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+      interval: 30s
+      timeout: 3s
+      retries: 10
+
+  postgressdb-keycloak:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      TZ: Europe/Berlin
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${MASTER_PW}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: keycloak
+    labels:
+      logging: "promtail"
+      logging_jobname: "postgressdb-keycloak"
+  
+  postgressdb-grafana:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      TZ: Europe/Berlin
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${MASTER_PW}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: grafana
+    labels:
+      logging: "promtail"
+      logging_jobname: "postgressdb-grafana"
+  
+  grafana:
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl", "-f", "http://localhost:3000/api/health"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${MASTER_PW}
+      GF_DATABASE_SSL_MODE: disable
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: postgressdb-grafana:5432
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: ${POSTGRES_USER}
+      GF_DATABASE_PASSWORD: ${MASTER_PW}
+      GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
+      TZ: Europe/Berlin
+  
+  prometheus:
+    environment:
+      TZ: Europe/Berlin=value
+    labels:
+      logging: "promtail"
+      logging_jobname: "prometheus"
+  
+  mongodb-exporter:
+    command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
+    environment:
+      TZ: Europe/Berlin
+    labels:
+      logging: "promtail"
+      logging_jobname: "mongodb"
+  postgressdb-grafana-exporter:
+    environment:
+      TZ: Europe/Berlin
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-grafana:5432/grafana"
+  postgressdb-keycloak-exporter:
+    environment:
+      TZ: Europe/Berlin
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-keycloak:5432/keycloak"
+  loki:
+    environment:
+      TZ: Europe/Berlin
+    command: -config.file=/etc/loki/loki-config.yml
+    labels:
+      logging: "promtail"
+      logging_jobname: "loki"
+  promtail:
+    environment:
+      TZ: Europe/Berlin
+    command: -config.file=/etc/promtail/promtail.yml
+  # to debug mongo docker container
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #       - '8081:8081'
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=mongodb
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+  #     # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
+  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=root
+  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
+  #     - ME_CONFIG_BASICAUTH_USERNAME=root
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
+  #   networks:
+  #     - backend-api
+  #   labels:
+  #     logging: "promtail"
+  #     logging_jobname: "mongo-express"

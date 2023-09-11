@@ -1,12 +1,21 @@
-﻿namespace Calendar.Mongo.Db.Models
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Calendar.Mongo.Db.Models
 {
-    public class Lecture
+    public class Lecture : ILecture
     {
-        public Guid Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; }
         public string? Title { get; set; }
-        public string? Comment { get; set; }
-        public string? Professor { get; set; }
-        public List<Event>? Events { get; set; }
+        public string? Description { get; set; }
+
+        public string? ShortKey { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
         public DateTimeOffset CreatedDate { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public DateTimeOffset LastUpdateDate { get; set; }
     }
 }

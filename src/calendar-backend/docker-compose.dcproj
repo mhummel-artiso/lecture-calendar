@@ -6,7 +6,7 @@
     <ProjectGuid>d35ec83f-2412-4b67-9e6c-2503ec0714c6</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>calendar-api</DockerServiceName>
+    <DockerServiceName>Calendar.Api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
