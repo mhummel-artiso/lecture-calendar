@@ -25,7 +25,6 @@ export const ConflictDialog = ({
 
     useEffect(() => {
         // logic status 409
-        console.log('errorConflict', error)
         if (error && error.response.status === conflictStatus) {
             setIsEditLectureConflict(true)
         }
