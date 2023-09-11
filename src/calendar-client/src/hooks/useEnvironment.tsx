@@ -1,6 +1,8 @@
 export interface EnvConfig {
     QUERY_USE_DEVTOOL: boolean
+    API_HOST: string
     API_URL: string
+    OIDC_URL: string
     OIDC_AUTO_SIGN_IN: boolean
     OIDC_AUTHORITY: string
     OIDC_CLIENT_SECRET: string
@@ -9,15 +11,22 @@ export interface EnvConfig {
     BASE_URL: string
 }
 
-export const useEnvironment = (): EnvConfig => {
-    return getGlobalEnv()
+export const useEnvironment = () => {
+    const env = getGlobalEnv()
+    return {
+        ...env,
+        getAuthorityUrl: (): string => `${env.OIDC_URL}${env.OIDC_AUTHORITY}`,
+        getAccountUrl: (): string => `${env.OIDC_URL}${env.OIDC_ACCOUNT_URL}`,
+    }
 }
 
 export const getGlobalEnv = (): EnvConfig => {
     return {
-        API_URL: import.meta.env.VITE_API_URL as string,
+        API_HOST: import.meta.env.VITE_API_HOST as string,
+        API_URL: (import.meta.env.VITE_API_URL as string) ?? '/v1/api',
         OIDC_AUTO_SIGN_IN: (import.meta.env.VITE_OIDC_AUTO_SIGN_IN ??
             false) as boolean,
+        OIDC_URL: import.meta.env.VITE_OIDC_URL as string,
         OIDC_AUTHORITY: import.meta.env.VITE_OIDC_AUTHORITY as string,
         OIDC_CLIENT_SECRET: import.meta.env.VITE_OIDC_CLIENT_SECRET as string,
         OIDC_REDIRECT_URL: import.meta.env.VITE_OIDC_REDIRECT_URL as string,

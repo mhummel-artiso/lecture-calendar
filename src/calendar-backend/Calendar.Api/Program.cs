@@ -1,5 +1,6 @@
 using Amazon.Runtime.Internal.Transform;
 using Calendar.Api.Configurations;
+using Calendar.Api.HealthChecks;
 using Calendar.Api.Initializations;
 using Calendar.Api.Models;
 using Calendar.Api.Services;
@@ -13,21 +14,28 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Prometheus;
+using Prometheus.SystemMetrics;
 using Serilog;
+using Serilog.AspNetCore;
 using Serilog.Enrichers.AspNetCore;
+using Serilog.Events;
 using Serilog.Exceptions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
 
-var builder = WebApplication.CreateBuilder(args);
-
 try
 {
+
+    #region Configure Services
+
+    var builder = WebApplication.CreateBuilder(args);
 
     #region Configuration
 
@@ -38,7 +46,7 @@ try
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
     builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
-    builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
+    // builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
     builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
@@ -57,7 +65,7 @@ try
     );
 
     #endregion
-    
+
     #region Mongo db
 
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();
@@ -118,12 +126,6 @@ try
         options.AddPolicy(AuthPolicies.EDITOR_VIEWER, p =>
             p.RequireRealmRoles(roleEditor, roleViewer)
                 .RequireRole(roleEditor, roleViewer));
-        // test policy
-        options.AddPolicy("IsAdmin", b =>
-        {
-            b.RequireRealmRoles("admin")
-                .RequireRole("admin");
-        });
     }).AddKeycloakAuthorization(configuration);
 
     #endregion
@@ -131,6 +133,7 @@ try
     #region Services and automapper
 
     builder.Services
+        .AddSystemMetrics()
         .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
@@ -138,33 +141,46 @@ try
         .AddTransient<IConfigureOptions<SwaggerGenOptions>, InitializeSwaggerGenOptions>()
         .AddTransient<IKeycloakService, KeycloakService>()
         .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-        .AddKeycloakAdminHttpClient(configuration);
+        .AddHttpClient();
 
     #endregion
 
     #region Controller
 
     builder.Services.AddControllers();
-    builder.Services.AddHealthChecks();
+
+    #endregion
+
+    #region Health Checks
+
+    builder.Services.AddHealthChecks()
+        .AddMongoDb(
+            mongoConfig.MONGODB_SERVER,
+            mongoConfig.MONGODB_DB_NAME,
+            HealthStatus.Unhealthy)
+        .AddCheck<KeyCloakHealthCheck>(KeyCloakHealthCheck.Name);
 
     #endregion
 
     #region Keycloak Rest
+
     var keycloakRestConfig = configuration.Get<KeycloakRestEnvironmentConfiguration>()?.Validate();
     if (keycloakRestConfig != null)
     {
-        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER, keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
+        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER,
+            keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
     }
+
     #endregion
+
+    #endregion
+
+    #region configure App
 
     var app = builder.Build();
 
-  
+    #region Swagger
 
-    app.UseHttpLogging();
-    // app.UseW3CLogging();
-
-    // Configure the HTTP request pipeline.
     if (swaggerConfig.USE_SWAGGER)
     {
         // https://www.camiloterevinto.com/post/oauth-pkce-flow-for-asp-net-core-with-swagger
@@ -180,12 +196,54 @@ try
             });
     }
 
-    app.UseSerilogRequestLogging();
+    #endregion
+
+    // Configure the HTTP request pipeline.
+
+    #region Logging
+
+    app.UseSerilogRequestLogging(o =>
+    {
+        o.IncludeQueryInRequestPath = true;
+        o.GetLevel = (ctx, _, ex) =>
+        {
+            if (ex != null)
+                return LogEventLevel.Error;
+            return ctx.Response.StatusCode switch
+            {
+                < 400 => LogEventLevel.Debug,
+                <= 499 => LogEventLevel.Information,
+                _ => LogEventLevel.Error,
+            };
+        };
+    });
+
+    #endregion
+
+    #region Access controll
 
     app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
+
+    #endregion
+
+    #region endpoints
+
     app.MapControllers();
+
+    #endregion
+
+    #region Health check
+
+    app.MapHealthChecks("/health");
+    app.UseHealthChecksPrometheusExporter("/metrics");
+    app.UseMetricServer();
+    app.UseHttpMetrics();
+    #endregion
+
+    #region Test endpoint
+
     var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
@@ -196,10 +254,20 @@ try
             return user.Identity?.Name ?? "NULL";
         }).RequireAuthorization(debugConf.DEBUG_TEST_ENDPOINT_POLICY);
     }
+
+    #endregion
+
     app.Run();
+
+    #endregion
 }
 catch (ArgumentException ex)
 {
     Log.Logger.Error(ex, "Error on startup");
     throw new ArgumentException("Error on startup", ex);
+}
+catch (Exception ex)
+{
+    Log.Logger.Error(ex, "Error on startup");
+    throw new ApplicationException("Error on startup", ex);
 }

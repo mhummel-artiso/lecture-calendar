@@ -12,7 +12,7 @@ public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnviro
     public OidcEnvironmentConfiguration Validate()
     {
         new EnvironmentConfigurationValidator()
-            .CheckEnvironment(OIDC_URL)
+            .CheckEnvironmentUri(OIDC_URL)
             .CheckEnvironment(OIDC_ROLE_EDITOR)
             .CheckEnvironment(OIDC_ROLE_VIEWER);
         return this;

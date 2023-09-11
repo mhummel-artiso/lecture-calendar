@@ -14,11 +14,13 @@ import { ErrorBoundary } from 'react-error-boundary'
 
 function App() {
     moment.locale('de')
-    const envConfig: EnvConfig = useEnvironment()
+    const envConfig = useEnvironment()
+
     const oidcConfig: AuthProviderProps = {
         loadUserInfo: true,
-        autoSignIn: envConfig.OIDC_AUTO_SIGN_IN,
-        authority: envConfig.OIDC_AUTHORITY,
+        autoSignOut: true,
+        autoSignIn: false,
+        authority: envConfig.getAuthorityUrl(),
         automaticSilentRenew: true,
         clientId: 'calendar-client',
         scope: '',

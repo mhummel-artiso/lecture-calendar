@@ -10,7 +10,7 @@ public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvi
     public DebugEnvironmentConfiguration Validate()
     {
         var validator = new EnvironmentConfigurationValidator()
-            .CheckEnvironmentValue(DEBUG_TEST_ENDPOINT_ENABLED);
+            .CheckEnvironmentBoolean(DEBUG_TEST_ENDPOINT_ENABLED);
         if (DEBUG_TEST_ENDPOINT_ENABLED)
         {
             validator.CheckEnvironment(DEBUG_TEST_ENDPOINT_POLICY);

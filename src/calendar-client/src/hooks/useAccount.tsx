@@ -3,6 +3,7 @@ import { useAuth, User } from 'oidc-react'
 import { axiosInstance } from '../utils/axiosInstance'
 import { UserProfile } from 'oidc-client-ts'
 import { queryClient } from '../utils/queryClient'
+import { useErrorBoundary } from 'react-error-boundary'
 
 const _canEdit = (user: User | null | undefined): boolean => {
     if (user?.profile?.realm_access) {
@@ -16,7 +17,9 @@ const _canEdit = (user: User | null | undefined): boolean => {
 }
 
 export const useAccount = () => {
-    const { userData, signOut, signIn } = useAuth()
+    const errorBoundary = useErrorBoundary()
+    const { userData, signOut, signIn, signOutRedirect, userManager } =
+        useAuth()
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [userAccount, setUserAccount] = useState<UserProfile | null>(null)
     const [canEdit, setCanEdit] = useState<boolean>(false)
@@ -28,15 +31,24 @@ export const useAccount = () => {
             : ''
         setUserAccount(userData?.profile ?? null)
         setCanEdit(_canEdit(userData))
+
         if (!loggedIn) {
             queryClient.clear()
         }
     }, [userData])
-
+    const _signOut = async () => {
+        const idToken = userData?.id_token
+        await signOut()
+        await userManager.removeUser()
+        if (idToken)
+            await signOutRedirect({
+                id_token_hint: idToken,
+            })
+    }
     return {
         userAccount,
         signIn,
-        signOut,
+        signOut: _signOut,
         isLoggedIn,
         canEdit,
     }

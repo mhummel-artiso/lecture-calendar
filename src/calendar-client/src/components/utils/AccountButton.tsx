@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
-    const { OIDC_ACCOUNT_URL } = useEnvironment()
+    const { getAuthorityUrl } = useEnvironment()
     const { userAccount } = useAccount()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -28,8 +28,9 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
 
     const handelMyAccountClick = () => {
         handleClose()
-        if (OIDC_ACCOUNT_URL) {
-            window.open(`${OIDC_ACCOUNT_URL}/#/personal-info`, '_blank')
+        const url = getAuthorityUrl()
+        if (url) {
+            window.open(`${url}/#/personal-info`, '_blank')
         }
     }
 
