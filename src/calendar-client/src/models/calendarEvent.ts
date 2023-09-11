@@ -19,7 +19,7 @@ export interface CalendarEvent extends CalendarEventBase {
     createdDate?: Moment
     lastUpdateDate?: Moment
     calendar: Calendar
-    lecture: Lecture
+    lecture: Lecture | null
     seriesId: string
     startSeries?: Moment
 }

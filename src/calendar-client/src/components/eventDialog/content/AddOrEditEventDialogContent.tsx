@@ -96,7 +96,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerieStart(moment(currentValue.startSeries ?? moment()))
             setSerie(currentValue.repeat)
-            setSelectedLectureId(currentValue.lecture.id!)
+            setSelectedLectureId(currentValue.lecture?.id!)
             setSelectedInstructors(currentValue.instructors)
         }
     }, [currentValue, calendarId])

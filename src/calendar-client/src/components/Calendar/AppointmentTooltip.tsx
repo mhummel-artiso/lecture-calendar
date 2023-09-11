@@ -77,7 +77,8 @@ export const AppointmentTooltipHeader: React.FC<
             {...restProps}
             appointmentData={appointmentData}
         >
-            <Grid
+            {event.lecture ?  
+            (<Grid
                 sx={{ mt: 1, ml: 1 }}
                 container
                 alignItems="Center"
@@ -87,19 +88,32 @@ export const AppointmentTooltipHeader: React.FC<
                 <Grid item>
                     <Typography variant={'h5'}>Veranstaltung</Typography>
                 </Grid>
-                {event.lecture.shortKey && (
+                {event.lecture?.shortKey && (
                     <Grid item>
                         <Typography fontWeight="bold">
                             {event.lecture.title}
                         </Typography>
                     </Grid>
                 )}
-                {event.lecture.description && (
+                {event.lecture?.description && (
                     <Grid item>
                         <Typography>{event.lecture.description}</Typography>
                     </Grid>
                 )}
+            </Grid>) : 
+            (<Grid
+                sx={{ mt: 1, ml: 1 }}
+                container
+                alignItems="Center"
+                direction="column"
+                spacing={1}
+            >
+                <Grid item>
+                    <Typography variant={'h5'}>Fehler!</Typography>
+                </Grid>
             </Grid>
+            )
+            }
         </AppointmentTooltip.Header>
     )
 }

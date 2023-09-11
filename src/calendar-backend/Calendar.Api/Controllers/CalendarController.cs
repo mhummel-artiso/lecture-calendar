@@ -343,6 +343,10 @@ public class CalendarController : ControllerBase
         if (string.IsNullOrWhiteSpace(eventDto.LectureId))
             return;
         var lecture = await lectureService.GetLectureByIdAsync(eventDto.LectureId);
+        if (lecture == null)
+        {
+            logger.LogWarning("Failed to map lecture");
+        }
         eventDto.Lecture = mapper.Map<LectureDTO>(lecture);
     }
     private async Task AddCalendarToEventAsync(CalendarEventDTO eventDto)
@@ -350,6 +354,10 @@ public class CalendarController : ControllerBase
         if (string.IsNullOrWhiteSpace(eventDto.CalendarId))
             return;
         var calendar = await calendarService.GetCalendarByIdAsync(eventDto.CalendarId);
+        if (calendar == null)
+        {
+            logger.LogWarning("Failed to map calendar");
+        }
         eventDto.Calendar = mapper.Map<UserCalendarDTO>(calendar);
     }
 
