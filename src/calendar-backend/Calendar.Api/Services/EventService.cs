@@ -322,7 +322,7 @@ namespace Calendar.Api.Services
                 {
                     EventRepeat.Daily => seriesStart.AddDays(1),
                     EventRepeat.Weekly => seriesStart.AddDays(7),
-                    EventRepeat.Monthly => seriesStart.AddMonths(1),
+                    EventRepeat.Monthly => seriesStart.AddDays(28),
                     _ => throw new NotSupportedException(nameof(firstEvent.Repeat)),
                 };
                 yield return calendarEvent

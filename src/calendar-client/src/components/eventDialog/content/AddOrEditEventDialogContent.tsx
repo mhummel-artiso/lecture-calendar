@@ -96,7 +96,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerieStart(moment(currentValue.startSeries ?? moment()))
             setSerie(currentValue.repeat)
-            setSelectedLectureId(currentValue.lecture.id!)
+            setSelectedLectureId(currentValue.lecture?.id!)
             setSelectedInstructors(currentValue.instructors)
         }
     }, [currentValue, calendarId])
@@ -131,7 +131,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                 <TextField
                     disabled={disabled}
                     margin="dense"
-                    label="Vorlesungsort"
+                    label="Veranstaltungsort"
                     id="location"
                     type="text"
                     value={location}
@@ -243,10 +243,24 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const validateTimeFields = (): boolean => {
         let isValidSerie = true
         if (serie !== serialList[0].value) {
+            serieEnd.set({
+                hour: serieStart.hour(),
+                minute: serieStart.minute(),
+                millisecond: serieStart.millisecond(),
+            })
+
+            const minSerieEndDate = serieStart.clone()
+
+            if (serie > 0 && serie < 3) {
+                minSerieEndDate.add(1, serie === 1 ? 'day' : 'week')
+            } else {
+                minSerieEndDate.add(4, 'weeks')
+            }
+
             isValidSerie =
                 !!serieEnd &&
                 serieEnd > serieStart &&
-                serieEnd.day() > serieStart.day()
+                minSerieEndDate <= serieEnd
         }
         return startDate && !!endDate && endDate > startDate && isValidSerie
     }
@@ -322,7 +336,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     return (
         <>
             <DialogTitle>
-                Event {isEdit ? 'bearbeiten' : 'hinzufügen'}
+                Veranstaltung {isEdit ? 'bearbeiten' : 'hinzufügen'}
             </DialogTitle>
             <DialogContent sx={{ width: '500px' }}>
                 {isEdit ? (

@@ -17,7 +17,7 @@ import { AccountButton } from '../utils/AccountButton'
 
 export const NavBar = () => {
     const [drawerActive, setDrawerActive] = useState(false)
-    const { signOut, isLoggedIn, signIn, userAccount } = useAccount()
+    const { signOut, isLoggedIn, signIn, isLoading } = useAccount()
     const location = useLocation()
     const state: Calendar[] | undefined = location.state
         ? (location.state as Calendar[])
@@ -59,11 +59,14 @@ export const NavBar = () => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     {displayText()}
                 </Typography>
-                {isLoggedIn ? (
+
+                {isLoggedIn && (
                     <AccountButton
                         onLogoutClick={handleSignOutClick}
                     ></AccountButton>
-                ) : (
+                )}
+
+                {!isLoading && !isLoggedIn && (
                     <Button onClick={signIn} color="inherit">
                         Anmelden
                     </Button>

@@ -90,7 +90,7 @@ export const LectureList: FC = () => {
             >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Grid>
-                        <Typography>Fächer</Typography>
+                        <Typography>Vorlesungen</Typography>
                     </Grid>
                 </AccordionSummary>
                 <AccordionDetails>
