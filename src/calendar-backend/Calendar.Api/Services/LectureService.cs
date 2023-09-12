@@ -2,8 +2,10 @@
 using Calendar.Api.Services.Interfaces;
 using Calendar.Api.Utilities.ExtensionMethods;
 using Calendar.Mongo.Db.Models;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Globalization;
 
 namespace Calendar.Api.Services
 {
@@ -17,6 +19,7 @@ namespace Calendar.Api.Services
         {
             this.logger = logger;
             dbCollection = db.GetCollection<Lecture>(nameof(Lecture));
+            calendarCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
         public async Task<IEnumerable<Lecture>> GetLecturesAsync() =>
@@ -53,6 +56,18 @@ namespace Calendar.Api.Services
         }
         public async Task<bool> DeleteLectureByIdAsync(string lectureId)
         {
+            ArgumentException.ThrowIfNullOrEmpty(lectureId);
+
+            if(calendarCollection != null)
+            {
+                FilterDefinition<UserCalendar> filter = Builders<UserCalendar>.Filter.ElemMatch(x => x.Events, e => e.LectureId == lectureId);
+                var lectureResult = calendarCollection.Find(filter).Any();
+
+                if (lectureResult == true)
+                {
+                    throw new InvalidOperationException("Cannot delete lecture");
+                }
+            }
             var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(lectureId));
             return result.DeletedCount == 1;
         }
