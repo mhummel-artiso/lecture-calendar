@@ -22,5 +22,10 @@ namespace Calendar.Api.Configurations
             .CheckEnvironment(KEYCLOAK_INSTRUCTOR_GROUP_NAME);
             return this;
         }
+        public KeycloakRestEnvironmentConfiguration LogDebugValues(ILogger<KeycloakRestEnvironmentConfiguration> logger)
+        {
+            logger.LogDebug("KEYCLOAK_BASE_URL={KeycloakBaseUrl}",KEYCLOAK_BASE_URL);
+            logger.LogDebug("KEYCLOAK_REST_USER={KeycloakRestUser}",KEYCLOAK_REST_USER);
+        }
     }
 }

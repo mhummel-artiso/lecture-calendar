@@ -20,10 +20,16 @@ public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvi
                 case AuthPolicies.VIEWER:
                 case AuthPolicies.EDITOR_VIEWER:
                     return this;
-                default: 
+                default:
                     throw new EnvironmentConfigurationException(nameof(DEBUG_TEST_ENDPOINT_POLICY), DEBUG_TEST_ENDPOINT_POLICY);
             }
         }
+        return this;
+    }
+    public DebugEnvironmentConfiguration LogDebugValues(ILogger<DebugEnvironmentConfiguration> logger)
+    {
+        logger.LogDebug("DEBUG_TEST_ENDPOINT_ENABLED={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_ENABLED);
+        logger.LogDebug("DEBUG_TEST_ENDPOINT_POLICY={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_POLICY);
         return this;
     }
 }

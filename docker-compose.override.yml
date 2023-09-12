@@ -74,16 +74,16 @@ services:
       TZ: ${TIMEZONE}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
-      KC_HEALTH_ENABLED: true
-      # KC_HOSTNAME_PATH: /auth
-      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HOSTNAME_URL: http://localhost${KEYCLOAK_HOSTNAME_PATH}
+      KC_HTTP_RELATIVE_PATH: ${KEYCLOAK_HOSTNAME_PATH}
       KC_HOSTNAME_STRICT: false
+      KC_HEALTH_ENABLED: true
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/${POSTGRES_DB_KEYCLOAK}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
-      KC_PROXY: reencrypt
+      KC_PROXY: ${KEYCLOAK_PROXY}
       KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:

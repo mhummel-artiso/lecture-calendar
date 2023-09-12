@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.3
--- Dumped by pg_dump version 15.3
+-- Dumped from database version 15.4
+-- Dumped by pg_dump version 15.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1453,6 +1453,7 @@ ALTER TABLE public.web_origins OWNER TO postgres;
 --
 
 COPY public.admin_event_entity (id, admin_event_time, realm_id, operation_type, auth_realm_id, auth_client_id, auth_user_id, ip_address, resource_path, representation, error, resource_type) FROM stdin;
+ecb89913-599e-4fb5-bfbd-25a204b02959	1694554811730	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	172.25.0.6	clients/43022b0a-4e08-4d60-ad6c-8a872d5e2f59	{"id":"43022b0a-4e08-4d60-ad6c-8a872d5e2f59","clientId":"calendar-client","name":"Calendar Client","description":"","rootUrl":"http://localhost","adminUrl":"http://localhost","baseUrl":"","surrogateAuthRequired":false,"enabled":true,"alwaysDisplayInConsole":true,"clientAuthenticatorType":"client-secret","secret":"Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA","redirectUris":["/*","http://localhost"],"webOrigins":["http://localhost"],"notBefore":0,"bearerOnly":false,"consentRequired":false,"standardFlowEnabled":true,"implicitFlowEnabled":true,"directAccessGrantsEnabled":true,"serviceAccountsEnabled":true,"authorizationServicesEnabled":true,"publicClient":false,"frontchannelLogout":true,"protocol":"openid-connect","attributes":{"oidc.ciba.grant.enabled":"false","client.secret.creation.time":"1689855013","backchannel.logout.session.required":"true","post.logout.redirect.uris":"+","display.on.consent.screen":"false","oauth2.device.authorization.grant.enabled":"false","backchannel.logout.revoke.offline.tokens":"false","login_theme":"","frontchannel.logout.url":"","backchannel.logout.url":""},"authenticationFlowBindingOverrides":{},"fullScopeAllowed":true,"nodeReRegistrationTimeout":-1,"protocolMappers":[{"id":"4e789733-a6f1-4707-b895-7ebfeb450b4b","name":"Client IP Address","protocol":"openid-connect","protocolMapper":"oidc-usersessionmodel-note-mapper","consentRequired":false,"config":{"user.session.note":"clientAddress","userinfo.token.claim":"true","id.token.claim":"true","access.token.claim":"true","claim.name":"clientAddress","jsonType.label":"String"}},{"id":"daf9bff2-ffe3-4765-aa02-11fdc0f7b30b","name":"Client ID","protocol":"openid-connect","protocolMapper":"oidc-usersessionmodel-note-mapper","consentRequired":false,"config":{"user.session.note":"client_id","userinfo.token.claim":"true","id.token.claim":"true","access.token.claim":"true","claim.name":"client_id","jsonType.label":"String"}},{"id":"8e3563cd-ef1e-4c06-8baa-8b7700c2b957","name":"Client Host","protocol":"openid-connect","protocolMapper":"oidc-usersessionmodel-note-mapper","consentRequired":false,"config":{"user.session.note":"clientHost","userinfo.token.claim":"true","id.token.claim":"true","access.token.claim":"true","claim.name":"clientHost","jsonType.label":"String"}}],"defaultClientScopes":["web-origins","acr","profile","roles","email"],"optionalClientScopes":["address","phone","offline_access","microprofile-jwt"],"access":{"view":true,"configure":true,"manage":true}}	\N	CLIENT
 \.
 
 
@@ -1650,11 +1651,11 @@ e0670881-cb89-4f1a-9b84-4d54e5efbeb1	t	f	Calendar-realm	0	f	\N	\N	t	\N	f	e09f66b
 93709245-2824-46cb-a48c-32cc8a45d4cc	t	f	account-console	0	t	\N	/realms/Calendar/account/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
 f576fa8c-c2b5-4121-9936-0bbd993aa559	t	f	admin-cli	0	t	\N	\N	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
 d9a8b9bf-ff5c-46f7-895a-f06aaae0a1dc	t	f	broker	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	t	calendar-client	0	f	Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA		f	http://localhost:3000	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Calendar Client	t	client-secret	http://localhost:3000		\N	t	t	t	t
 0df0a01c-66ef-4e56-bcd6-53211c3965b5	t	f	realm-management	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_realm-management}	f	client-secret	\N	\N	\N	t	f	f	f
 a39f7d32-3924-49d0-8904-bd9e4409411c	t	f	security-admin-console	0	t	\N	/admin/Calendar/console/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
 77d24d30-2ec1-47f9-a758-0826b164cacd	t	t	calendar-api-swagger	0	f	hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Swagger Calendar Api	t	client-secret	http://localhost:4000		\N	t	f	t	t
 cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	t	calendar-api	0	f	vTtq8mz0OKiUGLaQWpkNZdpdjLhYPsZ5		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	${client_calendar-api}	t	client-secret	http://localhost:4000		\N	t	f	t	t
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	t	calendar-client	0	f	Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA		f	http://localhost	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Calendar Client	t	client-secret	http://localhost		\N	t	t	t	t
 \.
 
 
@@ -2391,6 +2392,7 @@ d4932c90-8454-4b23-b96a-05444067272e	8f8bd907-7a70-4f0c-8301-2706005267e6	t
 --
 
 COPY public.event_entity (id, client_id, details_json, error, ip_address, realm_id, session_id, event_time, type, user_id) FROM stdin;
+ebd46944-c559-480d-a066-43c83c0988d9	calendar-client	{"redirect_uri":"http://localhost/"}	invalid_redirect_uri	172.25.0.6	d4932c90-8454-4b23-b96a-05444067272e	\N	1694554743420	LOGIN_ERROR	\N
 \.
 
 
@@ -3379,13 +3381,13 @@ b32b8e24-6c0c-415c-92de-6602b7e4d1a8	/realms/master/account/*
 b18471e0-3804-4b98-b391-bf56dd4dc923	/admin/master/console/*
 6eae40bd-bf2a-4118-9659-5673c2ca655e	/realms/Calendar/account/*
 93709245-2824-46cb-a48c-32cc8a45d4cc	/realms/Calendar/account/*
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	/*
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	/admin/Calendar/console/*
 cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	
 cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
 77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger
 77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger/index.html
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	/*
 \.
 
 
@@ -3692,10 +3694,10 @@ COPY public.username_login_failure (realm_id, username, failed_login_not_before,
 
 COPY public.web_origins (client_id, value) FROM stdin;
 b18471e0-3804-4b98-b391-bf56dd4dc923	+
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	+
 cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
 77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:4000
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost
 \.
 
 
