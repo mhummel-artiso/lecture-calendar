@@ -26,14 +26,6 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
         onLogoutClick()
     }
 
-    const handelMyAccountClick = () => {
-        handleClose()
-        const url = getAuthorityUrl()
-        if (url) {
-            window.open(`${url}/#/personal-info`, '_blank')
-        }
-    }
-
     return (
         <>
             <IconButton
@@ -56,7 +48,6 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
                 }}
             >
                 <MenuItem disabled>{userAccount?.name ?? ''}</MenuItem>
-                <MenuItem onClick={handelMyAccountClick}>Mein Account</MenuItem>
                 <MenuItem onClick={handelLogoutClick}>Logout</MenuItem>
             </Menu>
         </>

@@ -17,39 +17,42 @@ const _canEdit = (user: User | null | undefined): boolean => {
 }
 
 export const useAccount = () => {
-    const errorBoundary = useErrorBoundary()
-    const { userData, signOut, signIn, signOutRedirect, userManager } =
-        useAuth()
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-    const [userAccount, setUserAccount] = useState<UserProfile | null>(null)
-    const [canEdit, setCanEdit] = useState<boolean>(false)
+    const { showBoundary } = useErrorBoundary()
+    const {
+        userData,
+        signOut,
+        signIn,
+        signOutRedirect,
+        userManager,
+        isLoading,
+    } = useAuth()
+
     useEffect(() => {
-        const loggedIn = !!userData
-        setIsLoggedIn(loggedIn)
         axiosInstance.defaults.headers['Authorization'] = userData
             ? 'Bearer ' + userData.access_token
             : ''
-        setUserAccount(userData?.profile ?? null)
-        setCanEdit(_canEdit(userData))
 
-        if (!loggedIn) {
+        if (userData) {
             queryClient.clear()
         }
     }, [userData])
+
     const _signOut = async () => {
         const idToken = userData?.id_token
-        await signOut()
-        await userManager.removeUser()
-        if (idToken)
+        if (idToken) {
             await signOutRedirect({
                 id_token_hint: idToken,
-            })
+            }).catch(showBoundary)
+        }
+        await userManager.removeUser()
+        await signOut()
     }
     return {
-        userAccount,
+        userAccount: userData?.profile ?? null,
         signIn,
         signOut: _signOut,
-        isLoggedIn,
-        canEdit,
+        isLoggedIn: !!userData,
+        canEdit: _canEdit(userData),
+        isLoading,
     }
 }

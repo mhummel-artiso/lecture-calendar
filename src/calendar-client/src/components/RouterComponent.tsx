@@ -1,18 +1,15 @@
 import { FC } from 'react'
 import { Box } from '@mui/material'
 import { NavBar } from './navigation/NavBar'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
 import { CalendarPage } from './Calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
-import { ErrorPage } from './pages/ErrorPage'
-import { ErrorBoundary } from 'react-error-boundary'
-import { AxiosErrorInformation } from './ErrorContent/AxiosErrorInformation'
 
 export const RouterComponent: FC = () => {
-    const { canEdit, isLoggedIn } = useAccount()
+    const { canEdit, isLoggedIn, isLoading } = useAccount()
 
     return (
         <BrowserRouter>
@@ -46,7 +43,18 @@ export const RouterComponent: FC = () => {
                             )}
                         </>
                     )}
-                    <Route path="*" element={<NotFoundPage />} />
+                    {!isLoading && (
+                        <Route
+                            path="*"
+                            element={
+                                isLoggedIn ? (
+                                    <NotFoundPage />
+                                ) : (
+                                    <Navigate to="/" replace />
+                                )
+                            }
+                        />
+                    )}
                 </Routes>
             </Box>
         </BrowserRouter>

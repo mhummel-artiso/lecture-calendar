@@ -29,6 +29,7 @@ import {
     AppointmentTooltipContent,
     AppointmentTooltipHeader,
 } from './AppointmentTooltip'
+import { useErrorBoundary } from 'react-error-boundary'
 
 interface Props {
     currentDate: Moment
@@ -41,6 +42,7 @@ interface Props {
 }
 
 export const CalendarScheduler: React.FC<Props> = (porps) => {
+    const { showBoundary } = useErrorBoundary()
     const { currentDate, calendarView, onEventSelected, onCalendarIdChanged } =
         porps
     const startDayHour = porps.startDayHour ?? 7
@@ -63,7 +65,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
             }
             for (const c of calendar) {
                 const result = await getEventsFrom(
-                    c?.id!,
+                    c.id!,
                     startDate,
                     calendarView
                 )
@@ -83,7 +85,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         }
         return []
     }
-    const { data: events, refetch } = useQuery({
+    const { data: events } = useQuery({
         queryKey: [
             'events',
             calendarName,
@@ -96,21 +98,23 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
 
     // Invalidates events when parameters change
     useEffect(() => {
-        queryClient.invalidateQueries({
-            queryKey: [
-                'events',
-                calendarName,
-                calendarView,
-                currentDate.startOf('day'),
-            ],
-        })
+        queryClient
+            .invalidateQueries({
+                queryKey: [
+                    'events',
+                    calendarName,
+                    calendarView,
+                    currentDate.startOf('day'),
+                ],
+            })
+            .catch(showBoundary)
     }, [calendarName, location.state, calendarView, currentDate])
 
     const getAppointment = (c: CalendarEvent) => {
         const title: string =
-            c.lecture.shortKey && (c.lecture.shortKey.length ?? 0) > 0
-                ? c.lecture.shortKey
-                : c.lecture.title
+            c.lecture?.shortKey && (c.lecture?.shortKey.length ?? 0) > 0
+                ? c.lecture?.shortKey
+                : c.lecture?.title?? "null"
 
         const a: AppointmentModel = {
             startDate: moment(c.start).toDate(),
@@ -142,7 +146,9 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         return (
             <Appointments.Appointment
                 {...restProps}
-                onClick={(e) => {
+                onClick={(e: {
+                    data: { event: CalendarEvent | undefined }
+                }) => {
                     if (canEdit) {
                         const {
                             data: { event },
@@ -150,7 +156,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
                         if (!event) {
                             return
                         }
-                        onEventSelected(event as CalendarEvent)
+                        onEventSelected(event)
                     } else if (onClick) {
                         onClick(e)
                     }
