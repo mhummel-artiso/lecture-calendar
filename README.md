@@ -46,7 +46,7 @@ pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 - Mongo
   - `API_MONGODB_SERVER` : Server name with protocol and port (`NULL`) [**Required**]
   - `API_MONGODB_DB_NAME` : Database name (`"lecture-calendar"`) [*Optional*]
-- PostgreSQL
+- PostgreSQL (Obsolete)
   - `API_POSTGRESQL_HOST` : Server name (`NULL`) [**Required**]
   - `API_POSTGRESQL_PORT` : Server port (`5432`) [*Optional*]
   - `API_POSTGRESQL_DATABASE` : Database name (`"lecture-calendar"`) [*Optional*]
