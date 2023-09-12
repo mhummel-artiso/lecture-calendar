@@ -29,7 +29,7 @@ namespace Calendar.Api.Configurations
             return this;
         }
 
-        public PostgreSqlEnvironmentConfiguration LogDebugValues(ILogger<PostgreSqlEnvironmentConfiguration> logger)
+        public PostgreSqlEnvironmentConfiguration LogDebugValues(ILogger logger)
         {
             logger.LogDebug("POSTGRESQL_HOST={POSTGRESQL_HOST}",POSTGRESQL_HOST);
             logger.LogDebug("POSTGRESQL_PORT={POSTGRESQL_PORT}",POSTGRESQL_PORT);

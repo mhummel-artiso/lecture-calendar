@@ -10,7 +10,7 @@ public class InitializeSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
     private readonly SwaggerEnvironmentConfiguration swaggerConfig;
     private readonly OidcEnvironmentConfiguration oidcConfig;
 
-    public InitializeSwaggerGenOptions(IOptions<SwaggerEnvironmentConfiguration> options, IOptions<OidcEnvironmentConfiguration> oidcOptions)
+    public InitializeSwaggerGenOptions(IOptions<SwaggerEnvironmentConfiguration> options, IOptions<OidcEnvironmentConfiguration> oidcOptions,ILogger<InitializeSwaggerGenOptions>logger)
     {
         this.swaggerConfig = options.Value.Validate();
         this.oidcConfig = oidcOptions.Value.Validate();

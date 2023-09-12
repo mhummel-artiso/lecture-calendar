@@ -110,10 +110,9 @@ try
     builder.Services.AddKeycloakAuthentication(configuration);
 
     // TODO configure correctly
+    var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
     builder.Services.AddAuthorization(options =>
     {
-        var oidcConfig = configuration
-            .Get<OidcEnvironmentConfiguration>()?.Validate();
         ArgumentNullException.ThrowIfNull(oidcConfig);
         var roleViewer = oidcConfig.OIDC_ROLE_VIEWER;
         var roleEditor = oidcConfig.OIDC_ROLE_EDITOR;
@@ -178,10 +177,14 @@ try
     #region configure App
 
     var app = builder.Build();
+    mongoConfig?.LogDebugValues(app.Logger);
+    swaggerConfig?.LogDebugValues(app.Logger);
+    oidcConfig?.LogDebugValues(app.Logger);
+    keycloakRestConfig?.LogDebugValues(app.Logger);
 
     #region Swagger
 
-    if (swaggerConfig.USE_SWAGGER)
+    if (swaggerConfig?.USE_SWAGGER == true)
     {
         // https://www.camiloterevinto.com/post/oauth-pkce-flow-for-asp-net-core-with-swagger
         app.UseSwagger()
@@ -240,11 +243,13 @@ try
     app.UseHealthChecksPrometheusExporter("/metrics");
     app.UseMetricServer();
     app.UseHttpMetrics();
+
     #endregion
 
     #region Test endpoint
 
-    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
+    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate()
+        .LogDebugValues(app.Logger);
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
     {
@@ -260,6 +265,7 @@ try
     app.Run();
 
     #endregion
+
 }
 catch (ArgumentException ex)
 {

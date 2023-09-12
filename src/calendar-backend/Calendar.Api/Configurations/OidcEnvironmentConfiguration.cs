@@ -17,4 +17,11 @@ public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnviro
             .CheckEnvironment(OIDC_ROLE_VIEWER);
         return this;
     }
+    public OidcEnvironmentConfiguration LogDebugValues(ILogger logger)
+    {
+        logger.LogDebug("OIDC_URL={OidcUrl}", OIDC_URL);
+        logger.LogDebug("OIDC_ROLE_EDITOR={OidcRoleEditor}", OIDC_ROLE_EDITOR);
+        logger.LogDebug("OIDC_ROLE_VIEWER={OidcRoleViewer}", OIDC_ROLE_VIEWER);
+        return this;
+    }
 }

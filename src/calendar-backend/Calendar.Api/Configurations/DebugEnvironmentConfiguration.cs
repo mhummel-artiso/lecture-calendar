@@ -26,7 +26,7 @@ public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvi
         }
         return this;
     }
-    public DebugEnvironmentConfiguration LogDebugValues(ILogger<DebugEnvironmentConfiguration> logger)
+    public DebugEnvironmentConfiguration LogDebugValues(ILogger logger)
     {
         logger.LogDebug("DEBUG_TEST_ENDPOINT_ENABLED={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_ENABLED);
         logger.LogDebug("DEBUG_TEST_ENDPOINT_POLICY={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_POLICY);

@@ -27,16 +27,16 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
         return this;
     }
 
-    public SwaggerEnvironmentConfiguration LogDebugValues(ILogger<SwaggerEnvironmentConfiguration> logger)
-        {
-            logger.LogDebug("SWAGGER_OIDC_URL={SWAGGER_OIDC_URL}",SWAGGER_OIDC_URL);
-            logger.LogDebug("SWAGGER_CLIENT_SECRET={SWAGGER_CLIENT_SECRET}",SWAGGER_CLIENT_SECRET);
-            logger.LogDebug("SWAGGER_REDIRECT_URL={SWAGGER_REDIRECT_URL}",SWAGGER_REDIRECT_URL);
-            logger.LogDebug("SWAGGER_CLIENT_ID={SWAGGER_CLIENT_ID}",SWAGGER_CLIENT_ID);
-            logger.LogDebug("SWAGGER_AUTHORIZATION_URL={SWAGGER_AUTHORIZATION_URL}",SWAGGER_AUTHORIZATION_URL);
-            logger.LogDebug("SWAGGER_OIDC_TOKEN_URL={SWAGGER_OIDC_TOKEN_URL}",SWAGGER_OIDC_TOKEN_URL);
-            logger.LogDebug("SWAGGER_OIDC_REFRESH_TOKEN_URL={SWAGGER_OIDC_REFRESH_TOKEN_URL}",SWAGGER_OIDC_REFRESH_TOKEN_URL);
+    public SwaggerEnvironmentConfiguration LogDebugValues(ILogger logger)
+    {
+        logger.LogDebug("SWAGGER_OIDC_URL={SwaggerOidcUrl}", SWAGGER_OIDC_URL);
+        logger.LogDebug("SWAGGER_CLIENT_SECRET={SwaggerClientSecret}", SWAGGER_CLIENT_SECRET);
+        logger.LogDebug("SWAGGER_REDIRECT_URL={SwaggerRedirectUrl}", SWAGGER_REDIRECT_URL);
+        logger.LogDebug("SWAGGER_CLIENT_ID={SwaggerClientID}", SWAGGER_CLIENT_ID);
+        logger.LogDebug("SWAGGER_AUTHORIZATION_URL={SwaggerAuthorizationUrl}", SWAGGER_AUTHORIZATION_URL);
+        logger.LogDebug("SWAGGER_OIDC_TOKEN_URL={SwaggerOidcTokenUrl}", SWAGGER_OIDC_TOKEN_URL);
+        logger.LogDebug("SWAGGER_OIDC_REFRESH_TOKEN_URL={SwaggerOidcRefreshTokenUrl}", SWAGGER_OIDC_REFRESH_TOKEN_URL);
 
-            return this;
-        }
+        return this;
+    }
 }
