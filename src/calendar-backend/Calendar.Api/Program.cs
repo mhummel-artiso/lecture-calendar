@@ -236,7 +236,7 @@ try
 
     #region Health check
 
-    app.MapHealthChecks("/health");
+    app.MapHealthChecks("v1/api/health");
     app.UseHealthChecksPrometheusExporter("/metrics");
     app.UseMetricServer();
     app.UseHttpMetrics();

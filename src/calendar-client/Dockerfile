@@ -9,11 +9,14 @@ RUN npm config set legacy-peer-deps true
 RUN npm ci
 RUN npm install react-scripts -g
 
-FROM node:18.17.1-alpine as build
-ARG VITE_API_URL=""
-ARG VITE_OIDC_CLIENT_ID=""
-ARG VITE_OIDC_AUTHORITY=""
-ARG VITE_OIDC_REDIRECT_URL=""
+FROM install as build
+ARG VITE_API_HOST="NOT SET"
+ARG VITE_API_URL="NOT SET"
+ARG VITE_OIDC_URL="NOT SET"
+ARG VITE_OIDC_CLIENT_SECRET="NOT SET"
+ARG VITE_OIDC_AUTHORITY="NOT SET"
+ARG VITE_OIDC_ACCOUNT_URL="NOT SET"
+ARG VITE_OIDC_REDIRECT_URL="NOT SET"
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY --from=install /app/node_modules /app/node_modules

@@ -24,20 +24,24 @@ services:
       API_KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: ${TIMEZONE}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/v1/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
     labels:
       logging: "promtail"
       logging_jobname: "calendar-api"
+  
   client:
     build:
       args:
+        - VITE_API_HOST=${CLIENT_API_HOST}
         - VITE_API_URL=${CLIENT_API_URL}
+        - VITE_OIDC_URL=${CLIENT_OIDC_URL}
         - VITE_OIDC_CLIENT_SECRET=${CLIENT_OIDC_CLIENT_SECRET}
         - VITE_OIDC_AUTHORITY=${CLIENT_OIDC_AUTHORITY}
-        - VITE_OIDC_REDIRECT_URL=${CLIENT_OIDC_REDIECT_URL}
+        - VITE_OIDC_ACCOUNT_URL=${CLIENT_OIDC_ACCOUNT_URL}
+        - VITE_OIDC_REDIRECT_URL=${CLIENT_OIDC_REDIRECT_URL}
     environment:
      TZ: ${TIMEZONE}
     labels:
@@ -71,21 +75,22 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
       KC_HEALTH_ENABLED: true
+      # KC_HOSTNAME_PATH: /auth
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HOSTNAME_STRICT: false
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/${POSTGRES_DB_KEYCLOAK}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
-      KC_HOSTNAME_STRICT: false
       KC_PROXY: reencrypt
-      # KC_HOSTNAME_PATH: /auth
       KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:
       logging: "promtail"
       logging_jobname: "keycloak"
     healthcheck:
-      test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+      test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
       interval: 30s
       timeout: 3s
       retries: 10

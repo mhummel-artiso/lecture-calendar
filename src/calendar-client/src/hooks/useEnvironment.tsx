@@ -21,8 +21,16 @@ export const useEnvironment = () => {
 }
 
 export const getGlobalEnv = (): EnvConfig => {
+    if(!import.meta.env.VITE_API_HOST) console.error("VITE_API_HOST is not set")
+    if(!import.meta.env.VITE_API_URL) console.debug("VITE_API_URL is not set")
+    if(!import.meta.env.VITE_OIDC_URL) console.error("VITE_OIDC_URL is not set")
+    if(!import.meta.env.VITE_OIDC_AUTHORITY) console.error("VITE_OIDC_AUTHORITY is not set")
+    if(!import.meta.env.VITE_OIDC_CLIENT_SECRET) console.error("VITE_OIDC_CLIENT_SECRET is not set")
+    if(!import.meta.env.VITE_OIDC_REDIRECT_URL) console.error("VITE_OIDC_REDIRECT_URL is not set")
+    if(!import.meta.env.VITE_OIDC_ACCOUNT_URL) console.error("VITE_OIDC_ACCOUNT_URL is not set")
+    console.log('meta.env.BASE_URL',import.meta.env.BASE_URL);
     return {
-        API_HOST: import.meta.env.VITE_API_HOST as string,
+        API_HOST: import.meta.env.VITE_API_HOST as string ?? import.meta.env.BASE_URL,
         API_URL: (import.meta.env.VITE_API_URL as string) ?? '/v1/api',
         OIDC_AUTO_SIGN_IN: (import.meta.env.VITE_OIDC_AUTO_SIGN_IN ??
             false) as boolean,
