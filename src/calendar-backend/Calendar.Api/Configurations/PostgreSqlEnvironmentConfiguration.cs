@@ -28,5 +28,16 @@ namespace Calendar.Api.Configurations
                 .CheckEnvironment(POSTGRESQL_USER_PASSWORD);
             return this;
         }
+
+        public PostgreSqlEnvironmentConfiguration LogDebugValues(ILogger<PostgreSqlEnvironmentConfiguration> logger)
+        {
+            logger.LogDebug("POSTGRESQL_HOST={POSTGRESQL_HOST}",POSTGRESQL_HOST);
+            logger.LogDebug("POSTGRESQL_PORT={POSTGRESQL_PORT}",POSTGRESQL_PORT);
+            logger.LogDebug("POSTGRESQL_DATABASE={POSTGRESQL_DATABASE}",POSTGRESQL_DATABASE);
+            logger.LogDebug("POSTGRESQL_USER_NAME={POSTGRESQL_USER_NAME}",POSTGRESQL_USER_NAME);
+            logger.LogDebug("POSTGRESQL_USER_PASSWORD={POSTGRESQL_USER_PASSWORD}",POSTGRESQL_USER_PASSWORD);
+
+            return this;
+        }
     }
 }

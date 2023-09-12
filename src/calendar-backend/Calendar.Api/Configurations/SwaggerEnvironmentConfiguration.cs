@@ -26,4 +26,17 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
             .CheckEnvironmentUri(SWAGGER_OIDC_TOKEN_URL, true);
         return this;
     }
+
+    public SwaggerEnvironmentConfiguration LogDebugValues(ILogger<SwaggerEnvironmentConfiguration> logger)
+        {
+            logger.LogDebug("SWAGGER_OIDC_URL={SWAGGER_OIDC_URL}",SWAGGER_OIDC_URL);
+            logger.LogDebug("SWAGGER_CLIENT_SECRET={SWAGGER_CLIENT_SECRET}",SWAGGER_CLIENT_SECRET);
+            logger.LogDebug("SWAGGER_REDIRECT_URL={SWAGGER_REDIRECT_URL}",SWAGGER_REDIRECT_URL);
+            logger.LogDebug("SWAGGER_CLIENT_ID={SWAGGER_CLIENT_ID}",SWAGGER_CLIENT_ID);
+            logger.LogDebug("SWAGGER_AUTHORIZATION_URL={SWAGGER_AUTHORIZATION_URL}",SWAGGER_AUTHORIZATION_URL);
+            logger.LogDebug("SWAGGER_OIDC_TOKEN_URL={SWAGGER_OIDC_TOKEN_URL}",SWAGGER_OIDC_TOKEN_URL);
+            logger.LogDebug("SWAGGER_OIDC_REFRESH_TOKEN_URL={SWAGGER_OIDC_REFRESH_TOKEN_URL}",SWAGGER_OIDC_REFRESH_TOKEN_URL);
+
+            return this;
+        }
 }
