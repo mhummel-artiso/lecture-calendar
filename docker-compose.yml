@@ -7,13 +7,24 @@ version: "3.9"
 
 services:
 # loadbalancer
-  loadbalancer:
+  nginx:
+    container_name: loadbalancer
     image: nginx:latest
     restart: ${RESTART_POLICY}
+    depends_on:
+      client:
+        condition: service_started
+      calendarapi:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      grafana:
+        condition: service_started
     ports:
       - 80:80
     volumes:
-      - ./config/loadbalancer/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      # - ./config/nginx/logs/:/var/log/nginx/
     networks:
       - frontend
 

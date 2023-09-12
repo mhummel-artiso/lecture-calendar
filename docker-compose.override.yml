@@ -4,7 +4,7 @@ volumes:
   redisinsight:
 
 services:
-  loadbalancer:
+  nginx:
     environment:
       TZ: ${TIMEZONE}
   calendarapi:
@@ -13,18 +13,18 @@ services:
       #               protocol://user:password@host:port
       API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
       API_MONGODB_DB_NAME: lecture-calendar
-      API_OIDC_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
       API_USE_SWAGGER: true
+      API_OIDC_URL: ${API_OIDC_URL}
       API_SWAGGER_CLIENT_SECRET: ${API_SWAGGER_CLIENT_SECRET}
       API_SWAGGER_REDIRECT_URL: ${API_SWAGGER_REDIRECT_URL}
-      API_SWAGGER_OIDC_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
-      API_KEYCLOAK_BASE_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_SWAGGER_OIDC_URL: ${API_SWAGGER_OIDC_URL}
+      API_KEYCLOAK_BASE_URL: ${API_KEYCLOAK_BASE_URL}
       API_DEBUG_TEST_ENDPOINT_ENABELD: ${API_DEBUG_TEST_ENDPOINT_ENABELD}
       API_DEBUG_TEST_ENDPOINT_POLICY: ${API_DEBUG_TEST_ENDPOINT_POLICY}
       API_KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: ${TIMEZONE}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 10s
       timeout: 5s
       retries: 5
