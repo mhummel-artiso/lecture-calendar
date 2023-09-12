@@ -6,27 +6,24 @@ volumes:
 services:
   calendar-api:
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       #               protocol://user:password@host:port
-      API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@localhost:27017
+      API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
       API_MONGODB_DB_NAME: lecture-calendar
-      API_POSTGRESQL_HOST: localhost      
-      API_POSTGRESQL_USER_NAME: ${POSTGRES_USER}
-      API_POSTGRESQL_USER_PASSWORD: ${MASTER_PW}
-      API_OIDC_URL: http://localhost:8080/realms/Calendar
+      API_OIDC_URL: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
       API_USE_SWAGGER: true
-      API_SWAGGER_CLIENT_SECRET: hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR
-      API_SWAGGER_REDIRECT_URL: http://localhost:4000/swagger/index.html
-      API_SWAGGER_OIDC_URL: http://localhost:8080/realms/Calendar
-      API_JWT_AUDIENCE: http://localhost:8080/realms/Calendar
-      API_JWT_AUTHORITY: http://localhost:8080/realms/Calendar
-      API_JWT_METADATA_ADDRESS: http://localhost:8080/realms/Calendar
-      API_DEBUG_TEST_ENDPOINT_ENABELD: true
-      API_DEBUG_TEST_ENDPOINT_POLICY: EDITOR_VIEWER
+      API_SWAGGER_CLIENT_SECRET: ${API_SWAGGER_CLIENT_SECRET}
+      API_SWAGGER_REDIRECT_URL: ${API_SWAGGER_REDIRECT_URL}
+      API_SWAGGER_OIDC_URL: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_JWT_AUDIENCE: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_JWT_AUTHORITY: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_JWT_METADATA_ADDRESS: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_DEBUG_TEST_ENDPOINT_ENABELD: ${API_DEBUG_TEST_ENDPOINT_ENABELD}
+      API_DEBUG_TEST_ENDPOINT_POLICY: ${API_DEBUG_TEST_ENDPOINT_POLICY}
       KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,16 +31,23 @@ services:
       logging: "promtail"
       logging_jobname: "calendar-api"
   client:
+    build:
+      args:
+        - VITE_API_URL=${CLIENT_API_URL}
+        - VITE_OIDC_CLIENT_SECRET=${CLIENT_OIDC_CLIENT_SECRET}
+        - VITE_OIDC_AUTHORITY=${CLIENT_OIDC_AUTHORITY}
+        - VITE_OIDC_REDIRECT_URL=${CLIENT_OIDC_REDIECT_URL}
     environment:
-     TZ: Europe/Berlin
+     TZ: ${TIMEZONE}
     labels:
       logging: "promtail"
       logging_jobname: "client"
+  
   mongodb:
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MASTER_PW}
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
       interval: 10s
@@ -62,12 +66,12 @@ services:
       - "--import-realm"
       - "--features=token-exchange"
     environment:
-      TZ: Europe/Berlin
-      KEYCLOAK_ADMIN: admin
+      TZ: ${TIMEZONE}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
       KC_HEALTH_ENABLED: true
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/keycloak
+      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/${POSTGRES_DB_KEYCLOAK}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
@@ -88,11 +92,11 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
       PGUSER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${MASTER_PW}
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: keycloak
+      POSTGRES_DB: ${POSTGRES_DB_KEYCLOAK}
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-keycloak"
@@ -104,11 +108,11 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
       PGUSER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${MASTER_PW}
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: grafana
+      POSTGRES_DB: ${POSTGRES_DB_GRAFANA}
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-grafana"
@@ -121,21 +125,21 @@ services:
     #   retries: 5
     environment:
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
-      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${MASTER_PW}
       GF_DATABASE_SSL_MODE: disable
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
       GF_DATABASE_TYPE: postgres
       GF_DATABASE_HOST: postgressdb-grafana:5432
-      GF_DATABASE_NAME: grafana
+      GF_DATABASE_NAME: ${POSTGRES_DB_GRAFANA}
       GF_DATABASE_USER: ${POSTGRES_USER}
       GF_DATABASE_PASSWORD: ${MASTER_PW}
       GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
   
   prometheus:
     environment:
-      TZ: Europe/Berlin=value
+      TZ: ${TIMEZONE}
     labels:
       logging: "promtail"
       logging_jobname: "prometheus"
@@ -143,28 +147,30 @@ services:
   mongodb-exporter:
     command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
     labels:
       logging: "promtail"
       logging_jobname: "mongodb"
+  
   postgressdb-grafana-exporter:
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-grafana:5432/grafana"
+  
   postgressdb-keycloak-exporter:
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-keycloak:5432/keycloak"
   loki:
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
     command: -config.file=/etc/loki/loki-config.yml
     labels:
       logging: "promtail"
       logging_jobname: "loki"
   promtail:
     environment:
-      TZ: Europe/Berlin
+      TZ: ${TIMEZONE}
     command: -config.file=/etc/promtail/promtail.yml
   # to debug mongo docker container
   # mongo-express:
@@ -176,8 +182,6 @@ services:
   #   environment:
   #     - ME_CONFIG_MONGODB_SERVER=mongodb
   #     - ME_CONFIG_MONGODB_PORT=27017
-  #     # - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
-  #     # - ME_CONFIG_MONGODB_AUTH_DATABASE=root
   #     - ME_CONFIG_MONGODB_AUTH_USERNAME=root
   #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
   #     - ME_CONFIG_BASICAUTH_USERNAME=root

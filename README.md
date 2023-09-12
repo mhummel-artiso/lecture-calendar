@@ -18,9 +18,11 @@
 
 path to configs:
 
-```text
+```path
 ./config/<container-name>/
 ```
+
+für die korrekte verwndung der container wird für keyclok als HOST ```host.docker.internal``` verwndet. 
 
 ### Postgres Dump
 
@@ -62,7 +64,7 @@ pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
   - `API_SWAGGER_AUTHORIZATION_URL` : Path to authentication on OIDC server (`"/protocol/openid-connect/auth"`) [*Optional*]
   - `API_SWAGGER_OIDC_TOKEN_URL` : Path to token on OIDC server (`"/protocol/openid-connect/token"`) [*Optional*]
   - `API_SWAGGER_OIDC_REFRESH_TOKEN_URL` : Path to token on OIDC server (`"/protocol/openid-connect/token"`) [*Optional*]
-- JWT Validation
+- JWT Validation (Obsolete)
   - `API_JWT_AUDIENCE` : [TODO Description] (`TODO DefaultValue`) [**Required**]
   - `API_JWT_AUTHORITY` : [TODO Description] (`TODO DefaultValue`) [**Required**]
   - `API_JWT_METADATA_ADDRESS` : [TODO Description] (`TODO DefaultValue`) [**Required**]
@@ -83,6 +85,12 @@ pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 
 ### Build errors
 TODO replace this line in package.json
-`"build": "tsc && vite build",` 
+`"build": "tsc && vite build",`
 
-#### Environment variables
+#### Build variables
+- Api
+  - `VITE_API_URL` : The url to the api (`""`) [**Required**]
+- OIDC
+  - `VITE_OIDC_AUTHORITY` : The url to the OIDC service (`""`) [**Required**]
+  - `VITE_OIDC_CLIENT_SECRET` : The secret for the swagger client (`""`) [**Required**]
+  - `VITE_OIDC_REDIRECT_URL` : The redirect ulr for the OIDC server (`""`) [**Required**]
