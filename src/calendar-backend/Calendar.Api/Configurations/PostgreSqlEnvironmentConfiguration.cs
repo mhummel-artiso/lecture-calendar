@@ -2,6 +2,7 @@
 
 namespace Calendar.Api.Configurations
 {
+    [Obsolete]
     public class PostgreSqlEnvironmentConfiguration : IEnvironmentConfiguration<PostgreSqlEnvironmentConfiguration>
     {
         public string? POSTGRESQL_HOST { get; set; } = null;

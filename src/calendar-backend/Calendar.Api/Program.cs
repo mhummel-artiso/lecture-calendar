@@ -45,8 +45,7 @@ try
     configuration.AddEnvironmentVariables(prefix: "API_");
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
-    builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
-    // builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
+    // builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
     builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
@@ -113,7 +112,8 @@ try
     // TODO configure correctly
     builder.Services.AddAuthorization(options =>
     {
-        var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
+        var oidcConfig = configuration
+            .Get<OidcEnvironmentConfiguration>()?.Validate();
         ArgumentNullException.ThrowIfNull(oidcConfig);
         var roleViewer = oidcConfig.OIDC_ROLE_VIEWER;
         var roleEditor = oidcConfig.OIDC_ROLE_EDITOR;

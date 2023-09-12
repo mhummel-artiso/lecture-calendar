@@ -4,23 +4,24 @@ volumes:
   redisinsight:
 
 services:
-  calendar-api:
+  loadbalancer:
+    environment:
+      TZ: ${TIMEZONE}
+  calendarapi:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       #               protocol://user:password@host:port
       API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
       API_MONGODB_DB_NAME: lecture-calendar
-      API_OIDC_URL: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_OIDC_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
       API_USE_SWAGGER: true
       API_SWAGGER_CLIENT_SECRET: ${API_SWAGGER_CLIENT_SECRET}
       API_SWAGGER_REDIRECT_URL: ${API_SWAGGER_REDIRECT_URL}
-      API_SWAGGER_OIDC_URL: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
-      API_JWT_AUDIENCE: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
-      API_JWT_AUTHORITY: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
-      API_JWT_METADATA_ADDRESS: ${KEYCLOAK_HOST}:{KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_SWAGGER_OIDC_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      API_KEYCLOAK_BASE_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
       API_DEBUG_TEST_ENDPOINT_ENABELD: ${API_DEBUG_TEST_ENDPOINT_ENABELD}
       API_DEBUG_TEST_ENDPOINT_POLICY: ${API_DEBUG_TEST_ENDPOINT_POLICY}
-      KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
+      API_KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: ${TIMEZONE}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
@@ -75,6 +76,10 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_PROXY: reencrypt
+      # KC_HOSTNAME_PATH: /auth
+      KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:
       logging: "promtail"
@@ -118,11 +123,6 @@ services:
       logging_jobname: "postgressdb-grafana"
   
   grafana:
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl", "-f", "http://localhost:3000/api/health"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
     environment:
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
       GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
