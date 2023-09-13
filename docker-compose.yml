@@ -91,11 +91,11 @@ services:
     networks:
       - backend-api
       - backend-monitoring
-    # ports:
-    #   - 27017:27017
+    ports:
+      - 27017:27017
     volumes:
       - mongodb-data:/data/db
-      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
+      - ./config/mongodb/init:/docker-entrypoint-initdb.d/
 
   postgressdb-keycloak:
       image: "postgres:alpine3.18"
@@ -182,8 +182,8 @@ services:
     networks:
       - backend-keycloak
       - backend-monitoring
-# logging
 
+# logging
   loki:
     image: grafana/loki
     restart: ${RESTART_POLICY}

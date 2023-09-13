@@ -12,6 +12,16 @@
 | student2  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
 
+## Urls:
+
+| Container | Url |
+| --- | --- |
+| Client | http://localhost/ |
+| Keycloak | http://localhost/auth/ |
+| Grafana | http://localhost/grafana/ |
+| api | http://localhost/v1/api |
+| api-swagger | http://localhost/swagger/ |
+
 ## Docker container
 
 ### Configurations
@@ -24,7 +34,7 @@ path to configs:
 
 für die korrekte verwndung der container wird für keyclok als HOST ```host.docker.internal``` verwndet. 
 
-### Postgres Dump
+### Database Dump
 
 To create a dump of the **keycloak** database run in the **postgressdb-keycloak** container:
 
@@ -36,6 +46,20 @@ To create a dump of the **grafana** database run in the **postgressdb-grafana** 
 
 ```sh
 pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
+```
+
+Mongodb dump:
+
+```sh
+mongodump 
+  --host=mongodb \
+  --port=27017 \
+  --username=root \
+  --password=$MONGO_INITDB_ROOT_PASSWORD \
+  --authenticationDatabase=admin \
+  --db=lecture-calendar \
+  --gzip \
+  --archive=/docker-entrypoint-initdb.d/lecture-calendar.gz
 ```
 
 ### Api

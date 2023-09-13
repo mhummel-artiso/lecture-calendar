@@ -12,7 +12,7 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       #               protocol://user:password@host:port
       API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
-      API_MONGODB_DB_NAME: lecture-calendar
+      API_MONGODB_DB_NAME: ${MONGO_DATABASE}
       API_USE_SWAGGER: ${API_USE_SWAGGER}
       API_OIDC_URL: ${API_OIDC_URL}
       API_SWAGGER_CLIENT_SECRET: ${API_SWAGGER_CLIENT_SECRET}
@@ -31,7 +31,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "calendar-api"
-  
+
   client:
     build:
       args:
@@ -47,11 +47,12 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "client"
-  
+
   mongodb:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MASTER_PW}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
       TZ: ${TIMEZONE}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
@@ -111,7 +112,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-keycloak"
-  
+
   postgressdb-grafana:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
@@ -127,7 +128,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-grafana"
-  
+
   grafana:
     environment:
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
@@ -142,7 +143,7 @@ services:
       GF_DATABASE_PASSWORD: ${MASTER_PW}
       GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
       TZ: ${TIMEZONE}
-  
+
   prometheus:
     environment:
       TZ: ${TIMEZONE}
@@ -157,7 +158,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "mongodb"
-  
+
   postgressdb-grafana-exporter:
     environment:
       TZ: ${TIMEZONE}
@@ -175,10 +176,12 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "loki"
+
   promtail:
     environment:
       TZ: ${TIMEZONE}
     command: -config.file=/etc/promtail/promtail.yml
+
   # to debug mongo docker container
   mongo-express:
     image: mongo-express
