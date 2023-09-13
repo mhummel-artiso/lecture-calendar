@@ -7,7 +7,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "API_MONGODB_SERVER": "mongodb://root:74RuqICjDPQEFREmhIFaqRf6H@localhost:27017",
-//        "API_MONGODB_SERVER": "mongodb://localhost:27017",
         "API_MONGODB_DB_NAME": "lecture-calendar",
         "API_POSTGRESQL_HOST": "localhost",
         "API_POSTGRESQL_PORT": "5432",

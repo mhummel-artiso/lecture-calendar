@@ -27,16 +27,12 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
         return this;
     }
 
-    public SwaggerEnvironmentConfiguration LogDebugValues(ILogger logger)
+    public SwaggerEnvironmentConfiguration LogTrace(ILogger logger)
     {
-        logger.LogDebug("SWAGGER_OIDC_URL={SwaggerOidcUrl}", SWAGGER_OIDC_URL);
-        logger.LogDebug("SWAGGER_CLIENT_SECRET={SwaggerClientSecret}", SWAGGER_CLIENT_SECRET);
-        logger.LogDebug("SWAGGER_REDIRECT_URL={SwaggerRedirectUrl}", SWAGGER_REDIRECT_URL);
-        logger.LogDebug("SWAGGER_CLIENT_ID={SwaggerClientID}", SWAGGER_CLIENT_ID);
-        logger.LogDebug("SWAGGER_AUTHORIZATION_URL={SwaggerAuthorizationUrl}", SWAGGER_AUTHORIZATION_URL);
-        logger.LogDebug("SWAGGER_OIDC_TOKEN_URL={SwaggerOidcTokenUrl}", SWAGGER_OIDC_TOKEN_URL);
-        logger.LogDebug("SWAGGER_OIDC_REFRESH_TOKEN_URL={SwaggerOidcRefreshTokenUrl}", SWAGGER_OIDC_REFRESH_TOKEN_URL);
-
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+        }
         return this;
     }
 }

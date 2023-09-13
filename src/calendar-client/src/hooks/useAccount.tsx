@@ -6,7 +6,7 @@ import { queryClient } from '../utils/queryClient'
 import { useErrorBoundary } from 'react-error-boundary'
 
 const _canEdit = (user: User | null | undefined): boolean => {
-    if (user?.profile?.realm_access) {
+    if(user?.profile?.realm_access) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const realm_access = user.profile.realm_access as [claim: string]
         const roles = (realm_access[0]['roles'] as string[]) ?? []
@@ -17,7 +17,7 @@ const _canEdit = (user: User | null | undefined): boolean => {
 }
 
 export const useAccount = () => {
-    const { showBoundary } = useErrorBoundary()
+    const {showBoundary} = useErrorBoundary()
     const {
         userData,
         signOut,
@@ -29,17 +29,16 @@ export const useAccount = () => {
 
     useEffect(() => {
         axiosInstance.defaults.headers['Authorization'] = userData
-            ? 'Bearer ' + userData.access_token
-            : ''
-
-        if (userData) {
+            ? 'Bearer ' + userData.access_token : ''
+        console.log('axiosInstance.defaults.headers[Authorization]',axiosInstance.defaults.headers['Authorization']);
+        if(userData) {
             queryClient.clear()
         }
     }, [userData])
 
     const _signOut = async () => {
         const idToken = userData?.id_token
-        if (idToken) {
+        if(idToken) {
             await signOutRedirect({
                 id_token_hint: idToken,
             }).catch(showBoundary)

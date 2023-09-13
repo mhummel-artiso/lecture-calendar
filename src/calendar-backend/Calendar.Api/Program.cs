@@ -166,7 +166,9 @@ try
     var keycloakRestConfig = configuration.Get<KeycloakRestEnvironmentConfiguration>()?.Validate();
     if (keycloakRestConfig != null)
     {
-        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER,
+        builder.Services.AddSingleton(new KeycloakHttpClient(
+            keycloakRestConfig!.KEYCLOAK_BASE_URL,
+            keycloakRestConfig!.KEYCLOAK_REST_USER,
             keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
     }
 
@@ -177,10 +179,11 @@ try
     #region configure App
 
     var app = builder.Build();
-    mongoConfig?.LogDebugValues(app.Logger);
-    swaggerConfig?.LogDebugValues(app.Logger);
-    oidcConfig?.LogDebugValues(app.Logger);
-    keycloakRestConfig?.LogDebugValues(app.Logger);
+
+    mongoConfig?.LogTrace(app.Logger);
+    swaggerConfig?.LogTrace(app.Logger);
+    oidcConfig?.LogTrace(app.Logger);
+    keycloakRestConfig?.LogTrace(app.Logger);
 
     #region Swagger
 
@@ -225,7 +228,10 @@ try
 
     #region Access controll
 
-    app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    app.UseCors(c => c
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
 
@@ -240,16 +246,17 @@ try
     #region Health check
 
     app.MapHealthChecks("v1/api/health");
-    app.UseHealthChecksPrometheusExporter("/metrics");
-    app.UseMetricServer();
-    app.UseHttpMetrics();
+    app.UseHealthChecksPrometheusExporter("/metrics")
+        .UseHttpMetrics()
+        .UseMetricServer();
 
     #endregion
 
     #region Test endpoint
 
-    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate()
-        .LogDebugValues(app.Logger);
+    var debugConf = configuration
+        .Get<DebugEnvironmentConfiguration>()?.Validate()
+        .LogTrace(app.Logger);
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
     {

@@ -24,14 +24,12 @@ namespace Calendar.Api.Configurations
                 .CheckEnvironment(KEYCLOAK_INSTRUCTOR_GROUP_NAME);
             return this;
         }
-        public KeycloakRestEnvironmentConfiguration LogDebugValues(ILogger logger)
+        public KeycloakRestEnvironmentConfiguration LogTrace(ILogger logger)
         {
-            logger.LogDebug("KEYCLOAK_BASE_URL={KeycloakBaseUrl}", KEYCLOAK_BASE_URL);
-            logger.LogDebug("KEYCLOAK_REST_USER={KeycloakRestUser}", KEYCLOAK_REST_USER);
-            logger.LogDebug("KEYCLOAK_REST_PASSWORD={KeycloakRestPassword}", KEYCLOAK_REST_PASSWORD);
-            logger.LogDebug("KEYCLOAK_REALM={KeycloakRealm}", KEYCLOAK_REALM);
-            logger.LogDebug("KEYCLOAK_CALENDARS_GROUP_NAME={KeycloakCalendarsGroupName}", KEYCLOAK_CALENDARS_GROUP_NAME);
-            logger.LogDebug("KEYCLOAK_INSTRUCTOR_GROUP_NAME={KeycloakInstructorGroupName}", KEYCLOAK_INSTRUCTOR_GROUP_NAME);
+            foreach (var property in GetType().GetProperties())
+            {
+                logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+            }
             return this;
         }
     }

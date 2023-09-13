@@ -26,10 +26,12 @@ public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvi
         }
         return this;
     }
-    public DebugEnvironmentConfiguration LogDebugValues(ILogger logger)
+    public DebugEnvironmentConfiguration LogTrace(ILogger logger)
     {
-        logger.LogDebug("DEBUG_TEST_ENDPOINT_ENABLED={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_ENABLED);
-        logger.LogDebug("DEBUG_TEST_ENDPOINT_POLICY={DebugTestEndpointEnabled}", DEBUG_TEST_ENDPOINT_POLICY);
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+        }
         return this;
     }
 }

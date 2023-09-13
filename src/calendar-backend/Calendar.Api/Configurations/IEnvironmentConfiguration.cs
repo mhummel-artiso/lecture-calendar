@@ -16,5 +16,5 @@ public interface IEnvironmentConfiguration<T>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public T Validate();
-    T LogDebugValues(ILogger logger);
+    T LogTrace(ILogger logger);
 }

@@ -17,11 +17,12 @@ public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnviro
             .CheckEnvironment(OIDC_ROLE_VIEWER);
         return this;
     }
-    public OidcEnvironmentConfiguration LogDebugValues(ILogger logger)
+    public OidcEnvironmentConfiguration LogTrace(ILogger logger)
     {
-        logger.LogDebug("OIDC_URL={OidcUrl}", OIDC_URL);
-        logger.LogDebug("OIDC_ROLE_EDITOR={OidcRoleEditor}", OIDC_ROLE_EDITOR);
-        logger.LogDebug("OIDC_ROLE_VIEWER={OidcRoleViewer}", OIDC_ROLE_VIEWER);
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+        }
         return this;
     }
 }

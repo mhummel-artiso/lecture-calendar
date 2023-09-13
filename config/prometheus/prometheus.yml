@@ -22,10 +22,10 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'calendar-api'
+  - job_name: 'calendarapi'
     metrics_path: /metrics
     static_configs:
-      - targets: ['calendarapi:4000']
+      - targets: ['calendarapi:80']
   
   - job_name: 'mongodb'
     metrics_path: /metrics
@@ -43,7 +43,7 @@ scrape_configs:
       - targets: ['postgressdb-keycloak-exporter:9187']
   
   - job_name: 'keycloak'
-    metrics_path: /realms/Calendar/metrics
+    metrics_path: /auth/realms/Calendar/metrics
     static_configs:
       - targets: ['keycloak:8080']
   # https://docs.docker.com/config/daemon/prometheus/

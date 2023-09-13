@@ -21,6 +21,9 @@ function App() {
         autoSignOut: true,
         autoSignIn: false,
         authority: envConfig.getAuthorityUrl(),
+        onSignIn:(user)=>{
+            console.log("onSignIn",user)
+        },
         automaticSilentRenew: true,
         clientId: 'calendar-client',
         scope: '',

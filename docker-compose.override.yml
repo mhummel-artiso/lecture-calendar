@@ -13,14 +13,14 @@ services:
       #               protocol://user:password@host:port
       API_MONGODB_SERVER: mongodb://root:${MASTER_PW}@mongodb:27017
       API_MONGODB_DB_NAME: lecture-calendar
-      API_USE_SWAGGER: true
+      API_USE_SWAGGER: ${API_USE_SWAGGER}
       API_OIDC_URL: ${API_OIDC_URL}
       API_SWAGGER_CLIENT_SECRET: ${API_SWAGGER_CLIENT_SECRET}
       API_SWAGGER_REDIRECT_URL: ${API_SWAGGER_REDIRECT_URL}
       API_SWAGGER_OIDC_URL: ${API_SWAGGER_OIDC_URL}
-      API_KEYCLOAK_BASE_URL: ${API_KEYCLOAK_BASE_URL}
       API_DEBUG_TEST_ENDPOINT_ENABELD: ${API_DEBUG_TEST_ENDPOINT_ENABELD}
       API_DEBUG_TEST_ENDPOINT_POLICY: ${API_DEBUG_TEST_ENDPOINT_POLICY}
+      API_KEYCLOAK_BASE_URL: ${API_KEYCLOAK_BASE_URL}
       API_KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: ${TIMEZONE}
     healthcheck:
@@ -86,6 +86,7 @@ services:
       KC_PROXY: ${KEYCLOAK_PROXY}
       KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
+
     labels:
       logging: "promtail"
       logging_jobname: "keycloak"
@@ -148,7 +149,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "prometheus"
-  
+
   mongodb-exporter:
     command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
     environment:
@@ -166,6 +167,7 @@ services:
     environment:
       TZ: ${TIMEZONE}
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-keycloak:5432/keycloak"
+
   loki:
     environment:
       TZ: ${TIMEZONE}

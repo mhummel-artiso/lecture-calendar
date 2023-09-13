@@ -134,7 +134,7 @@ services:
     networks:
       - frontend
       - backend-monitoring
-  
+
   prometheus:
     image: prom/prometheus
     restart: ${RESTART_POLICY}
@@ -149,11 +149,12 @@ services:
         condition: service_healthy
     networks:
       - backend-monitoring
-    # ports:
-    #   - "9090:9090"
+    ports:
+      - "9090:9090"
     volumes:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
+
 # DB exporter
   mongodb-exporter:
     image: percona/mongodb_exporter:0.39
@@ -164,6 +165,7 @@ services:
     networks:
       - backend-monitoring
       - backend-api
+
   postgressdb-grafana-exporter:
     image: prometheuscommunity/postgres-exporter
     depends_on:
@@ -171,6 +173,7 @@ services:
         condition: service_started
     networks:
       - backend-monitoring
+
   postgressdb-keycloak-exporter:
     image: prometheuscommunity/postgres-exporter
     depends_on:
@@ -180,6 +183,7 @@ services:
       - backend-keycloak
       - backend-monitoring
 # logging
+
   loki:
     image: grafana/loki
     restart: ${RESTART_POLICY}
@@ -189,7 +193,7 @@ services:
     #   - "3100:3100"
     volumes:
       - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yml:ro
-  
+
   promtail:
     image: grafana/promtail
     restart: ${RESTART_POLICY}
@@ -201,7 +205,7 @@ services:
       - ./config/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-    
+
 volumes:
   mongodb-data:
     driver: local

@@ -29,14 +29,12 @@ namespace Calendar.Api.Configurations
             return this;
         }
 
-        public PostgreSqlEnvironmentConfiguration LogDebugValues(ILogger logger)
+        public PostgreSqlEnvironmentConfiguration LogTrace(ILogger logger)
         {
-            logger.LogDebug("POSTGRESQL_HOST={POSTGRESQL_HOST}",POSTGRESQL_HOST);
-            logger.LogDebug("POSTGRESQL_PORT={POSTGRESQL_PORT}",POSTGRESQL_PORT);
-            logger.LogDebug("POSTGRESQL_DATABASE={POSTGRESQL_DATABASE}",POSTGRESQL_DATABASE);
-            logger.LogDebug("POSTGRESQL_USER_NAME={POSTGRESQL_USER_NAME}",POSTGRESQL_USER_NAME);
-            logger.LogDebug("POSTGRESQL_USER_PASSWORD={POSTGRESQL_USER_PASSWORD}",POSTGRESQL_USER_PASSWORD);
-
+            foreach (var property in GetType().GetProperties())
+            {
+                logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+            }
             return this;
         }
     }

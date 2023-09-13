@@ -23,7 +23,7 @@ public class KeycloakService : IKeycloakService
         realm = options.Value.KEYCLOAK_REALM;
         calendarsGroupName = options.Value.KEYCLOAK_CALENDARS_GROUP_NAME;
         instructorGroupName = options.Value.KEYCLOAK_INSTRUCTOR_GROUP_NAME;
-        logger.LogError("Initializer {Service} with realm: {Realm}", nameof(KeycloakService), realm);
+        logger.LogError("Initializer '{Service}' with realm: '{Realm}'", nameof(KeycloakService), realm);
     }
 
     public async Task<IEnumerable<string>?> GetAssignedCalendarsByUserAsync(string userId)
@@ -41,7 +41,7 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Fail to get groups from {Realm} by id {UserId}", realm, userId);
+            logger.LogError(e, "Fail to get groups from '{Realm}' by id '{UserId}'", realm, userId);
             throw;
         }
     }
