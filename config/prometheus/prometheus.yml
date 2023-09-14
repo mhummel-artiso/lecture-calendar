@@ -40,6 +40,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ['postgressdb-grafana-exporter:9187']
+
 # Keycloak
   - job_name: 'keycloak'
     metrics_path: /auth/realms/Calendar/metrics
@@ -50,7 +51,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ['postgressdb-keycloak-exporter:9187']
-  
+
 # Loki
   - job_name: 'loki'
     metrics_path: /metrics

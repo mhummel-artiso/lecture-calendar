@@ -34,6 +34,9 @@ services:
       - backend-keycloak
       - backend-monitoring
       - frontend
+    deploy:
+      mode: replicated
+      replicas: 2
 
 # calendar client
   client:
@@ -43,7 +46,9 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - frontend
-    scale: 4
+    deploy:
+      mode: replicated
+      replicas: 2
 
 # keycloak authentication
   keycloak:
@@ -54,12 +59,13 @@ services:
     depends_on:
       postgressdb-keycloak:
         condition: service_healthy
-    ports:
-      - "8080:8080"
     networks:
       - frontend
       - backend-keycloak
       - backend-monitoring
+    deploy:
+      mode: replicated
+      replicas: 2
 
 # databases
   mongodb:
