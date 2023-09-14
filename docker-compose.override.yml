@@ -30,7 +30,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/v1/api/health"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 5
     labels:
       logging: "promtail"
@@ -53,7 +53,7 @@ services:
       logging_jobname: "client"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
       retries: 5
 
@@ -105,15 +105,15 @@ services:
       logging_jobname: "keycloak"
     healthcheck:
       test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
-      interval: 30s
-      timeout: 3s
-      retries: 10
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   postgressdb-keycloak:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 5
     environment:
       TZ: ${TIMEZONE}
@@ -132,7 +132,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 5
     environment:
       TZ: ${TIMEZONE}
@@ -163,9 +163,9 @@ services:
       TZ: ${TIMEZONE}
     healthcheck:
       test: ["CMD", "grafana-cli", "plugins", "ls"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 20s
     volumes:
       - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
