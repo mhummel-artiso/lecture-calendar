@@ -1,21 +1,11 @@
 import React from 'react'
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
 import { CalendarEvent } from '../../models/calendarEvent'
-import {
-    Avatar,
-    Chip,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Typography,
-} from '@mui/material'
-import RemoveIcon from '@mui/icons-material/Remove'
+import { Avatar, Chip, Grid, Typography } from '@mui/material'
 
 export const AppointmentTooltipContent: React.FC<
     AppointmentTooltip.ContentProps
-> = ({ children, appointmentData, ...restProps }) => {
+> = ({ appointmentData, ...restProps }) => {
     const event = appointmentData?.event as CalendarEvent
     return (
         <AppointmentTooltip.Content
@@ -31,7 +21,9 @@ export const AppointmentTooltipContent: React.FC<
             >
                 {appointmentData?.location && (
                     <Grid item>
-                        <Typography fontWeight="bold">Veranstaltungsort:</Typography>
+                        <Typography fontWeight="bold">
+                            Veranstaltungsort:
+                        </Typography>
                         <Typography sx={{ ml: 2 }}>
                             {' '}
                             {appointmentData?.location}
@@ -70,50 +62,50 @@ export const AppointmentTooltipContent: React.FC<
 
 export const AppointmentTooltipHeader: React.FC<
     AppointmentTooltip.HeaderProps
-> = ({ children, appointmentData, ...restProps }) => {
+> = ({ appointmentData, ...restProps }) => {
     const event = appointmentData?.event as CalendarEvent
     return (
         <AppointmentTooltip.Header
             {...restProps}
             appointmentData={appointmentData}
         >
-            {event.lecture ?  
-            (<Grid
-                sx={{ mt: 1, ml: 1 }}
-                container
-                alignItems="Center"
-                direction="column"
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography variant={'h5'}>Veranstaltung</Typography>
-                </Grid>
-                {event.lecture?.shortKey && (
+            {event.lecture ? (
+                <Grid
+                    sx={{ mt: 1, ml: 1 }}
+                    container
+                    alignItems="Center"
+                    direction="column"
+                    spacing={1}
+                >
                     <Grid item>
-                        <Typography fontWeight="bold">
-                            {event.lecture.title}
-                        </Typography>
+                        <Typography variant={'h5'}>Veranstaltung</Typography>
                     </Grid>
-                )}
-                {event.lecture?.description && (
-                    <Grid item>
-                        <Typography>{event.lecture.description}</Typography>
-                    </Grid>
-                )}
-            </Grid>) : 
-            (<Grid
-                sx={{ mt: 1, ml: 1 }}
-                container
-                alignItems="Center"
-                direction="column"
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography variant={'h5'}>Fehler!</Typography>
+                    {event.lecture?.shortKey && (
+                        <Grid item>
+                            <Typography fontWeight="bold">
+                                {event.lecture.title}
+                            </Typography>
+                        </Grid>
+                    )}
+                    {event.lecture?.description && (
+                        <Grid item>
+                            <Typography>{event.lecture.description}</Typography>
+                        </Grid>
+                    )}
                 </Grid>
-            </Grid>
-            )
-            }
+            ) : (
+                <Grid
+                    sx={{ mt: 1, ml: 1 }}
+                    container
+                    alignItems="Center"
+                    direction="column"
+                    spacing={1}
+                >
+                    <Grid item>
+                        <Typography variant={'h5'}>Fehler!</Typography>
+                    </Grid>
+                </Grid>
+            )}
         </AppointmentTooltip.Header>
     )
 }

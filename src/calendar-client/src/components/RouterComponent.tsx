@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Box } from '@mui/material'
 import { NavBar } from './navigation/NavBar'
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
 import { CalendarPage } from './Calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'

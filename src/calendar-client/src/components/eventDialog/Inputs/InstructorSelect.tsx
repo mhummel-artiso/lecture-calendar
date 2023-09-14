@@ -1,52 +1,38 @@
+import { FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getCalendars } from '../../../services/CalendarService'
-import {
-    Autocomplete,
-    CircularProgress,
-    Grid,
-    InputProps,
-    MenuItem,
-    TextField,
-} from '@mui/material'
-import { FC, useEffect, useState } from 'react'
 import { DialogSelectInterfaces } from '../DialogSelectInterfaces'
+import { Autocomplete, CircularProgress, TextField } from '@mui/material'
+import { Instructor } from '../../../models/instructor'
+import { getInstructors } from '../../../services/KeyCloakService'
 import { useAccount } from '../../../hooks/useAccount'
-import { Calendar } from '../../../models/calendar'
 
-export const CalendarSelect: FC<DialogSelectInterfaces<string>> = ({
+export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({
     value,
     onChange,
-    readonlyValue,
-    disabled,
 }) => {
     const { canEdit } = useAccount()
-    const [selectedValue, setSelectedValue] = useState<Calendar | null>(null)
+
     const { data, isLoading } = useQuery({
-        queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryKey: ['instructors'],
+        queryFn: getInstructors,
         useErrorBoundary: true,
         enabled: canEdit,
     })
-    useEffect(() => {
-        if (data) {
-            setSelectedValue(data.find((item) => item.id === value) ?? null)
-        }
-    }, [data, value])
+
     return (
         <Autocomplete
-            disabled={disabled}
+            disabled={!canEdit}
             disablePortal
-            value={selectedValue}
-            onChange={(_, v) => {
-                setSelectedValue(v)
-                onChange(v?.id ?? '')
-            }}
             options={data ?? []}
+            multiple
+            aria-required
+            onChange={(e, newValue) => onChange(newValue)}
+            value={value}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Kurs"
+                    label="Dozenten"
                     InputProps={{
                         ...params.InputProps,
                         readOnly: !canEdit,

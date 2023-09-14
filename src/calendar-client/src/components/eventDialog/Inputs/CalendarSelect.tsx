@@ -1,38 +1,45 @@
-import { FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { getCalendars } from '../../../services/CalendarService'
+import { Autocomplete, CircularProgress, TextField } from '@mui/material'
+import { FC, useEffect, useState } from 'react'
 import { DialogSelectInterfaces } from '../DialogSelectInterfaces'
-import { CircularProgress, Autocomplete, TextField } from '@mui/material'
-import { Instructor } from '../../../models/instructor'
-import { getInstructors } from '../../../services/KeyCloakService'
 import { useAccount } from '../../../hooks/useAccount'
+import { Calendar } from '../../../models/calendar'
 
-export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({
+export const CalendarSelect: FC<DialogSelectInterfaces<string>> = ({
     value,
     onChange,
+    readonlyValue,
+    disabled,
 }) => {
     const { canEdit } = useAccount()
-
+    const [selectedValue, setSelectedValue] = useState<Calendar | null>(null)
     const { data, isLoading } = useQuery({
-        queryKey: ['instructors'],
-        queryFn: getInstructors,
+        queryKey: ['calendars'],
+        queryFn: getCalendars,
         useErrorBoundary: true,
         enabled: canEdit,
     })
-
+    useEffect(() => {
+        if (data) {
+            setSelectedValue(data.find((item) => item.id === value) ?? null)
+        }
+    }, [data, value])
     return (
         <Autocomplete
-            disabled={!canEdit}
+            disabled={disabled}
             disablePortal
+            value={selectedValue}
+            onChange={(_, v) => {
+                setSelectedValue(v)
+                onChange(v?.id ?? '')
+            }}
             options={data ?? []}
-            multiple
-            aria-required
-            onChange={(e, newValue) => onChange(newValue)}
-            value={value}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Dozenten"
+                    label="Kurs"
                     InputProps={{
                         ...params.InputProps,
                         readOnly: !canEdit,

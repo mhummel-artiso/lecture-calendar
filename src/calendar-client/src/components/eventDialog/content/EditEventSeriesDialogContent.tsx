@@ -3,7 +3,6 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography,
 } from '@mui/material'
 import { FC } from 'react'
 import { PassedDialogValues } from './AddOrEditEventDialogContent'

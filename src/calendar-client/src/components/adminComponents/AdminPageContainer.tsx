@@ -1,4 +1,4 @@
-import { Box, Container, Stack } from '@mui/material'
+import { Box, Container } from '@mui/material'
 import { CalendarList } from './calendar/CalendarList'
 import { LectureList } from './lectures/LectureList'
 import React from 'react'

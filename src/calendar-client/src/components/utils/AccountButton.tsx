@@ -1,7 +1,6 @@
 import { useAccount } from '../../hooks/useAccount'
-import { Avatar, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Avatar, IconButton, Menu, MenuItem } from '@mui/material'
 import React, { FC } from 'react'
-import MenuIcon from '@mui/icons-material/Menu'
 import { useEnvironment } from '../../hooks/useEnvironment'
 
 interface Props {

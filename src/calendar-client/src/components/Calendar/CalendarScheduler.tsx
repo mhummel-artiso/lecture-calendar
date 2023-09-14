@@ -7,7 +7,7 @@ import {
     WeekView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler'
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import React, { useEffect } from 'react'
 import moment, { Moment } from 'moment/moment'
 import { useQuery } from '@tanstack/react-query'
@@ -114,7 +114,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         const title: string =
             c.lecture?.shortKey && (c.lecture?.shortKey.length ?? 0) > 0
                 ? c.lecture?.shortKey
-                : c.lecture?.title?? "null"
+                : c.lecture?.title ?? 'null'
 
         const a: AppointmentModel = {
             startDate: moment(c.start).toDate(),

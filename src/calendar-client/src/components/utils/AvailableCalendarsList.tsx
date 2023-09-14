@@ -6,7 +6,6 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Typography,
 } from '@mui/material'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import React, { FC, useEffect, useState } from 'react'

@@ -1,11 +1,5 @@
-import {
-    Fab,
-    Grid,
-    ToggleButton,
-    ToggleButtonGroup,
-    Typography,
-} from '@mui/material'
-import React, { FC } from 'react'
+import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import React from 'react'
 import { CalendarViewType } from './CalendarPage'
 
 interface Props {

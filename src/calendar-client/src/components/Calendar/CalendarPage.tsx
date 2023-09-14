@@ -1,4 +1,4 @@
-import { Fab, Grid, Typography } from '@mui/material'
+import { Fab, Grid } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import React, { useState } from 'react'
 import { EditEventCallback, EventDialog } from '../eventDialog/EventDialog'
@@ -18,7 +18,6 @@ import { CalendarDateNavigation } from './CalendarDateNavigation'
 import { CalendarViewSwitch } from './CalendarViewSwitch'
 import { CalendarScheduler } from './CalendarScheduler'
 import { CalendarViewType } from '../../services/DateService'
-import { AxiosErrorInformation } from '../ErrorContent/AxiosErrorInformation'
 
 export const CalendarPage = () => {
     const { canEdit } = useAccount()
