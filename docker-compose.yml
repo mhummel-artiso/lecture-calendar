@@ -1,7 +1,7 @@
 # start container: docker compose up -d --build
 # stop container: docker compose down
 
-# Set environments, label and command in docker-compose.override.yml
+# Set environments, labels, volumes, healthchecks and commands in docker-compose.override.yml
 
 version: "3.9"
 
@@ -22,9 +22,6 @@ services:
         condition: service_started
     ports:
       - 80:80
-    volumes:
-      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./config/nginx/logs/:/var/log/nginx/
     networks:
       - frontend
 
@@ -40,14 +37,12 @@ services:
         condition: service_started
       grafana:
         condition: service_started
-    restart: on-failure:5
+    restart: ${RESTART_POLICY}
     networks:
       - backend-api
       - backend-keycloak
       - backend-monitoring
       - frontend
-    # ports:
-    #   - 4000:80
 
 # calendar client
   client:
@@ -58,13 +53,6 @@ services:
     networks:
       - frontend
     scale: 4
-    # ports:
-    #   - 80:80
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
 # keycloak authentication
   keycloak:
@@ -81,8 +69,6 @@ services:
       - frontend
       - backend-keycloak
       - backend-monitoring
-    # ports:
-    #   - 8080:8080
 
 # databases
   mongodb:
@@ -90,30 +76,18 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
-      - backend-monitoring
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb-data:/data/db
-      - ./config/mongodb/init:/docker-entrypoint-initdb.d/
 
   postgressdb-keycloak:
       image: "postgres:alpine3.18"
       restart: ${RESTART_POLICY}
       networks:
         - backend-keycloak
-      volumes:
-        - postgress-data:/var/lib/postgresql/data
-        - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/init.sql:wr
 
   postgressdb-grafana:
     image: postgres:alpine3.18
     restart: ${RESTART_POLICY}
     networks:
       - backend-monitoring
-    volumes:
-      - grafana-data:/var/lib/postgresql/data
-      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/init.sql:wr
 
 # monitoring
   grafana:
@@ -122,15 +96,8 @@ services:
     depends_on:
       promtail:
         condition: service_started
-      prometheus:
-        condition: service_started
       postgressdb-grafana:
         condition: service_healthy
-    # ports:
-    #   - "5700:3000"
-    volumes:
-      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-      - ./config/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml:ro
     networks:
       - frontend
       - backend-monitoring
@@ -147,13 +114,12 @@ services:
         condition: service_started
       keycloak:
         condition: service_healthy
+      grafana:
+        condition: service_healthy
     networks:
       - backend-monitoring
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - /var/run/docker.sock:/var/run/docker.sock
+    # ports:
+    #   - "9090:9090"
 
 # DB exporter
   mongodb-exporter:
@@ -168,6 +134,7 @@ services:
 
   postgressdb-grafana-exporter:
     image: prometheuscommunity/postgres-exporter
+    restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-grafana:
         condition: service_started
@@ -176,6 +143,7 @@ services:
 
   postgressdb-keycloak-exporter:
     image: prometheuscommunity/postgres-exporter
+    restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-keycloak:
         condition: service_started
@@ -189,10 +157,6 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - backend-monitoring
-    # ports:
-    #   - "3100:3100"
-    volumes:
-      - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yml:ro
 
   promtail:
     image: grafana/promtail
@@ -201,10 +165,6 @@ services:
       - loki
     networks:
       - backend-monitoring
-    volumes:
-      - ./config/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   mongodb-data:

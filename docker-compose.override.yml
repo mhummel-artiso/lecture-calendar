@@ -7,6 +7,10 @@ services:
   nginx:
     environment:
       TZ: ${TIMEZONE}
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/logs/:/var/log/nginx/
+
   calendarapi:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
@@ -47,6 +51,11 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "client"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   mongodb:
     environment:
@@ -61,8 +70,11 @@ services:
       retries: 5
     labels:
       logging: "promtail"
-      logging_jobname: "containerlogs"
-
+      logging_jobname: "mongodb"
+    volumes:
+      - mongodb-data:/data/db
+      - ./config/mongodb/data:/backup_data/
+      - ./config/mongodb/init:/docker-entrypoint-initdb.d/
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
   keycloak:
@@ -85,9 +97,8 @@ services:
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
       KC_PROXY: ${KEYCLOAK_PROXY}
-      KC_HOSTNAME: ${KEYCLOAK_HOST}
+      # KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
-
     labels:
       logging: "promtail"
       logging_jobname: "keycloak"
@@ -112,6 +123,9 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-keycloak"
+    volumes:
+      - postgress-data:/var/lib/postgresql/data
+      - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/init.sql:wr
 
   postgressdb-grafana:
     healthcheck:
@@ -128,6 +142,9 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgressdb-grafana"
+    volumes:
+      - grafana-data:/var/lib/postgresql/data
+      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/init.sql:wr
 
   grafana:
     environment:
@@ -143,13 +160,27 @@ services:
       GF_DATABASE_PASSWORD: ${MASTER_PW}
       GF_INSTALL_PLUGINS: ${GRAFANA_PLUGINS}
       TZ: ${TIMEZONE}
-
+    healthcheck:
+      test: ["CMD", "grafana-cli", "plugins", "ls"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    volumes:
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./config/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml:ro
+    labels:
+      logging: "promtail"
+      logging_jobname: "grafana"
   prometheus:
     environment:
       TZ: ${TIMEZONE}
     labels:
       logging: "promtail"
       logging_jobname: "prometheus"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /var/run/docker.sock:/var/run/docker.sock
 
   mongodb-exporter:
     command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
@@ -157,17 +188,22 @@ services:
       TZ: ${TIMEZONE}
     labels:
       logging: "promtail"
-      logging_jobname: "mongodb"
+      logging_jobname: "mongodb-exporter"
 
   postgressdb-grafana-exporter:
     environment:
       TZ: ${TIMEZONE}
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-grafana:5432/grafana"
-  
+    labels:
+      logging: "promtail"
+      logging_jobname: "postgres-grafana-exporter"
   postgressdb-keycloak-exporter:
     environment:
       TZ: ${TIMEZONE}
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${MASTER_PW}@postgressdb-keycloak:5432/keycloak"
+    labels:
+      logging: "promtail"
+      logging_jobname: "postgres-keycloak-exporter"
 
   loki:
     environment:
@@ -176,28 +212,34 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "loki"
+    volumes:
+      - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yml:ro
 
   promtail:
     environment:
       TZ: ${TIMEZONE}
     command: -config.file=/etc/promtail/promtail.yml
+    volumes:
+      - ./config/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
 
   # to debug mongo docker container
-  mongo-express:
-    image: mongo-express
-    ports:
-        - '8081:8081'
-    depends_on:
-      - mongodb
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_MONGODB_AUTH_USERNAME=root
-      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
-      - ME_CONFIG_BASICAUTH_USERNAME=root
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
-    networks:
-      - backend-api
-    labels:
-      logging: "promtail"
-      logging_jobname: "mongo-express"
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #       - '8081:8081'
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=mongodb
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=root
+  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MASTER_PW}
+  #     - ME_CONFIG_BASICAUTH_USERNAME=root
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MASTER_PW}
+  #   networks:
+  #     - backend-api
+  #   labels:
+  #     logging: "promtail"
+  #     logging_jobname: "mongo-express"

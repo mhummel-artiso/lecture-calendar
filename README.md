@@ -1,4 +1,16 @@
-# lecture-calendar
+# Lecture Calendar
+
+- [Lecture Calendar](#lecture-calendar)
+  - [Logins:](#logins)
+  - [Urls:](#urls)
+  - [Docker container](#docker-container)
+    - [Configurations](#configurations)
+    - [Database Dump](#database-dump)
+  - [Apps](#apps)
+    - [Environment variables](#environment-variables)
+      - [Build variables](#build-variables)
+    - [Client](#client)
+    - [Build errors](#build-errors)
 
 ## Logins:
 
@@ -6,10 +18,11 @@
 | --- | --- | --- | --- |
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` | Grafana Admin |
-| dozent  | **74RuqICjDPQEFREmhIFaqRf6H** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
-| sekreteriat | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` |
-| student1  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |
-| student2  | **74RuqICjDPQEFREmhIFaqRf6H** | `TINF2021AI` |
+| User  | **User** | `Verwaltung` | Grafana User |
+| dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| sekreteriat | **sekreteriat** | `Verwaltung` |
+| student1  | **student1** | `TINF2021AI` |
+| student2  | **student2** | `TINF2021AI` |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
 
 ## Urls:
@@ -32,7 +45,9 @@ path to configs:
 ./config/<container-name>/
 ```
 
-für die korrekte verwndung der container wird für keyclok als HOST ```host.docker.internal``` verwndet. 
+> In the [docker-compose.yml](./docker-compose.yml) the containers are defined and in the [docker-compose.override.yml](./docker-compose.override.yml) the containers be configured
+
+
 
 ### Database Dump
 
@@ -51,7 +66,7 @@ pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 Mongodb dump:
 
 ```sh
-mongodump 
+mongodump \
   --host=mongodb \
   --port=27017 \
   --username=root \
@@ -62,9 +77,9 @@ mongodump
   --archive=/docker-entrypoint-initdb.d/lecture-calendar.gz
 ```
 
-### Api
+## Apps
 
-#### Environment variables
+### Environment variables
 
 - `ASPNETCORE_ENVIRONMENT` : The asp.net core environment (`Production`) [*Optional*]
 - Mongo
@@ -105,12 +120,6 @@ mongodump
 
 (OIDC: open id connect)
 
-### Client
-
-### Build errors
-TODO replace this line in package.json
-`"build": "tsc && vite build",`
-
 #### Build variables
 - Api
   - `VITE_API_URL` : The url to the api (`""`) [**Required**]
@@ -118,3 +127,9 @@ TODO replace this line in package.json
   - `VITE_OIDC_AUTHORITY` : The url to the OIDC service (`""`) [**Required**]
   - `VITE_OIDC_CLIENT_SECRET` : The secret for the swagger client (`""`) [**Required**]
   - `VITE_OIDC_REDIRECT_URL` : The redirect ulr for the OIDC server (`""`) [**Required**]
+
+### Client
+
+### Build errors
+TODO replace this line in package.json
+`"build": "tsc && vite build",`
