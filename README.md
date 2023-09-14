@@ -70,15 +70,7 @@ pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 To create a dump of the **mongodb** database run in the **mongodb** container:
 
 ```sh
-mongodump \
-  --db=lecture-calendar \
-  --host=mongodb \
-  --port=27017 \
-  --username=root \
-  --password=$MONGO_INITDB_ROOT_PASSWORD \
-  --authenticationDatabase=admin \
-  --gzip \
-  --archive=/docker-entrypoint-initdb.d/lecture-calendar.gz
+mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase=admin --gzip --archive=/backup_data/lecture-calendar.gz
 ```
 
 ## Apps
