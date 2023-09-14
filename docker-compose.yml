@@ -3,7 +3,7 @@
 
 # Set environments, labels, volumes, healthchecks and commands in docker-compose.override.yml
 
-version: "3.9"
+version: "3"
 
 services:
 # loadbalancer
@@ -11,15 +11,6 @@ services:
     container_name: loadbalancer
     image: nginx:latest
     restart: ${RESTART_POLICY}
-    depends_on:
-      client:
-        condition: service_started
-      calendarapi:
-        condition: service_healthy
-      keycloak:
-        condition: service_started
-      grafana:
-        condition: service_started
     ports:
       - 80:80
     networks:
@@ -32,11 +23,11 @@ services:
       dockerfile: Calendar.Api/Dockerfile
     depends_on:
       mongodb:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
       grafana:
-        condition: service_started
+        condition: service_healthy
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
@@ -63,8 +54,8 @@ services:
     depends_on:
       postgressdb-keycloak:
         condition: service_healthy
-      mongodb:
-        condition: service_started
+    ports:
+      - "8080:8080"
     networks:
       - frontend
       - backend-keycloak
@@ -78,10 +69,10 @@ services:
       - backend-api
 
   postgressdb-keycloak:
-      image: "postgres:alpine3.18"
-      restart: ${RESTART_POLICY}
-      networks:
-        - backend-keycloak
+    image: "postgres:alpine3.18"
+    restart: ${RESTART_POLICY}
+    networks:
+      - backend-keycloak
 
   postgressdb-grafana:
     image: postgres:alpine3.18
@@ -127,7 +118,7 @@ services:
     restart: ${RESTART_POLICY}
     depends_on:
       mongodb:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-monitoring
       - backend-api
@@ -137,7 +128,7 @@ services:
     restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-grafana:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-monitoring
 
@@ -146,7 +137,7 @@ services:
     restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-keycloak:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-keycloak
       - backend-monitoring
