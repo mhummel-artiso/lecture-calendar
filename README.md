@@ -1,18 +1,19 @@
 # Lecture Calendar
 
 - [Lecture Calendar](#lecture-calendar)
-  - [Logins:](#logins)
-  - [Urls:](#urls)
+  - [Logins](#logins)
+  - [Urls](#urls)
   - [Docker container](#docker-container)
     - [Configurations](#configurations)
     - [Database Dump](#database-dump)
   - [Apps](#apps)
-    - [Environment variables](#environment-variables)
+    - [Api](#api)
+      - [Environment variables](#environment-variables)
       - [Build variables](#build-variables)
     - [Client](#client)
     - [Build errors](#build-errors)
 
-## Logins:
+## Logins
 
 | Username | Password | Gruppen | Kommentar |
 | --- | --- | --- | --- |
@@ -25,7 +26,7 @@
 | student2  | **student2** | `TINF2021AI` |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
 
-## Urls:
+## Urls
 
 | Container | Url |
 | --- | --- |
@@ -37,6 +38,11 @@
 
 ## Docker container
 
+To start the complete app run:
+```sh
+docker compose up -d --build
+```
+
 ### Configurations
 
 path to configs:
@@ -46,8 +52,6 @@ path to configs:
 ```
 
 > In the [docker-compose.yml](./docker-compose.yml) the containers are defined and in the [docker-compose.override.yml](./docker-compose.override.yml) the containers be configured
-
-
 
 ### Database Dump
 
@@ -63,23 +67,25 @@ To create a dump of the **grafana** database run in the **postgressdb-grafana** 
 pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
 ```
 
-Mongodb dump:
+To create a dump of the **mongodb** database run in the **mongodb** container:
 
 ```sh
 mongodump \
+  --db=lecture-calendar \
   --host=mongodb \
   --port=27017 \
   --username=root \
   --password=$MONGO_INITDB_ROOT_PASSWORD \
   --authenticationDatabase=admin \
-  --db=lecture-calendar \
   --gzip \
   --archive=/docker-entrypoint-initdb.d/lecture-calendar.gz
 ```
 
 ## Apps
 
-### Environment variables
+### Api
+
+#### Environment variables
 
 - `ASPNETCORE_ENVIRONMENT` : The asp.net core environment (`Production`) [*Optional*]
 - Mongo
