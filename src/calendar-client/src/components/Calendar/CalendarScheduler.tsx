@@ -114,7 +114,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         const title: string =
             c.lecture?.shortKey && (c.lecture?.shortKey.length ?? 0) > 0
                 ? c.lecture?.shortKey
-                : c.lecture?.title?? "null"
+                : c.lecture?.title ?? 'null'
 
         const a: AppointmentModel = {
             startDate: moment(c.start).toDate(),

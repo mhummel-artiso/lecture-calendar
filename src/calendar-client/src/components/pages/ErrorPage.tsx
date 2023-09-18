@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Button, Container, Grid } from '@mui/material'
+import { Button, Container, Grid, Stack } from '@mui/material'
 import { FallbackProps } from 'react-error-boundary'
 import { queryClient } from '../../utils/queryClient'
 import { AxiosError } from 'axios'
@@ -13,31 +13,26 @@ export const ErrorPage: FC<FallbackProps> = ({
     resetErrorBoundary,
 }) => {
     return (
-        <>
-            <Container>
-                <Grid
-                    container
-                    direction="column"
-                    spacing={4}
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    {err instanceof AxiosError ? (
-                        <AxiosErrorInformation error={err} />
-                    ) : err instanceof Error ? (
-                        <ErrorInformation error={err} />
-                    ) : null}
-                    <Button
-                        variant={'outlined'}
-                        onClick={() => {
-                            queryClient.clear()
-                            resetErrorBoundary()
-                        }}
-                    >
-                        Ok
-                    </Button>
-                </Grid>
-            </Container>
-        </>
+        <Stack
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: '100vh' }}
+        >
+            {err instanceof AxiosError ? (
+                <AxiosErrorInformation error={err} />
+            ) : err instanceof Error ? (
+                <ErrorInformation error={err} />
+            ) : null}
+            <Button
+                sx={{ marginTop: 2 }}
+                variant={'outlined'}
+                onClick={() => {
+                    queryClient.clear()
+                    resetErrorBoundary()
+                }}
+            >
+                Ok
+            </Button>
+        </Stack>
     )
 }
