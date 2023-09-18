@@ -31,7 +31,9 @@ export const AppointmentTooltipContent: React.FC<
             >
                 {appointmentData?.location && (
                     <Grid item>
-                        <Typography fontWeight="bold">Veranstaltungsort:</Typography>
+                        <Typography fontWeight="bold">
+                            Veranstaltungsort:
+                        </Typography>
                         <Typography sx={{ ml: 2 }}>
                             {' '}
                             {appointmentData?.location}
@@ -77,43 +79,43 @@ export const AppointmentTooltipHeader: React.FC<
             {...restProps}
             appointmentData={appointmentData}
         >
-            {event.lecture ?  
-            (<Grid
-                sx={{ mt: 1, ml: 1 }}
-                container
-                alignItems="Center"
-                direction="column"
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography variant={'h5'}>Veranstaltung</Typography>
-                </Grid>
-                {event.lecture?.shortKey && (
+            {event.lecture ? (
+                <Grid
+                    sx={{ mt: 1, ml: 1 }}
+                    container
+                    alignItems="Center"
+                    direction="column"
+                    spacing={1}
+                >
                     <Grid item>
-                        <Typography fontWeight="bold">
-                            {event.lecture.title}
-                        </Typography>
+                        <Typography variant={'h5'}>Veranstaltung</Typography>
                     </Grid>
-                )}
-                {event.lecture?.description && (
-                    <Grid item>
-                        <Typography>{event.lecture.description}</Typography>
-                    </Grid>
-                )}
-            </Grid>) : 
-            (<Grid
-                sx={{ mt: 1, ml: 1 }}
-                container
-                alignItems="Center"
-                direction="column"
-                spacing={1}
-            >
-                <Grid item>
-                    <Typography variant={'h5'}>Fehler!</Typography>
+                    {event.lecture?.shortKey && (
+                        <Grid item>
+                            <Typography fontWeight="bold">
+                                {event.lecture.title}
+                            </Typography>
+                        </Grid>
+                    )}
+                    {event.lecture?.description && (
+                        <Grid item>
+                            <Typography>{event.lecture.description}</Typography>
+                        </Grid>
+                    )}
                 </Grid>
-            </Grid>
-            )
-            }
+            ) : (
+                <Grid
+                    sx={{ mt: 1, ml: 1 }}
+                    container
+                    alignItems="Center"
+                    direction="column"
+                    spacing={1}
+                >
+                    <Grid item>
+                        <Typography variant={'h5'}>Fehler!</Typography>
+                    </Grid>
+                </Grid>
+            )}
         </AppointmentTooltip.Header>
     )
 }
