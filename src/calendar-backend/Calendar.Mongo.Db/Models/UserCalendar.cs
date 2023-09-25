@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Calendar.Mongo.Db.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Calendar.Mongo.Db.Models

@@ -52,6 +52,7 @@ public class CalendarService : ICalendarService
         await dbCollection.InsertOneAsync(calendar);
         return calendar;
     }
+    
     public async Task<UserCalendar?> UpdateCalendarAsync(string calendarId, UserCalendar updateCalendar)
     {
         var updates = new UpdateDefinitionBuilder<UserCalendar>()

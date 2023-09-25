@@ -5,7 +5,6 @@ RUN dnf install --installroot /mnt/rootfs curl --releasever 9 --setopt install_w
 
 FROM quay.io/keycloak/keycloak:22.0.1 as builder
 COPY --from=ubi-micro-build /mnt/rootfs /
-# add
 COPY ./providers /opt/keycloak/providers/
 RUN /opt/keycloak/bin/kc.sh build
 

@@ -103,7 +103,9 @@ services:
     networks:
       - frontend
       - backend-monitoring
-
+    deploy:
+      mode: replicated
+      replicas: 2
   prometheus:
     image: prom/prometheus
     restart: ${RESTART_POLICY}

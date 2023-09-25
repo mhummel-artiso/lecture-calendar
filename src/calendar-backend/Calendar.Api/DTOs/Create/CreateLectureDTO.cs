@@ -1,4 +1,5 @@
-﻿using Calendar.Mongo.Db.Models;
+﻿using Calendar.Mongo.Db.Interfaces;
+using Calendar.Mongo.Db.Models;
 
 namespace Calendar.Api.DTOs.Create
 {
