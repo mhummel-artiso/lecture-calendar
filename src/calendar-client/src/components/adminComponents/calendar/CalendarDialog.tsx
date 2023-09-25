@@ -119,7 +119,7 @@ export const CalendarDialog: FC<
                     {currentCalendar ? (
                         <TextField
                             id="outlined-read-only-input"
-                            label="Name"
+                            label="Kalendername"
                             defaultValue={currentCalendar.name}
                             InputProps={{
                                 readOnly: true,
