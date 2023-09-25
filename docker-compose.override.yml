@@ -74,7 +74,7 @@ services:
     volumes:
       - mongodb-data:/data/db
       - ./config/mongodb/data:/backup_data/
-      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
+      #- ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
   
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/

@@ -29,6 +29,7 @@ function App() {
         scope: '',
         clientSecret: envConfig.OIDC_CLIENT_SECRET,
         redirectUri: envConfig.OIDC_REDIRECT_URL,
+        silentRedirectUri: envConfig.OIDC_REDIRECT_URL,
         postLogoutRedirectUri: envConfig.OIDC_REDIRECT_URL,
     }
     return (

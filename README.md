@@ -20,11 +20,11 @@
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` | Grafana Admin |
 | User  | **User** | `Verwaltung` | Grafana User |
-| dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
-| sekreteriat | **sekreteriat** | `Verwaltung` |
-| student1  | **student1** | `TINF2021AI` |
-| student2  | **student2** | `TINF2021AI` |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
+| sekreteriat | **sekreteriat** | `Verwaltung`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| student1  | **student1** | `TINF2021AI` |
+
 
 ## Urls
 
@@ -55,16 +55,11 @@ path to configs:
 
 ### Database Dump
 
-To create a dump of the **keycloak** database run in the **postgressdb-keycloak** container:
+To create a dump of the **keycloak** database run in the **postgressdb-keycloak** container,
+to create a dump of the **grafana** database run in the **postgressdb-grafana** container:
 
 ```sh
-pg_dump keycloak > /docker-entrypoint-initdb.d/init.sql
-```
-
-To create a dump of the **grafana** database run in the **postgressdb-grafana** container:
-
-```sh
-pg_dump grafana > /docker-entrypoint-initdb.d/init.sql
+pg_dump $POSTGRES_DB > /docker-entrypoint-initdb.d/init.sql
 ```
 
 To create a dump of the **mongodb** database run in the **mongodb** container:

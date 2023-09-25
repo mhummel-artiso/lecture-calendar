@@ -20,6 +20,7 @@ services:
       - grafana
       - client
       - keycloak
+      - prometheus
 
 # calendar api
   calendarapi:
@@ -41,7 +42,7 @@ services:
       - frontend
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
 
 # calendar client
   client:
@@ -78,6 +79,8 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
+    ports:
+      - 27017:27017
 
   postgressdb-keycloak:
     image: "postgres:alpine3.18"
@@ -105,7 +108,7 @@ services:
       - backend-monitoring
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
   prometheus:
     image: prom/prometheus
     restart: ${RESTART_POLICY}
@@ -122,6 +125,7 @@ services:
         condition: service_healthy
     networks:
       - backend-monitoring
+      - frontend
     # ports:
     #   - "9090:9090"
 
