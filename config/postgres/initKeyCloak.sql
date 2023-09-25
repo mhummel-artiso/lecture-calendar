@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.3
--- Dumped by pg_dump version 15.3
+-- Dumped from database version 16.0
+-- Dumped by pg_dump version 16.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1465,6 +1465,7 @@ c200bc21-0d97-4b90-b119-7e98d4eea709	1694604564355	d4932c90-8454-4b23-b96a-05444
 5c4ebb07-204a-40f1-ad12-a5ccfb019f62	1695679783832	d4932c90-8454-4b23-b96a-05444067272e	CREATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	172.27.0.8	users/4f95e562-3f21-416c-aba8-98d10d65a744/groups/c9811517-c13b-4937-8c90-806418330de2	{"id":"c9811517-c13b-4937-8c90-806418330de2","name":"TINF2020AI","path":"/Semesters/TINF2020AI","attributes":{},"realmRoles":[],"clientRoles":{}}	\N	GROUP_MEMBERSHIP
 c2213454-c949-4ed6-930c-95160840a145	1695679811095	d4932c90-8454-4b23-b96a-05444067272e	DELETE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	172.27.0.8	users/6fe6034a-5015-4bf6-b0cb-d8314f38ac0b	\N	\N	USER
 f8565b3f-eb02-4eb7-b23d-144dbd49918a	1695679813783	d4932c90-8454-4b23-b96a-05444067272e	DELETE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	172.27.0.8	users/ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	\N	\N	USER
+9216f0d9-0bd3-4a95-aed6-b625e37851d9	1695681236556	d4932c90-8454-4b23-b96a-05444067272e	UPDATE	e09f66b1-fa27-4fd8-affd-235a04a06fba	b18471e0-3804-4b98-b391-bf56dd4dc923	f94b920e-9c5c-474c-904e-b75f2181f5e2	192.168.48.10	\N	{"id":"Calendar","realm":"Calendar","displayName":"Calendar realm","displayNameHtml":"<div class=\\"kc-logo-text\\"><span>Lecture Calendar</span></div>","notBefore":0,"defaultSignatureAlgorithm":"RS256","revokeRefreshToken":true,"refreshTokenMaxReuse":5,"accessTokenLifespan":600,"accessTokenLifespanForImplicitFlow":54000,"ssoSessionIdleTimeout":1800,"ssoSessionMaxLifespan":36000,"ssoSessionIdleTimeoutRememberMe":0,"ssoSessionMaxLifespanRememberMe":0,"offlineSessionIdleTimeout":2592000,"offlineSessionMaxLifespanEnabled":false,"offlineSessionMaxLifespan":5184000,"clientSessionIdleTimeout":0,"clientSessionMaxLifespan":0,"clientOfflineSessionIdleTimeout":0,"clientOfflineSessionMaxLifespan":0,"accessCodeLifespan":60,"accessCodeLifespanUserAction":300,"accessCodeLifespanLogin":1800,"actionTokenGeneratedByAdminLifespan":43200,"actionTokenGeneratedByUserLifespan":300,"oauth2DeviceCodeLifespan":600,"oauth2DevicePollingInterval":5,"enabled":true,"sslRequired":"external","registrationAllowed":true,"registrationEmailAsUsername":false,"rememberMe":true,"verifyEmail":false,"loginWithEmailAllowed":true,"duplicateEmailsAllowed":false,"resetPasswordAllowed":false,"editUsernameAllowed":false,"bruteForceProtected":false,"permanentLockout":false,"maxFailureWaitSeconds":900,"minimumQuickLoginWaitSeconds":60,"waitIncrementSeconds":60,"quickLoginCheckMilliSeconds":1000,"maxDeltaTimeSeconds":43200,"failureFactor":30,"defaultRole":{"id":"f8287ef9-36e5-4a8c-a160-a4f30f694375","name":"default-roles-calendar","description":"${role_default-roles}","composite":true,"clientRole":false,"containerId":"d4932c90-8454-4b23-b96a-05444067272e"},"requiredCredentials":["password"],"otpPolicyType":"totp","otpPolicyAlgorithm":"HmacSHA1","otpPolicyInitialCounter":0,"otpPolicyDigits":6,"otpPolicyLookAheadWindow":1,"otpPolicyPeriod":30,"otpPolicyCodeReusable":false,"otpSupportedApplications":["totpAppGoogleName","totpAppFreeOTPName","totpAppMicrosoftAuthenticatorName"],"webAuthnPolicyRpEntityName":"keycloak","webAuthnPolicySignatureAlgorithms":["ES256"],"webAuthnPolicyRpId":"","webAuthnPolicyAttestationConveyancePreference":"not specified","webAuthnPolicyAuthenticatorAttachment":"not specified","webAuthnPolicyRequireResidentKey":"not specified","webAuthnPolicyUserVerificationRequirement":"not specified","webAuthnPolicyCreateTimeout":0,"webAuthnPolicyAvoidSameAuthenticatorRegister":false,"webAuthnPolicyAcceptableAaguids":[],"webAuthnPolicyPasswordlessRpEntityName":"keycloak","webAuthnPolicyPasswordlessSignatureAlgorithms":["ES256"],"webAuthnPolicyPasswordlessRpId":"","webAuthnPolicyPasswordlessAttestationConveyancePreference":"not specified","webAuthnPolicyPasswordlessAuthenticatorAttachment":"not specified","webAuthnPolicyPasswordlessRequireResidentKey":"not specified","webAuthnPolicyPasswordlessUserVerificationRequirement":"not specified","webAuthnPolicyPasswordlessCreateTimeout":0,"webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister":false,"webAuthnPolicyPasswordlessAcceptableAaguids":[],"browserSecurityHeaders":{"contentSecurityPolicyReportOnly":"","xContentTypeOptions":"nosniff","referrerPolicy":"no-referrer","xRobotsTag":"none","xFrameOptions":"SAMEORIGIN","contentSecurityPolicy":"frame-src 'self'; frame-ancestors 'self'; object-src 'none';","xXSSProtection":"1; mode=block","strictTransportSecurity":"max-age=31536000; includeSubDomains"},"smtpServer":{},"eventsEnabled":true,"eventsListeners":["metrics-listener","jboss-logging"],"enabledEventTypes":["UPDATE_CONSENT_ERROR","UPDATE_TOTP","PERMISSION_TOKEN_ERROR","IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR","IMPERSONATE_ERROR","CUSTOM_REQUIRED_ACTION","RESTART_AUTHENTICATION","CLIENT_INFO","IMPERSONATE","LOGIN","CLIENT_INITIATED_ACCOUNT_LINKING","TOKEN_EXCHANGE","REGISTER","DELETE_ACCOUNT_ERROR","IDENTITY_PROVIDER_LINK_ACCOUNT","INTROSPECT_TOKEN_ERROR","DELETE_ACCOUNT","UPDATE_PASSWORD","IDENTITY_PROVIDER_FIRST_LOGIN","VERIFY_EMAIL","CLIENT_LOGIN_ERROR","RESTART_AUTHENTICATION_ERROR","EXECUTE_ACTIONS","REMOVE_FEDERATED_IDENTITY_ERROR","TOKEN_EXCHANGE_ERROR","UNREGISTER_NODE","SEND_IDENTITY_PROVIDER_LINK_ERROR","USER_INFO_REQUEST_ERROR","EXECUTE_ACTION_TOKEN_ERROR","SEND_VERIFY_EMAIL","IDENTITY_PROVIDER_RESPONSE","EXECUTE_ACTIONS_ERROR","IDENTITY_PROVIDER_RETRIEVE_TOKEN","OAUTH2_DEVICE_CODE_TO_TOKEN","UNREGISTER_NODE_ERROR","VALIDATE_ACCESS_TOKEN_ERROR","OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR","REVOKE_GRANT_ERROR","UPDATE_EMAIL_ERROR","UPDATE_PROFILE","USER_INFO_REQUEST","SEND_IDENTITY_PROVIDER_LINK","SEND_VERIFY_EMAIL_ERROR","CLIENT_INITIATED_ACCOUNT_LINKING_ERROR","OAUTH2_DEVICE_AUTH_ERROR","REMOVE_TOTP_ERROR","VERIFY_EMAIL_ERROR","CLIENT_UPDATE","UPDATE_TOTP_ERROR","VERIFY_PROFILE","GRANT_CONSENT_ERROR","SEND_RESET_PASSWORD","GRANT_CONSENT","REGISTER_NODE_ERROR","VERIFY_PROFILE_ERROR","REMOVE_TOTP","REVOKE_GRANT","LOGIN_ERROR","CLIENT_LOGIN","RESET_PASSWORD_ERROR","CODE_TO_TOKEN_ERROR","OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR","UPDATE_PROFILE_ERROR","VALIDATE_ACCESS_TOKEN","OAUTH2_DEVICE_VERIFY_USER_CODE","UPDATE_PASSWORD_ERROR","IDENTITY_PROVIDER_LOGIN","AUTHREQID_TO_TOKEN","LOGOUT","CLIENT_INFO_ERROR","CLIENT_REGISTER","PUSHED_AUTHORIZATION_REQUEST","REFRESH_TOKEN","INTROSPECT_TOKEN","CLIENT_DELETE","FEDERATED_IDENTITY_LINK_ERROR","CLIENT_DELETE_ERROR","PERMISSION_TOKEN","REGISTER_NODE","INVALID_SIGNATURE","PUSHED_AUTHORIZATION_REQUEST_ERROR","OAUTH2_DEVICE_AUTH","REMOVE_FEDERATED_IDENTITY","IDENTITY_PROVIDER_POST_LOGIN","IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR","UPDATE_EMAIL","REGISTER_ERROR","EXECUTE_ACTION_TOKEN","LOGOUT_ERROR","CLIENT_UPDATE_ERROR","AUTHREQID_TO_TOKEN_ERROR","INVALID_SIGNATURE_ERROR","CLIENT_REGISTER_ERROR","FEDERATED_IDENTITY_LINK","IDENTITY_PROVIDER_RESPONSE_ERROR","IDENTITY_PROVIDER_LOGIN_ERROR","RESET_PASSWORD","UPDATE_CONSENT","SEND_RESET_PASSWORD_ERROR","REFRESH_TOKEN_ERROR","CUSTOM_REQUIRED_ACTION_ERROR","IDENTITY_PROVIDER_POST_LOGIN_ERROR","CODE_TO_TOKEN","IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"],"adminEventsEnabled":true,"adminEventsDetailsEnabled":true,"identityProviders":[],"identityProviderMappers":[],"internationalizationEnabled":true,"supportedLocales":["de","en"],"defaultLocale":"en","browserFlow":"browser","registrationFlow":"registration","directGrantFlow":"direct grant","resetCredentialsFlow":"reset credentials","clientAuthenticationFlow":"clients","dockerAuthenticationFlow":"docker auth","attributes":{"shortVerificationUri":"","actionTokenGeneratedByUserLifespan-verify-email":"","actionTokenGeneratedByUserLifespan-idp-verify-account-via-email":"","actionTokenGeneratedByUserLifespan-reset-credentials":"","actionTokenGeneratedByUserLifespan-execute-actions":"","cibaBackchannelTokenDeliveryMode":"poll","cibaAuthRequestedUserHint":"login_hint","clientOfflineSessionMaxLifespan":"0","oauth2DevicePollingInterval":"5","clientSessionIdleTimeout":"0","clientOfflineSessionIdleTimeout":"0","cibaInterval":"5","realmReusableOtpCode":"false","cibaExpiresIn":"120","oauth2DeviceCodeLifespan":"600","parRequestUriLifespan":"60","clientSessionMaxLifespan":"0","frontendUrl":"","acr.loa.map":"{}","adminEventsExpiration":""},"userManagedAccessAllowed":false,"clientProfiles":{"profiles":[]},"clientPolicies":{"policies":[]}}	\N	REALM
 \.
 
 
@@ -2054,7 +2055,6 @@ ce7313f0-9fa2-4948-966d-19f366995acb	rsa-generated	d4932c90-8454-4b23-b96a-05444
 e5bb2e79-8516-478d-825d-aa5f5ef659e2	hmac-generated	d4932c90-8454-4b23-b96a-05444067272e	hmac-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 74129383-7d0c-44f8-8856-ee6b803d53da	rsa-enc-generated	d4932c90-8454-4b23-b96a-05444067272e	rsa-enc-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 c17c7650-8b61-4f77-aa5d-380ed6772d57	aes-generated	d4932c90-8454-4b23-b96a-05444067272e	aes-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
-1e438998-04ce-499c-8d36-57925f51c79d	\N	d4932c90-8454-4b23-b96a-05444067272e	declarative-user-profile	org.keycloak.userprofile.UserProfileProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 \.
 
 
@@ -2451,6 +2451,10 @@ adaafc5e-4692-493f-85ad-2372d25770b0	calendar-client	{"auth_method":"validate_ac
 246ace16-02df-444c-881e-fb36d8783dea	calendar-client	{"auth_method":"openid-connect","auth_type":"code","redirect_uri":"http://localhost/","consent":"no_consent_required","code_id":"9056a2bc-a0a1-48a3-b612-7897cf8338f1","username":"sekreteriat"}	\N	172.27.0.8	d4932c90-8454-4b23-b96a-05444067272e	9056a2bc-a0a1-48a3-b612-7897cf8338f1	1695679692729	LOGIN	4f95e562-3f21-416c-aba8-98d10d65a744
 f3d15c9c-33a2-4582-ab94-49aa31ba382b	calendar-client	{"token_id":"2034fc23-3a79-4cef-8e43-d8a20a94c970","grant_type":"authorization_code","refresh_token_type":"Refresh","scope":"openid profile email","refresh_token_id":"a4e3ac94-c045-411b-a5fa-8aa34708c2fe","code_id":"9056a2bc-a0a1-48a3-b612-7897cf8338f1","client_auth_method":"client-secret"}	\N	172.27.0.8	d4932c90-8454-4b23-b96a-05444067272e	9056a2bc-a0a1-48a3-b612-7897cf8338f1	1695679693239	CODE_TO_TOKEN	4f95e562-3f21-416c-aba8-98d10d65a744
 224c310d-ad27-422b-a648-f4b4e1aa954b	calendar-client	{"auth_method":"validate_access_token","signature_required":"false","username":"sekreteriat"}	\N	172.27.0.8	d4932c90-8454-4b23-b96a-05444067272e	9056a2bc-a0a1-48a3-b612-7897cf8338f1	1695679693280	USER_INFO_REQUEST	4f95e562-3f21-416c-aba8-98d10d65a744
+f22f5d79-0bad-4f2e-8931-640e9819f82a	\N	null	session_expired	192.168.48.10	d4932c90-8454-4b23-b96a-05444067272e	\N	1695681006029	LOGOUT_ERROR	\N
+76e441c4-539e-48d0-866c-1227e3fc6817	calendar-client	{"auth_method":"openid-connect","auth_type":"code","redirect_uri":"http://localhost/","consent":"no_consent_required","code_id":"48238955-0ffc-4f0c-8bab-1cfd1b834d0c","username":"sekreteriat"}	\N	192.168.48.10	d4932c90-8454-4b23-b96a-05444067272e	48238955-0ffc-4f0c-8bab-1cfd1b834d0c	1695681011564	LOGIN	4f95e562-3f21-416c-aba8-98d10d65a744
+8116d050-776d-496d-a2fe-035a2b5bac50	calendar-client	{"token_id":"14d32138-681f-400e-a386-6a051d81cf9e","grant_type":"authorization_code","refresh_token_type":"Refresh","scope":"openid profile email","refresh_token_id":"5c8a829b-23f6-47b0-aa3c-d540c23b410f","code_id":"48238955-0ffc-4f0c-8bab-1cfd1b834d0c","client_auth_method":"client-secret"}	\N	192.168.48.10	d4932c90-8454-4b23-b96a-05444067272e	48238955-0ffc-4f0c-8bab-1cfd1b834d0c	1695681012101	CODE_TO_TOKEN	4f95e562-3f21-416c-aba8-98d10d65a744
+ae509869-edd6-4845-9c39-e4c45321ec8c	calendar-client	{"auth_method":"validate_access_token","signature_required":"false","username":"sekreteriat"}	\N	192.168.48.10	d4932c90-8454-4b23-b96a-05444067272e	48238955-0ffc-4f0c-8bab-1cfd1b834d0c	1695681012162	USER_INFO_REQUEST	4f95e562-3f21-416c-aba8-98d10d65a744
 \.
 
 
@@ -3165,7 +3169,7 @@ f9e1b117-22de-4107-ad0f-585be5351262	String	jsonType.label
 
 COPY public.realm (id, access_code_lifespan, user_action_lifespan, access_token_lifespan, account_theme, admin_theme, email_theme, enabled, events_enabled, events_expiration, login_theme, name, not_before, password_policy, registration_allowed, remember_me, reset_password_allowed, social, ssl_required, sso_idle_timeout, sso_max_lifespan, update_profile_on_soc_login, verify_email, master_admin_client, login_lifespan, internationalization_enabled, default_locale, reg_email_as_username, admin_events_enabled, admin_events_details_enabled, edit_username_allowed, otp_policy_counter, otp_policy_window, otp_policy_period, otp_policy_digits, otp_policy_alg, otp_policy_type, browser_flow, registration_flow, direct_grant_flow, reset_credentials_flow, client_auth_flow, offline_session_idle_timeout, revoke_refresh_token, access_token_life_implicit, login_with_email_allowed, duplicate_emails_allowed, docker_auth_flow, refresh_token_max_reuse, allow_user_managed_access, sso_max_lifespan_remember_me, sso_idle_timeout_remember_me, default_role) FROM stdin;
 e09f66b1-fa27-4fd8-affd-235a04a06fba	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	40c35b4b-faec-4a96-befb-88e1049653c3	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	77c26107-84ae-477d-8004-89012c00284a	c80bafd1-ab88-4e34-ab7b-d6937e394379	887b916f-5a63-4603-b399-494d45e0afe4	4d1bc370-774d-4188-93c4-b8d47c5099d1	c5b5ea41-299e-4d15-a047-6f5838f3e5bf	2592000	f	900	t	f	c2b0981c-d5ee-42c3-9d8b-8502f2aee29e	0	f	0	0	95cc1bb4-86dc-4f85-a3d1-80dabefb577b
-d4932c90-8454-4b23-b96a-05444067272e	60	300	18000	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	54000	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	1	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
+d4932c90-8454-4b23-b96a-05444067272e	60	300	600	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	54000	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	5	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
 \.
 
 
@@ -3196,6 +3200,26 @@ displayNameHtml	e09f66b1-fa27-4fd8-affd-235a04a06fba	<div class="kc-logo-text"><
 defaultSignatureAlgorithm	e09f66b1-fa27-4fd8-affd-235a04a06fba	RS256
 offlineSessionMaxLifespanEnabled	e09f66b1-fa27-4fd8-affd-235a04a06fba	false
 offlineSessionMaxLifespan	e09f66b1-fa27-4fd8-affd-235a04a06fba	5184000
+realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
+clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
+oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
+oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
+cibaBackchannelTokenDeliveryMode	d4932c90-8454-4b23-b96a-05444067272e	poll
+cibaExpiresIn	d4932c90-8454-4b23-b96a-05444067272e	120
+cibaInterval	d4932c90-8454-4b23-b96a-05444067272e	5
+cibaAuthRequestedUserHint	d4932c90-8454-4b23-b96a-05444067272e	login_hint
+parRequestUriLifespan	d4932c90-8454-4b23-b96a-05444067272e	60
+actionTokenGeneratedByUserLifespan-execute-actions	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-verify-email	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-reset-credentials	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-idp-verify-account-via-email	d4932c90-8454-4b23-b96a-05444067272e	
+frontendUrl	d4932c90-8454-4b23-b96a-05444067272e	
+acr.loa.map	d4932c90-8454-4b23-b96a-05444067272e	{}
+adminEventsExpiration	d4932c90-8454-4b23-b96a-05444067272e	
+shortVerificationUri	d4932c90-8454-4b23-b96a-05444067272e	
 displayName	d4932c90-8454-4b23-b96a-05444067272e	Calendar realm
 displayNameHtml	d4932c90-8454-4b23-b96a-05444067272e	<div class="kc-logo-text"><span>Lecture Calendar</span></div>
 bruteForceProtected	d4932c90-8454-4b23-b96a-05444067272e	false
@@ -3212,20 +3236,13 @@ defaultSignatureAlgorithm	d4932c90-8454-4b23-b96a-05444067272e	RS256
 offlineSessionMaxLifespanEnabled	d4932c90-8454-4b23-b96a-05444067272e	false
 offlineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	5184000
 webAuthnPolicyRpEntityName	d4932c90-8454-4b23-b96a-05444067272e	keycloak
-realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicySignatureAlgorithms	d4932c90-8454-4b23-b96a-05444067272e	ES256
 webAuthnPolicyRpId	d4932c90-8454-4b23-b96a-05444067272e	
 webAuthnPolicyAttestationConveyancePreference	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyAuthenticatorAttachment	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyRequireResidentKey	d4932c90-8454-4b23-b96a-05444067272e	not specified
-clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
 webAuthnPolicyUserVerificationRequirement	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyCreateTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
-oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
 webAuthnPolicyAvoidSameAuthenticatorRegister	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicyRpEntityNamePasswordless	d4932c90-8454-4b23-b96a-05444067272e	keycloak
 webAuthnPolicySignatureAlgorithmsPasswordless	d4932c90-8454-4b23-b96a-05444067272e	ES256
@@ -3244,19 +3261,6 @@ _browser_header.referrerPolicy	d4932c90-8454-4b23-b96a-05444067272e	no-referrer
 _browser_header.xRobotsTag	d4932c90-8454-4b23-b96a-05444067272e	none
 _browser_header.xFrameOptions	d4932c90-8454-4b23-b96a-05444067272e	SAMEORIGIN
 _browser_header.contentSecurityPolicy	d4932c90-8454-4b23-b96a-05444067272e	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
-cibaBackchannelTokenDeliveryMode	d4932c90-8454-4b23-b96a-05444067272e	poll
-cibaExpiresIn	d4932c90-8454-4b23-b96a-05444067272e	120
-cibaInterval	d4932c90-8454-4b23-b96a-05444067272e	5
-cibaAuthRequestedUserHint	d4932c90-8454-4b23-b96a-05444067272e	login_hint
-parRequestUriLifespan	d4932c90-8454-4b23-b96a-05444067272e	60
-actionTokenGeneratedByUserLifespan-execute-actions	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-verify-email	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-reset-credentials	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-idp-verify-account-via-email	d4932c90-8454-4b23-b96a-05444067272e	
-frontendUrl	d4932c90-8454-4b23-b96a-05444067272e	
-acr.loa.map	d4932c90-8454-4b23-b96a-05444067272e	{}
-adminEventsExpiration	d4932c90-8454-4b23-b96a-05444067272e	
-shortVerificationUri	d4932c90-8454-4b23-b96a-05444067272e	
 _browser_header.xXSSProtection	d4932c90-8454-4b23-b96a-05444067272e	1; mode=block
 _browser_header.strictTransportSecurity	d4932c90-8454-4b23-b96a-05444067272e	max-age=31536000; includeSubDomains
 \.

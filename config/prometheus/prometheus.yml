@@ -23,7 +23,7 @@ scrape_configs:
   - job_name: 'calendarapi'
     metrics_path: /metrics
     static_configs:
-      - targets: ['calendarapi:80']
+      - targets: ['lecture-calendar-calendarapi-1:80','lecture-calendar-calendarapi-2:80','lecture-calendar-calendarapi-3:80']
   
   - job_name: 'mongodb'
     metrics_path: /metrics
@@ -34,7 +34,7 @@ scrape_configs:
   - job_name: 'grafana'
     metrics_path: /grafana/metrics
     static_configs:
-      - targets: ['grafana:3000']
+      - targets: ['lecture-calendar-grafana-1:3000','lecture-calendar-grafana-2:3000','lecture-calendar-grafana-3:3000']
   
   - job_name: 'postgressdb-grafana'
     metrics_path: /metrics

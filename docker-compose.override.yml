@@ -183,9 +183,9 @@ services:
     volumes:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
-    command:
-     - '--web.external-url=/prometheus/'
-     - '--web.route-prefix=/prometheus/'
+    # command:
+    #  - '--web.external-url=/prometheus/'
+    #  - '--web.route-prefix=/prometheus/'
 
   mongodb-exporter:
     command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017

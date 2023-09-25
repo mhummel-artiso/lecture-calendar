@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.4
--- Dumped by pg_dump version 15.4
+-- Dumped from database version 16.0
+-- Dumped by pg_dump version 16.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -99,7 +99,7 @@ CREATE SEQUENCE public.alert_configuration_history_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_configuration_history_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_configuration_history_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_configuration_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -121,7 +121,7 @@ CREATE SEQUENCE public.alert_configuration_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_configuration_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_configuration_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_configuration_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -143,7 +143,7 @@ CREATE SEQUENCE public.alert_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -181,7 +181,7 @@ CREATE SEQUENCE public.alert_image_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_image_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_image_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_image_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -245,7 +245,7 @@ CREATE SEQUENCE public.alert_notification_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_notification_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_notification_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -285,7 +285,7 @@ CREATE SEQUENCE public.alert_notification_state_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_notification_state_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_notification_state_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_notification_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -337,7 +337,7 @@ CREATE SEQUENCE public.alert_rule_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_rule_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_rule_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_rule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -372,7 +372,7 @@ CREATE SEQUENCE public.alert_rule_tag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_rule_tag_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_rule_tag_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_rule_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -424,7 +424,7 @@ CREATE SEQUENCE public.alert_rule_version_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.alert_rule_version_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.alert_rule_version_id_seq OWNER TO postgres;
 
 --
 -- Name: alert_rule_version_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -476,7 +476,7 @@ CREATE SEQUENCE public.annotation_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.annotation_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.annotation_id_seq OWNER TO postgres;
 
 --
 -- Name: annotation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -511,7 +511,7 @@ CREATE SEQUENCE public.annotation_tag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.annotation_tag_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.annotation_tag_id_seq OWNER TO postgres;
 
 --
 -- Name: annotation_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -554,7 +554,7 @@ CREATE SEQUENCE public.api_key_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.api_key_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.api_key_id_seq1 OWNER TO postgres;
 
 --
 -- Name: api_key_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -592,7 +592,7 @@ CREATE SEQUENCE public.builtin_role_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.builtin_role_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.builtin_role_id_seq OWNER TO postgres;
 
 --
 -- Name: builtin_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -690,7 +690,7 @@ CREATE SEQUENCE public.dashboard_acl_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_acl_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_acl_id_seq OWNER TO postgres;
 
 --
 -- Name: dashboard_acl_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -712,7 +712,7 @@ CREATE SEQUENCE public.dashboard_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_id_seq1 OWNER TO postgres;
 
 --
 -- Name: dashboard_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -750,7 +750,7 @@ CREATE SEQUENCE public.dashboard_provisioning_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_provisioning_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_provisioning_id_seq1 OWNER TO postgres;
 
 --
 -- Name: dashboard_provisioning_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -820,7 +820,7 @@ CREATE SEQUENCE public.dashboard_snapshot_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_snapshot_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_snapshot_id_seq OWNER TO postgres;
 
 --
 -- Name: dashboard_snapshot_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -855,7 +855,7 @@ CREATE SEQUENCE public.dashboard_tag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_tag_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_tag_id_seq OWNER TO postgres;
 
 --
 -- Name: dashboard_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -896,7 +896,7 @@ CREATE SEQUENCE public.dashboard_version_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.dashboard_version_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.dashboard_version_id_seq OWNER TO postgres;
 
 --
 -- Name: dashboard_version_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -967,7 +967,7 @@ CREATE SEQUENCE public.data_source_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.data_source_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.data_source_id_seq1 OWNER TO postgres;
 
 --
 -- Name: data_source_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1003,7 +1003,7 @@ CREATE SEQUENCE public.entity_event_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.entity_event_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.entity_event_id_seq OWNER TO postgres;
 
 --
 -- Name: entity_event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1077,7 +1077,7 @@ CREATE SEQUENCE public.folder_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.folder_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.folder_id_seq OWNER TO postgres;
 
 --
 -- Name: folder_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1116,7 +1116,7 @@ CREATE SEQUENCE public.kv_store_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.kv_store_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.kv_store_id_seq OWNER TO postgres;
 
 --
 -- Name: kv_store_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1178,7 +1178,7 @@ CREATE SEQUENCE public.library_element_connection_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.library_element_connection_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.library_element_connection_id_seq OWNER TO postgres;
 
 --
 -- Name: library_element_connection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1200,7 +1200,7 @@ CREATE SEQUENCE public.library_element_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.library_element_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.library_element_id_seq OWNER TO postgres;
 
 --
 -- Name: library_element_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1236,7 +1236,7 @@ CREATE SEQUENCE public.login_attempt_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.login_attempt_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.login_attempt_id_seq1 OWNER TO postgres;
 
 --
 -- Name: login_attempt_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1274,7 +1274,7 @@ CREATE SEQUENCE public.migration_log_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.migration_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.migration_log_id_seq OWNER TO postgres;
 
 --
 -- Name: migration_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1312,7 +1312,7 @@ CREATE SEQUENCE public.ngalert_configuration_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.ngalert_configuration_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.ngalert_configuration_id_seq OWNER TO postgres;
 
 --
 -- Name: ngalert_configuration_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1356,7 +1356,7 @@ CREATE SEQUENCE public.org_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.org_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.org_id_seq OWNER TO postgres;
 
 --
 -- Name: org_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1394,7 +1394,7 @@ CREATE SEQUENCE public.org_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.org_user_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.org_user_id_seq OWNER TO postgres;
 
 --
 -- Name: org_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1435,7 +1435,7 @@ CREATE SEQUENCE public.permission_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.permission_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.permission_id_seq OWNER TO postgres;
 
 --
 -- Name: permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1472,7 +1472,7 @@ CREATE SEQUENCE public.playlist_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.playlist_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.playlist_id_seq OWNER TO postgres;
 
 --
 -- Name: playlist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1510,7 +1510,7 @@ CREATE SEQUENCE public.playlist_item_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.playlist_item_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.playlist_item_id_seq OWNER TO postgres;
 
 --
 -- Name: playlist_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1552,7 +1552,7 @@ CREATE SEQUENCE public.plugin_setting_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.plugin_setting_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.plugin_setting_id_seq OWNER TO postgres;
 
 --
 -- Name: plugin_setting_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1596,7 +1596,7 @@ CREATE SEQUENCE public.preferences_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.preferences_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.preferences_id_seq OWNER TO postgres;
 
 --
 -- Name: preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1633,7 +1633,7 @@ CREATE SEQUENCE public.provenance_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.provenance_type_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.provenance_type_id_seq OWNER TO postgres;
 
 --
 -- Name: provenance_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1673,7 +1673,7 @@ CREATE SEQUENCE public.query_history_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.query_history_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.query_history_id_seq OWNER TO postgres;
 
 --
 -- Name: query_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1709,7 +1709,7 @@ CREATE SEQUENCE public.query_history_star_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.query_history_star_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.query_history_star_id_seq OWNER TO postgres;
 
 --
 -- Name: query_history_star_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1748,7 +1748,7 @@ CREATE SEQUENCE public.quota_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.quota_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.quota_id_seq OWNER TO postgres;
 
 --
 -- Name: quota_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1791,7 +1791,7 @@ CREATE SEQUENCE public.role_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.role_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.role_id_seq OWNER TO postgres;
 
 --
 -- Name: role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1830,7 +1830,7 @@ CREATE SEQUENCE public.secrets_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.secrets_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.secrets_id_seq OWNER TO postgres;
 
 --
 -- Name: secrets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1867,7 +1867,7 @@ CREATE SEQUENCE public.seed_assignment_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.seed_assignment_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.seed_assignment_id_seq OWNER TO postgres;
 
 --
 -- Name: seed_assignment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1903,7 +1903,7 @@ CREATE SEQUENCE public.server_lock_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.server_lock_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.server_lock_id_seq OWNER TO postgres;
 
 --
 -- Name: server_lock_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1955,7 +1955,7 @@ CREATE SEQUENCE public.short_url_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.short_url_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.short_url_id_seq OWNER TO postgres;
 
 --
 -- Name: short_url_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -1990,7 +1990,7 @@ CREATE SEQUENCE public.star_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.star_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.star_id_seq OWNER TO postgres;
 
 --
 -- Name: star_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2025,7 +2025,7 @@ CREATE SEQUENCE public.tag_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.tag_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.tag_id_seq OWNER TO postgres;
 
 --
 -- Name: tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2064,7 +2064,7 @@ CREATE SEQUENCE public.team_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.team_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.team_id_seq OWNER TO postgres;
 
 --
 -- Name: team_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2104,7 +2104,7 @@ CREATE SEQUENCE public.team_member_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.team_member_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.team_member_id_seq OWNER TO postgres;
 
 --
 -- Name: team_member_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2141,7 +2141,7 @@ CREATE SEQUENCE public.team_role_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.team_role_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.team_role_id_seq OWNER TO postgres;
 
 --
 -- Name: team_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2187,7 +2187,7 @@ CREATE SEQUENCE public.temp_user_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.temp_user_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.temp_user_id_seq1 OWNER TO postgres;
 
 --
 -- Name: temp_user_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2229,7 +2229,7 @@ CREATE SEQUENCE public.test_data_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.test_data_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.test_data_id_seq OWNER TO postgres;
 
 --
 -- Name: test_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2300,7 +2300,7 @@ CREATE SEQUENCE public.user_auth_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_auth_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.user_auth_id_seq OWNER TO postgres;
 
 --
 -- Name: user_auth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2344,7 +2344,7 @@ CREATE SEQUENCE public.user_auth_token_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_auth_token_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.user_auth_token_id_seq OWNER TO postgres;
 
 --
 -- Name: user_auth_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2366,7 +2366,7 @@ CREATE SEQUENCE public.user_id_seq1
     CACHE 1;
 
 
-ALTER TABLE public.user_id_seq1 OWNER TO postgres;
+ALTER SEQUENCE public.user_id_seq1 OWNER TO postgres;
 
 --
 -- Name: user_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2403,7 +2403,7 @@ CREATE SEQUENCE public.user_role_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_role_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.user_role_id_seq OWNER TO postgres;
 
 --
 -- Name: user_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -2819,7 +2819,7 @@ COPY public.alert_configuration (id, alertmanager_configuration, configuration_v
 --
 
 COPY public.alert_configuration_history (id, org_id, alertmanager_configuration, configuration_hash, configuration_version, created_at, "default", last_applied) FROM stdin;
-1	1	{\n\t"alertmanager_config": {\n\t\t"route": {\n\t\t\t"receiver": "grafana-default-email",\n\t\t\t"group_by": ["grafana_folder", "alertname"]\n\t\t},\n\t\t"receivers": [{\n\t\t\t"name": "grafana-default-email",\n\t\t\t"grafana_managed_receiver_configs": [{\n\t\t\t\t"uid": "",\n\t\t\t\t"name": "email receiver",\n\t\t\t\t"type": "email",\n\t\t\t\t"isDefault": true,\n\t\t\t\t"settings": {\n\t\t\t\t\t"addresses": "<example@email.com>"\n\t\t\t\t}\n\t\t\t}]\n\t\t}]\n\t}\n}\n	e0528a75784033ae7b15c40851d89484	v1	1693643959	t	1694697946
+1	1	{\n\t"alertmanager_config": {\n\t\t"route": {\n\t\t\t"receiver": "grafana-default-email",\n\t\t\t"group_by": ["grafana_folder", "alertname"]\n\t\t},\n\t\t"receivers": [{\n\t\t\t"name": "grafana-default-email",\n\t\t\t"grafana_managed_receiver_configs": [{\n\t\t\t\t"uid": "",\n\t\t\t\t"name": "email receiver",\n\t\t\t\t"type": "email",\n\t\t\t\t"isDefault": true,\n\t\t\t\t"settings": {\n\t\t\t\t\t"addresses": "<example@email.com>"\n\t\t\t\t}\n\t\t\t}]\n\t\t}]\n\t}\n}\n	e0528a75784033ae7b15c40851d89484	v1	1693643959	t	1695683432
 \.
 
 
@@ -2926,6 +2926,7 @@ authed-session:c1d987720758f66f5a9c2fb4d4a78c8f	\\x7b226b696e64223a2261757468656
 authed-session:465d3680cf0360f1dece6f600c782de7	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e3232342e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b207836343b2072763a3130392e3029204765636b6f2f32303130303130312046697265666f782f3131372e30222c226c6173745f7365656e223a22323032332d30392d31345430393a31363a31342e3039313133363730395a227d	2592000	1694682974
 authed-session:fba826ba9b329a191ae23ff5633be7b3	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e38302e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b207836343b2072763a3130392e3029204765636b6f2f32303130303130312046697265666f782f3131372e30222c226c6173745f7365656e223a22323032332d30392d31345431333a30323a30342e3937393631393133345a227d	2592000	1694696524
 authed-session:0d68c3beec1f1c3af9a8a66da0ada5f8	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e39362e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b207836343b2072763a3130392e3029204765636b6f2f32303130303130312046697265666f782f3131372e30222c226c6173745f7365656e223a22323032332d30392d31345431333a33303a35392e3138373031313433345a227d	2592000	1694698259
+authed-session:7af9404864bcc3a067be89c01a5f6150	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e3230382e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f3131362e302e302e30205361666172692f3533372e3336222c226c6173745f7365656e223a22323032332d30392d32355432333a31313a35302e3839363334393033375a227d	2592000	1695683510
 \.
 
 
@@ -3035,6 +3036,7 @@ ca93eb8e-6a15-412c-be1a-9c6134b4e815	t	root	secretKey.v1	\\x2a5957567a4c574e6d59
 c772ce3f-0703-4a79-b324-585d67a2a12d	t	root	secretKey.v1	\\x2a5957567a4c574e6d59672a7332784c4b5346489f481f6069f81f28520a43385128495ff1b88036c898ab79c1f5b03bc756d568	2023-09-11 08:51:43	2023-09-11 08:51:43	2023-09-11/root@secretKey.v1
 e2df32cb-cca4-45d8-91f5-6e333305fabc	t	root	secretKey.v1	\\x2a5957567a4c574e6d59672a794948586f6c6756ff9500645a0996d1b8d2aa66726a2496edb35407621a0d39b13b060a5bef0377	2023-09-13 12:11:14	2023-09-13 12:11:14	2023-09-13/root@secretKey.v1
 ddd41593-1518-4b80-8cd5-5afa32171f37	t	root	secretKey.v1	\\x2a5957567a4c574e6d59672a35596b43306e6c580593b33b570d2aef741824ee22ed15f1540e57ab1d3b25045c93b4285301ea81	2023-09-14 10:07:58	2023-09-14 10:07:58	2023-09-14/root@secretKey.v1
+a326b30c-793d-4779-ac70-2c4c94a08843	t	root	secretKey.v1	\\x2a5957567a4c574e6d59672a626f754a6b3573627fad70399831804292b8b63b2ca91e363b883a55767710586ff7ca3d1ec7de74	2023-09-26 01:10:31	2023-09-26 01:10:31	2023-09-26/root@secretKey.v1
 \.
 
 
@@ -3043,9 +3045,9 @@ ddd41593-1518-4b80-8cd5-5afa32171f37	t	root	secretKey.v1	\\x2a5957567a4c574e6d59
 --
 
 COPY public.data_source (id, org_id, version, type, name, access, url, password, "user", database, basic_auth, basic_auth_user, basic_auth_password, is_default, json_data, created, updated, with_credentials, secure_json_data, read_only, uid) FROM stdin;
-2	1	1	prometheus	Prometheus	proxy	http://prometheus:9090				f			t	{"cacheLevel":"High","disableRecordingRules":false,"httpMethod":"POST","incrementalQueryOverlapWindow":"10m","manageAlerts":true,"prometheusType":"Prometheus"}	2023-09-02 10:39:20	2023-09-14 15:25:48	f	{}	t	PBFA97CFB590B2093
-1	1	1	loki	Loki	proxy	http://loki:3100				f			f	{}	2023-09-02 10:39:20	2023-09-14 15:25:48	f	{}	t	P8E80F9AEF21F6940
-3	1	1	grafana-mongodb-datasource	MongoDB	proxy					f			f	{"connection":"mongodb://mongodb:27017","user":"root"}	2023-09-02 10:39:20	2023-09-14 15:25:48	f	{"password":"I1pHUmtOREUxT1RNdE1UVXhPQzAwWWpnd0xUaGpaRFV0TldGbVlUTXlNVGN4WmpNMyMqWVdWekxXTm1ZZyprVjhyc2t3alKJmE6siuxVAHgqibccAzTcS+yOEPmjPOknZIbH/ofxtEZUasO7sEdp"}	f	P91231FF9AB6685FA
+2	1	1	prometheus	Prometheus	proxy	http://prometheus:9090				f			t	{"cacheLevel":"High","disableRecordingRules":false,"httpMethod":"POST","incrementalQueryOverlapWindow":"10m","manageAlerts":true,"prometheusType":"Prometheus"}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{}	t	PBFA97CFB590B2093
+1	1	1	loki	Loki	proxy	http://loki:3100				f			f	{}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{}	t	P8E80F9AEF21F6940
+3	1	1	grafana-mongodb-datasource	MongoDB	proxy					f			f	{"connection":"mongodb://mongodb:27017","user":"root"}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{"password":"I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypEV21sbVdmNi52FSicm+FhRh2pwjOFZhAb0PnlfVLlL1/pBFp6lPHa9Js7UtWVbpEK"}	f	P91231FF9AB6685FA
 \.
 
 
@@ -3091,8 +3093,8 @@ COPY public.kv_store (id, org_id, namespace, key, value, created, updated) FROM 
 3	1	alertmanager	silences		2023-09-02 10:54:19	2023-09-02 10:54:19
 4	0	plugin.publickeys	key-7e4d0c6a708866e7	-----BEGIN PGP PUBLIC KEY BLOCK-----\r\nVersion: OpenPGP.js v4.10.1\r\nComment: https://openpgpjs.org\r\n\r\nxpMEXpTXXxMFK4EEACMEIwQBiOUQhvGbDLvndE0fEXaR0908wXzPGFpf0P0Z\r\nHJ06tsq+0higIYHp7WTNJVEZtcwoYLcPRGaa9OQqbUU63BEyZdgAkPTz3RFd\r\n5+TkDWZizDcaVFhzbDd500yTwexrpIrdInwC/jrgs7Zy/15h8KA59XXUkdmT\r\nYB6TR+OA9RKME+dCJozNGUdyYWZhbmEgPGVuZ0BncmFmYW5hLmNvbT7CvAQQ\r\nEwoAIAUCXpTXXwYLCQcIAwIEFQgKAgQWAgEAAhkBAhsDAh4BAAoJEH5NDGpw\r\niGbnaWoCCQGQ3SQnCkRWrG6XrMkXOKfDTX2ow9fuoErN46BeKmLM4f1EkDZQ\r\nTpq3SE8+My8B5BIH3SOcBeKzi3S57JHGBdFA+wIJAYWMrJNIvw8GeXne+oUo\r\nNzzACdvfqXAZEp/HFMQhCKfEoWGJE8d2YmwY2+3GufVRTI5lQnZOHLE8L/Vc\r\n1S5MXESjzpcEXpTXXxIFK4EEACMEIwQBtHX/SD5Qm3v4V92qpaIZQgtTX0sT\r\ncFPjYWAHqsQ1iENrYN/vg1wU3ADlYATvydOQYvkTyT/tbDvx2Fse8PL84MQA\r\nYKKQ6AJ3gLVvmeouZdU03YoV4MYaT8KbnJUkZQZkqdz2riOlySNI9CG3oYmv\r\nomjUAtzgAgnCcurfGLZkkMxlmY8DAQoJwqQEGBMKAAkFAl6U118CGwwACgkQ\r\nfk0ManCIZuc0jAIJAVw2xdLr4ZQqPUhubrUyFcqlWoW8dQoQagwO8s8ubmby\r\nKuLA9FWJkfuuRQr+O9gHkDVCez3aism7zmJBqIOi38aNAgjJ3bo6leSS2jR/\r\nx5NqiKVi83tiXDPncDQYPymOnMhW0l7CVA7wj75HrFvvlRI/4MArlbsZ2tBn\r\nN1c5v9v/4h6qeA==\r\n=DNbR\r\n-----END PGP PUBLIC KEY BLOCK-----\r\n	2023-09-02 16:02:25	2023-09-02 16:02:27.176035
 6	0	infra.usagestats	anonymous_id	411858bc-bfda-48b8-8be7-8f359f446e64	2023-09-03 16:02:27	2023-09-03 16:02:27
-5	0	plugin.publickeys	last_updated	2023-09-13T12:11:15+02:00	2023-09-02 16:02:27	2023-09-13 12:11:15.060929
-7	0	infra.usagestats	last_sent	2023-09-14T13:18:41+02:00	2023-09-03 16:02:27	2023-09-14 13:18:41.262335
+5	0	plugin.publickeys	last_updated	2023-09-26T01:10:31+02:00	2023-09-02 16:02:27	2023-09-26 01:10:31.648632
+7	0	infra.usagestats	last_sent	2023-09-26T01:12:36+02:00	2023-09-03 16:02:27	2023-09-26 01:12:36.754018
 \.
 
 
@@ -3757,9 +3759,9 @@ COPY public.role (id, name, description, version, org_id, uid, created, updated,
 --
 
 COPY public.secrets (id, org_id, namespace, type, value, created, updated) FROM stdin;
-1	1	Loki	datasource	I1pHUmtOREUxT1RNdE1UVXhPQzAwWWpnd0xUaGpaRFV0TldGbVlUTXlNVGN4WmpNMyMqWVdWekxXTm1ZZyo1cUtoSDF0WK9N/hKBCTXJiPmqFPOuBzJ92w	2023-09-02 10:39:20	2023-09-14 15:25:48
-2	1	Prometheus	datasource	I1pHUmtOREUxT1RNdE1UVXhPQzAwWWpnd0xUaGpaRFV0TldGbVlUTXlNVGN4WmpNMyMqWVdWekxXTm1ZZypPNEZ0QW5tWHUX3Ll59of1FkECGVMNwpkOgQ	2023-09-02 10:39:20	2023-09-14 15:25:48
-3	1	MongoDB	datasource	I1pHUmtOREUxT1RNdE1UVXhPQzAwWWpnd0xUaGpaRFV0TldGbVlUTXlNVGN4WmpNMyMqWVdWekxXTm1ZZyoxbko0VlJ0a3yHm7YDF+CdnDw0N/u+jRzKLmQ6FGH3PC/zTGdiqhyu2sc+oGxPaNBOv26hBbS4pWTWtWFF2YLJ	2023-09-02 10:39:20	2023-09-14 15:25:48
+1	1	Loki	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyphZFhrVzVBNShonV2xf6xkb+BS9zAAE8+XGA	2023-09-02 10:39:20	2023-09-26 01:10:36
+2	1	Prometheus	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypsUkNGZkRVQ281wrVPGVpGvqkjweksHhhxUw	2023-09-02 10:39:20	2023-09-26 01:10:36
+3	1	MongoDB	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyo5d0Nha0ExUHzVM0c1Dv3N/wec5McrIHm438iByfC7DL303IHBkSgjL92Jun/mPbXB0+IYcFWxjwVgwijDMkRI	2023-09-02 10:39:20	2023-09-26 01:10:36
 \.
 
 
@@ -3776,8 +3778,8 @@ COPY public.seed_assignment (builtin_role, role_name, action, scope, id) FROM st
 --
 
 COPY public.server_lock (id, operation_uid, version, last_execution) FROM stdin;
-2	cleanup expired auth tokens	16	1694678878
 3	delete old login attempts	506	1694696850
+2	cleanup expired auth tokens	17	1695683431
 \.
 
 
@@ -3861,7 +3863,7 @@ COPY public.test_data (id, metric1, metric2, value_big_int, value_double, value_
 
 COPY public."user" (id, version, login, email, name, password, salt, rands, company, org_id, is_admin, email_verified, theme, created, updated, help_flags1, last_seen_at, is_disabled, is_service_account) FROM stdin;
 2	0	User	User	User	6ad7abf355caadfd59597d4200f78b9af4fb4d37efeb91da70bfa93f892049d01cc15dc9bd66704b26fe4d61ac748a1af3b0	npK1eBBPno	VoH40SPgmw		1	f	f		2023-09-14 11:27:44	2023-09-14 11:27:44	0	2023-09-14 11:33:15	f	f
-1	0	admin	admin@localhost		9f35e711bd8764a1c72d5e0f5dc6fd07c20b8438b8ad9d701820406666dbd623af1c9eebb56e9c5ce9414f2db83af31ec075	xK6jSTDhQv	Dv4t6b6iwF		1	t	f		2023-09-02 10:39:18	2023-09-02 10:39:18	1	2023-09-14 15:30:59	f	f
+1	0	admin	admin@localhost		9f35e711bd8764a1c72d5e0f5dc6fd07c20b8438b8ad9d701820406666dbd623af1c9eebb56e9c5ce9414f2db83af31ec075	xK6jSTDhQv	Dv4t6b6iwF		1	t	f		2023-09-02 10:39:18	2023-09-02 10:39:18	1	2023-09-26 01:11:51	f	f
 \.
 
 
@@ -3878,10 +3880,7 @@ COPY public.user_auth (id, user_id, auth_module, auth_id, created, o_auth_access
 --
 
 COPY public.user_auth_token (id, user_id, auth_token, prev_auth_token, user_agent, client_ip, auth_token_seen, seen_at, rotated_at, created_at, updated_at, revoked_at) FROM stdin;
-3	1	2a36daa04db063bcf1fa8fad4768692a3a40abf6e3bc615422228d8c46b56f3f	2caf3db44c90c188c667bfb70f87ecf9355421eda6eba7a35849eeb8ed3dd505	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36	172.21.0.1	t	1694418513	1694418503	1694415405	1694415405	0
-4	1	e0a5c08a5fd08e6fc4d901e74790ac8bfa156abaaa38c254ff7a3dd95b74a0ab	59f7c6ce69e36fd3cd278b517654c01dc91afb9127943374c0588b1b30215828	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36	192.168.0.1	f	0	1694602682	1694599905	1694599905	0
-6	2	29889f1527926db29acf0def888c5790c19c32b7f652e2a7b851526337cf9c26	29889f1527926db29acf0def888c5790c19c32b7f652e2a7b851526337cf9c26	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0	192.168.224.1	t	1694683684	1694683684	1694683684	1694683684	0
-7	1	43713a61fd304123579ff2799c38c24195a039333cd14fd2653143f7679e86a5	2068662bfd7c88c548aa1762db3ac5d4cb883cd5e3ddf77cd232a2e09676c77a	Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0	192.168.96.1	t	1694698259	1694698259	1694694760	1694694760	0
+8	1	0d2a5c35d499730ba0b8d0fcd594a61a6e04ddb4e7f2d06a8b20020dd83ae65f	0d2a5c35d499730ba0b8d0fcd594a61a6e04ddb4e7f2d06a8b20020dd83ae65f	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36	192.168.208.1	t	1695683509	1695683509	1695683509	1695683509	0
 \.
 
 
@@ -4192,7 +4191,7 @@ SELECT pg_catalog.setval('public.seed_assignment_id_seq', 1, false);
 -- Name: server_lock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.server_lock_id_seq', 22, true);
+SELECT pg_catalog.setval('public.server_lock_id_seq', 25, true);
 
 
 --
@@ -4262,7 +4261,7 @@ SELECT pg_catalog.setval('public.user_auth_id_seq', 1, false);
 -- Name: user_auth_token_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_auth_token_id_seq', 7, true);
+SELECT pg_catalog.setval('public.user_auth_token_id_seq', 8, true);
 
 
 --

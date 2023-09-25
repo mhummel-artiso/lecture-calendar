@@ -20,7 +20,6 @@ services:
       - grafana
       - client
       - keycloak
-      - prometheus
 
 # calendar api
   calendarapi:
@@ -42,7 +41,7 @@ services:
       - frontend
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
 
 # calendar client
   client:
@@ -54,7 +53,7 @@ services:
       - frontend
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 3
 
 # keycloak authentication
   keycloak:
@@ -79,8 +78,8 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
 
   postgressdb-keycloak:
     image: "postgres:alpine3.18"
@@ -108,7 +107,8 @@ services:
       - backend-monitoring
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
+
   prometheus:
     image: prom/prometheus
     restart: ${RESTART_POLICY}
@@ -125,9 +125,8 @@ services:
         condition: service_healthy
     networks:
       - backend-monitoring
-      - frontend
-    # ports:
-    #   - "9090:9090"
+    ports:
+      - "9090:9090"
 
 # DB exporter
   mongodb-exporter:
@@ -187,4 +186,3 @@ networks:
   backend-monitoring:
   backend-keycloak:
   frontend:
-# dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx
