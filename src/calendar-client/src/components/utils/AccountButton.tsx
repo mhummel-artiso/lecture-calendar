@@ -1,5 +1,5 @@
 import { useAccount } from '../../hooks/useAccount'
-import { Avatar, IconButton, Menu, MenuItem } from '@mui/material'
+import { Avatar, Divider, IconButton, Menu, MenuItem } from '@mui/material'
 import React, { FC } from 'react'
 import { useEnvironment } from '../../hooks/useEnvironment'
 
@@ -24,7 +24,10 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
         handleClose()
         onLogoutClick()
     }
-
+    const handelExternalLinkClick = (url:string) => {
+        handleClose()
+            window.open("http://localhost/"+url+"/", '_blank')
+    }
     return (
         <>
             <IconButton
@@ -48,6 +51,9 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
             >
                 <MenuItem disabled>{userAccount?.name ?? ''}</MenuItem>
                 <MenuItem onClick={handelLogoutClick}>Logout</MenuItem>
+                <Divider/>
+                <MenuItem onClick={()=>handelExternalLinkClick("auth")}>Keycloak</MenuItem>
+                <MenuItem onClick={()=>handelExternalLinkClick("grafana")}>Grafana</MenuItem>
             </Menu>
         </>
     )

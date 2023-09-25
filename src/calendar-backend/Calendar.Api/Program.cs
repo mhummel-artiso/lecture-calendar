@@ -5,7 +5,6 @@ using Calendar.Api.Initializations;
 using Calendar.Api.Models;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
-using Calendar.PostgreSQL.Db;
 using FS.Keycloak.RestApiClient.Client;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -133,7 +132,6 @@ try
 
     builder.Services
         .AddSystemMetrics()
-        .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()

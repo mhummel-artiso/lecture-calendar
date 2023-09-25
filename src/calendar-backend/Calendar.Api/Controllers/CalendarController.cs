@@ -148,7 +148,6 @@ public class CalendarController : ControllerBase
 
             var mappedResult = mapper.Map<IEnumerable<CalendarEventDTO>>(result);
 
-
             foreach (var mappedDto in mappedResult)
             {
                 await AddLectureToEventAsync(mappedDto).ConfigureAwait(false);

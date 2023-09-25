@@ -52,7 +52,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Calendar.Mongo.Db\Calendar.Mongo.Db.csproj" />
-      <ProjectReference Include="..\Calendar.PostgreSQL.Db\Calendar.PostgreSQL.Db.csproj" />
     </ItemGroup>
+
 
 </Project>
