@@ -60,6 +60,7 @@ services:
     build:
       context: ./config/keycloak
       dockerfile: Dockerfile
+    image: lecture-calendar-keycloak
     restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-keycloak:
@@ -68,9 +69,19 @@ services:
       - frontend
       - backend-keycloak
       - backend-monitoring
+  keycloak-replica:
+    image: lecture-calendar-keycloak
+    restart: ${RESTART_POLICY}
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend-keycloak
+      - backend-monitoring
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 2
 
 # databases
   mongodb:

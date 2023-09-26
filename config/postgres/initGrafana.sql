@@ -2819,7 +2819,7 @@ COPY public.alert_configuration (id, alertmanager_configuration, configuration_v
 --
 
 COPY public.alert_configuration_history (id, org_id, alertmanager_configuration, configuration_hash, configuration_version, created_at, "default", last_applied) FROM stdin;
-1	1	{\n\t"alertmanager_config": {\n\t\t"route": {\n\t\t\t"receiver": "grafana-default-email",\n\t\t\t"group_by": ["grafana_folder", "alertname"]\n\t\t},\n\t\t"receivers": [{\n\t\t\t"name": "grafana-default-email",\n\t\t\t"grafana_managed_receiver_configs": [{\n\t\t\t\t"uid": "",\n\t\t\t\t"name": "email receiver",\n\t\t\t\t"type": "email",\n\t\t\t\t"isDefault": true,\n\t\t\t\t"settings": {\n\t\t\t\t\t"addresses": "<example@email.com>"\n\t\t\t\t}\n\t\t\t}]\n\t\t}]\n\t}\n}\n	e0528a75784033ae7b15c40851d89484	v1	1693643959	t	1695683432
+1	1	{\n\t"alertmanager_config": {\n\t\t"route": {\n\t\t\t"receiver": "grafana-default-email",\n\t\t\t"group_by": ["grafana_folder", "alertname"]\n\t\t},\n\t\t"receivers": [{\n\t\t\t"name": "grafana-default-email",\n\t\t\t"grafana_managed_receiver_configs": [{\n\t\t\t\t"uid": "",\n\t\t\t\t"name": "email receiver",\n\t\t\t\t"type": "email",\n\t\t\t\t"isDefault": true,\n\t\t\t\t"settings": {\n\t\t\t\t\t"addresses": "<example@email.com>"\n\t\t\t\t}\n\t\t\t}]\n\t\t}]\n\t}\n}\n	e0528a75784033ae7b15c40851d89484	v1	1693643959	t	1695727170
 \.
 
 
@@ -2927,6 +2927,7 @@ authed-session:465d3680cf0360f1dece6f600c782de7	\\x7b226b696e64223a2261757468656
 authed-session:fba826ba9b329a191ae23ff5633be7b3	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e38302e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b207836343b2072763a3130392e3029204765636b6f2f32303130303130312046697265666f782f3131372e30222c226c6173745f7365656e223a22323032332d30392d31345431333a30323a30342e3937393631393133345a227d	2592000	1694696524
 authed-session:0d68c3beec1f1c3af9a8a66da0ada5f8	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e39362e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b207836343b2072763a3130392e3029204765636b6f2f32303130303130312046697265666f782f3131372e30222c226c6173745f7365656e223a22323032332d30392d31345431333a33303a35392e3138373031313433345a227d	2592000	1694698259
 authed-session:7af9404864bcc3a067be89c01a5f6150	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223139322e3136382e3230382e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f3131362e302e302e30205361666172692f3533372e3336222c226c6173745f7365656e223a22323032332d30392d32355432333a31313a35302e3839363334393033375a227d	2592000	1695683510
+authed-session:3416ca9667035677966d2f1cad948dce	\\x7b226b696e64223a226175746865642d73657373696f6e222c226970223a223137322e32392e302e31222c22757365725f6167656e74223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f3131362e302e302e30205361666172692f3533372e3336222c226c6173745f7365656e223a22323032332d30392d32365431313a32323a30322e3937373239303439355a227d	2592000	1695727322
 \.
 
 
@@ -3045,9 +3046,9 @@ a326b30c-793d-4779-ac70-2c4c94a08843	t	root	secretKey.v1	\\x2a5957567a4c574e6d59
 --
 
 COPY public.data_source (id, org_id, version, type, name, access, url, password, "user", database, basic_auth, basic_auth_user, basic_auth_password, is_default, json_data, created, updated, with_credentials, secure_json_data, read_only, uid) FROM stdin;
-2	1	1	prometheus	Prometheus	proxy	http://prometheus:9090				f			t	{"cacheLevel":"High","disableRecordingRules":false,"httpMethod":"POST","incrementalQueryOverlapWindow":"10m","manageAlerts":true,"prometheusType":"Prometheus"}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{}	t	PBFA97CFB590B2093
-1	1	1	loki	Loki	proxy	http://loki:3100				f			f	{}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{}	t	P8E80F9AEF21F6940
-3	1	1	grafana-mongodb-datasource	MongoDB	proxy					f			f	{"connection":"mongodb://mongodb:27017","user":"root"}	2023-09-02 10:39:20	2023-09-26 01:10:36	f	{"password":"I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypEV21sbVdmNi52FSicm+FhRh2pwjOFZhAb0PnlfVLlL1/pBFp6lPHa9Js7UtWVbpEK"}	f	P91231FF9AB6685FA
+2	1	1	prometheus	Prometheus	proxy	http://prometheus:9090				f			t	{"cacheLevel":"High","disableRecordingRules":false,"httpMethod":"POST","incrementalQueryOverlapWindow":"10m","manageAlerts":true,"prometheusType":"Prometheus"}	2023-09-02 10:39:20	2023-09-26 13:19:32	f	{}	t	PBFA97CFB590B2093
+1	1	1	loki	Loki	proxy	http://loki:3100				f			f	{}	2023-09-02 10:39:20	2023-09-26 13:19:32	f	{}	t	P8E80F9AEF21F6940
+3	1	1	grafana-mongodb-datasource	MongoDB	proxy					f			f	{"connection":"mongodb://mongodb:27017","user":"root"}	2023-09-02 10:39:20	2023-09-26 13:19:32	f	{"password":"I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyo3ZjkwSDRMMGTMS5JOiOAU4w0Eb/i6j94q9IjoEJXW9LgZFzoDdMOTIu6S31IY9at0"}	f	P91231FF9AB6685FA
 \.
 
 
@@ -3759,9 +3760,9 @@ COPY public.role (id, name, description, version, org_id, uid, created, updated,
 --
 
 COPY public.secrets (id, org_id, namespace, type, value, created, updated) FROM stdin;
-1	1	Loki	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyphZFhrVzVBNShonV2xf6xkb+BS9zAAE8+XGA	2023-09-02 10:39:20	2023-09-26 01:10:36
-2	1	Prometheus	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypsUkNGZkRVQ281wrVPGVpGvqkjweksHhhxUw	2023-09-02 10:39:20	2023-09-26 01:10:36
-3	1	MongoDB	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyo5d0Nha0ExUHzVM0c1Dv3N/wec5McrIHm438iByfC7DL303IHBkSgjL92Jun/mPbXB0+IYcFWxjwVgwijDMkRI	2023-09-02 10:39:20	2023-09-26 01:10:36
+1	1	Loki	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypJVmFQTXBmVXk88EyBmBy9+dE6eNSRMZNRMw	2023-09-02 10:39:20	2023-09-26 13:19:32
+2	1	Prometheus	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZypVaVBnUXNZcZaefcb61r2xA83+txzSPrk50w	2023-09-02 10:39:20	2023-09-26 13:19:32
+3	1	MongoDB	datasource	I1lUTXlObUl6TUdNdE56a3paQzAwTnpjNUxXRmpOekF0TW1NMFl6azBZVEE0T0RReiMqWVdWekxXTm1ZZyptZmhUTm1NUajNRBhAOcb5Qns+lbOcb2QQa3XlnUxS8F1oPZ5rVZwEZv67nU8xaW1g0hpjZAXZEuQ8hMNMcb2k	2023-09-02 10:39:20	2023-09-26 13:19:32
 \.
 
 
@@ -3779,7 +3780,7 @@ COPY public.seed_assignment (builtin_role, role_name, action, scope, id) FROM st
 
 COPY public.server_lock (id, operation_uid, version, last_execution) FROM stdin;
 3	delete old login attempts	506	1694696850
-2	cleanup expired auth tokens	17	1695683431
+2	cleanup expired auth tokens	18	1695727159
 \.
 
 
@@ -3863,7 +3864,7 @@ COPY public.test_data (id, metric1, metric2, value_big_int, value_double, value_
 
 COPY public."user" (id, version, login, email, name, password, salt, rands, company, org_id, is_admin, email_verified, theme, created, updated, help_flags1, last_seen_at, is_disabled, is_service_account) FROM stdin;
 2	0	User	User	User	6ad7abf355caadfd59597d4200f78b9af4fb4d37efeb91da70bfa93f892049d01cc15dc9bd66704b26fe4d61ac748a1af3b0	npK1eBBPno	VoH40SPgmw		1	f	f		2023-09-14 11:27:44	2023-09-14 11:27:44	0	2023-09-14 11:33:15	f	f
-1	0	admin	admin@localhost		9f35e711bd8764a1c72d5e0f5dc6fd07c20b8438b8ad9d701820406666dbd623af1c9eebb56e9c5ce9414f2db83af31ec075	xK6jSTDhQv	Dv4t6b6iwF		1	t	f		2023-09-02 10:39:18	2023-09-02 10:39:18	1	2023-09-26 01:11:51	f	f
+1	0	admin	admin@localhost		9f35e711bd8764a1c72d5e0f5dc6fd07c20b8438b8ad9d701820406666dbd623af1c9eebb56e9c5ce9414f2db83af31ec075	xK6jSTDhQv	Dv4t6b6iwF		1	t	f		2023-09-02 10:39:18	2023-09-02 10:39:18	1	2023-09-26 13:22:02	f	f
 \.
 
 
@@ -3881,6 +3882,7 @@ COPY public.user_auth (id, user_id, auth_module, auth_id, created, o_auth_access
 
 COPY public.user_auth_token (id, user_id, auth_token, prev_auth_token, user_agent, client_ip, auth_token_seen, seen_at, rotated_at, created_at, updated_at, revoked_at) FROM stdin;
 8	1	0d2a5c35d499730ba0b8d0fcd594a61a6e04ddb4e7f2d06a8b20020dd83ae65f	0d2a5c35d499730ba0b8d0fcd594a61a6e04ddb4e7f2d06a8b20020dd83ae65f	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36	192.168.208.1	t	1695683509	1695683509	1695683509	1695683509	0
+9	1	accaa3d6bbb156fed4dfbc81a12dee16c774c3a59ede1600341a63511e7fe21c	accaa3d6bbb156fed4dfbc81a12dee16c774c3a59ede1600341a63511e7fe21c	Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36	172.29.0.1	t	1695727322	1695727322	1695727322	1695727322	0
 \.
 
 
@@ -4191,7 +4193,7 @@ SELECT pg_catalog.setval('public.seed_assignment_id_seq', 1, false);
 -- Name: server_lock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.server_lock_id_seq', 25, true);
+SELECT pg_catalog.setval('public.server_lock_id_seq', 28, true);
 
 
 --
@@ -4261,7 +4263,7 @@ SELECT pg_catalog.setval('public.user_auth_id_seq', 1, false);
 -- Name: user_auth_token_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_auth_token_id_seq', 8, true);
+SELECT pg_catalog.setval('public.user_auth_token_id_seq', 9, true);
 
 
 --

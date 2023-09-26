@@ -82,7 +82,6 @@ services:
     command:
       - "--verbose"
       - "start-dev" 
-      - "--import-realm"
       - "--features=token-exchange"
     environment:
       TZ: ${TIMEZONE}
@@ -112,7 +111,39 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-
+  keycloak-replica:
+    command:
+      - "--verbose"
+      - "start-dev" 
+      - "--features=token-exchange"
+    environment:
+      TZ: ${TIMEZONE}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${MASTER_PW}
+      KC_HOSTNAME_URL: http://localhost${KEYCLOAK_HOSTNAME_PATH}
+      KC_HTTP_RELATIVE_PATH: ${KEYCLOAK_HOSTNAME_PATH}
+      KC_HOSTNAME_STRICT: false
+      KC_HEALTH_ENABLED: true
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/${POSTGRES_DB_KEYCLOAK}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${MASTER_PW}
+      KC_METRICS_ENABLED: true
+      KC_PROXY: ${KEYCLOAK_PROXY}
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_SCHEMA: public
+      KC_HTTP_ENABLED: true
+      # KC_LOG_LEVEL: INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
+      # KC_HOSTNAME: ${KEYCLOAK_HOST}
+      KC_OTEL: true
+    labels:
+      logging: "promtail"
+      logging_jobname: "keycloak"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
   postgressdb-keycloak:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
