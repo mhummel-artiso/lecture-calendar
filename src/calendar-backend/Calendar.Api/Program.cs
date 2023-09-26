@@ -134,7 +134,6 @@ try
 
     builder.Services
         .AddSystemMetrics()
-        .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()
