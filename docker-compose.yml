@@ -79,8 +79,6 @@ services:
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
-    # ports:
-    #   - 27017:27017
 
   postgressdb-keycloak:
     image: "postgres:alpine3.18"
@@ -126,8 +124,6 @@ services:
         condition: service_healthy
     networks:
       - backend-monitoring
-    ports:
-      - "9090:9090"
 
 # DB exporter
   mongodb-exporter:
