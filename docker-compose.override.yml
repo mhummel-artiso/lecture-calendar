@@ -93,11 +93,15 @@ services:
       KC_HOSTNAME_STRICT: false
       KC_HEALTH_ENABLED: true
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgressdb-keycloak/${POSTGRES_DB_KEYCLOAK}
+      KC_DB_URL_HOST: postgressdb-keycloak
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${MASTER_PW}
       KC_METRICS_ENABLED: true
       KC_PROXY: ${KEYCLOAK_PROXY}
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_SCHEMA: public
+      KC_HTTP_ENABLED: true
+      KC_LOG_LEVEL: INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
       # KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:

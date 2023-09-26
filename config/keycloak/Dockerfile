@@ -5,7 +5,9 @@ RUN mkdir -p /mnt/rootfs && dnf install --installroot /mnt/rootfs curl --release
 FROM quay.io/keycloak/keycloak:22.0.1 as builder
 COPY --from=ubi-micro-build /mnt/rootfs /
 COPY ./providers /opt/keycloak/providers/
-RUN /opt/keycloak/bin/kc.sh build
+ENV KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
+COPY ./cache-ispn-jdbc-ping.xml /opt/keycloak/conf/cache-ispn-jdbc-ping.xml
+RUN /opt/keycloak/bin/kc.sh build --cache-ispn
 
 FROM builder as final
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
