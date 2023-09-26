@@ -7,7 +7,7 @@ COPY --from=ubi-micro-build /mnt/rootfs /
 COPY ./providers /opt/keycloak/providers/
 ENV KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
 COPY ./cache-ispn-jdbc-ping.xml /opt/keycloak/conf/cache-ispn-jdbc-ping.xml
-RUN /opt/keycloak/bin/kc.sh build --cache-ispn
+RUN /opt/keycloak/bin/kc.sh build --cache ispn
 
 FROM builder as final
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
