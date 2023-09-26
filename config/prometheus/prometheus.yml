@@ -45,7 +45,7 @@ scrape_configs:
   - job_name: 'keycloak'
     metrics_path: /auth/realms/Calendar/metrics
     static_configs:
-      - targets: ['lecture-calendar-keycloak-1:8080','lecture-calendar-keycloak-replica-1:8080','lecture-calendar-keycloak-replica-2:8080']
+      - targets: ['lecture-calendar-keycloak-1:8080','lecture-calendar-keycloak-2:8080','lecture-calendar-keycloak-3:8080']
 
   - job_name: 'postgressdb-keycloak'
     metrics_path: /metrics
