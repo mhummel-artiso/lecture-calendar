@@ -113,7 +113,8 @@ services:
       retries: 5
   postgressdb-keycloak:
     healthcheck:
-      test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM admin_event_entity LIMIT 1"]
+      test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM authentication_flow LIMIT 1"]
+      
       interval: 10s
       timeout: 10s
       retries: 5
@@ -132,7 +133,7 @@ services:
 
   postgressdb-grafana:
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-q","-U", "${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM library_element LIMIT 1"]
       interval: 10s
       timeout: 10s
       retries: 5
