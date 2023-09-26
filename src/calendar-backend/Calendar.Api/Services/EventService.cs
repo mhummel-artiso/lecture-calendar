@@ -22,7 +22,7 @@ namespace Calendar.Api.Services
             dbCollection = db.GetCollection<UserCalendar>(nameof(UserCalendar));
             ArgumentNullException.ThrowIfNull(dbCollection);
         }
-        public async Task<CalendarEvent?> GetEventAsync(string calendarId, string eventId)
+        public async Task<CalendarEvent> GetEventAsync(string calendarId, string eventId)
         {
             var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
             if(calendar == null) throw new KeyNotFoundException("Calendar was not found.");
@@ -69,6 +69,7 @@ namespace Calendar.Api.Services
         public async Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             calendarEvent.ValidateSeriesTimes();
+            ArgumentException.ThrowIfNullOrEmpty(calendarId);
             calendarEvent.CalendarId = calendarId;
 
             var eventsToAdd = new List<CalendarEvent>();
