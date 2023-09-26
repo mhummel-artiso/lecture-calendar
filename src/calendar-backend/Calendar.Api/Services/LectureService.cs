@@ -5,7 +5,6 @@ using Calendar.Mongo.Db.Models;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Globalization;
 
 namespace Calendar.Api.Services
 {
@@ -60,6 +59,7 @@ namespace Calendar.Api.Services
 
             if(calendarCollection != null)
             {
+                // check if there are existing events with this lecture
                 FilterDefinition<UserCalendar> filter = Builders<UserCalendar>.Filter.ElemMatch(x => x.Events, e => e.LectureId == lectureId);
                 var lectureResult = calendarCollection.Find(filter).Any();
 
