@@ -101,7 +101,7 @@ services:
       KC_DB_URL_DATABASE: keycloak
       KC_DB_SCHEMA: public
       KC_HTTP_ENABLED: true
-      KC_LOG_LEVEL: INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
+      # KC_LOG_LEVEL: INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
       # KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:
