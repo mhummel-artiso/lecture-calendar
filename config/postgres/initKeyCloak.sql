@@ -2533,17 +2533,6 @@ COPY public.idp_mapper_config (idp_mapper_id, value, name) FROM stdin;
 
 
 --
--- Data for Name: jgroupsping; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.jgroupsping (own_addr, bind_addr, created, cluster_name, ping_data) FROM stdin;
-f216a450-9107-476c-a82a-08ba08c074ec	127.0.0.1	2023-09-26 13:20:27.83069	ISPN	\\x02a82a08ba08c074ecf216a4509107476c030100123665313466333435333637362d34393336371004ac1c00081e78ffff
-3f19adad-3ddc-4273-8609-451d7df20e9a	127.0.0.1	2023-09-26 13:20:27.857127	ISPN	\\x028609451d7df20e9a3f19adad3ddc4273010100123863393833646333326339382d32303831361004ac1c000f1e78ffff
-5392b939-155a-4edc-9d3a-038bd12b0d88	127.0.0.1	2023-09-26 13:20:27.878998	ISPN	\\x029d3a038bd12b0d885392b939155a4edc010100126436633038333934366338342d36323430341004ac1c000d1e78ffff
-\.
-
-
---
 -- Data for Name: keycloak_group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
