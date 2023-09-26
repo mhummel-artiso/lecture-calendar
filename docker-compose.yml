@@ -71,7 +71,7 @@ services:
       - backend-monitoring
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 3
 
 # databases
   mongodb:
