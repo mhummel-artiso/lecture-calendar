@@ -31,10 +31,6 @@ export const useAccount = () => {
         axiosInstance.defaults.headers['Authorization'] = userData
             ? 'Bearer ' + userData.access_token
             : ''
-        console.log(
-            'axiosInstance.defaults.headers[Authorization]',
-            axiosInstance.defaults.headers['Authorization']
-        )
         if (userData) {
             queryClient.clear()
         }
