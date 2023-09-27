@@ -25,7 +25,7 @@ namespace Calendar.Api.Services
         public async Task<CalendarEvent> GetEventAsync(string calendarId, string eventId)
         {
             var calendar = await dbCollection.Find(x => x.Id == new ObjectId(calendarId)).FirstOrDefaultAsync();
-            if(calendar == null) throw new KeyNotFoundException("Calendar was not found.");
+            if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
             var resultEvent = calendar.Events.FirstOrDefault(x => x.Id == new ObjectId(eventId));
             return resultEvent == null ? throw new KeyNotFoundException("Event was not found.") : resultEvent;
         }
@@ -41,7 +41,7 @@ namespace Calendar.Api.Services
             switch (viewType)
             {
                 case ViewType.day:
-                    start = date;
+                    start = new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, new TimeSpan());
                     end = date.AddDays(1);
                     break;
                 case ViewType.week:
@@ -91,7 +91,6 @@ namespace Calendar.Api.Services
         }
 
 
-
         public async Task<CalendarEvent> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent)
         {
             ArgumentNullException.ThrowIfNull(calendarId);
@@ -102,14 +101,15 @@ namespace Calendar.Api.Services
             if (eventToUpdate == null) throw new KeyNotFoundException("Event was not found.");
 
             // Check for conflict.
-            if (eventToUpdate.LastUpdateDate.TrimMilliseconds() != calendarEvent.LastUpdateDate.TrimMilliseconds()) throw new ConflictException<CalendarEvent>(eventToUpdate);
+            if (eventToUpdate.LastUpdateDate.TrimMilliseconds() != calendarEvent.LastUpdateDate.TrimMilliseconds())
+                throw new ConflictException<CalendarEvent>(eventToUpdate);
 
             var sharedUtc = DateTimeOffset.UtcNow;
 
             var filter = Builders<UserCalendar>.Filter.And(
                 Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId)),
                 Builders<UserCalendar>.Filter.ElemMatch(x => x.Events, e => e.Id == eventToUpdate.Id));
-            
+
             UpdateDefinition<UserCalendar> update = Builders<UserCalendar>.Update
                 .Set(x => x.Events.FirstMatchingElement().Location, calendarEvent.Location)
                 .Set(x => x.Events.FirstMatchingElement().Description, calendarEvent.Description)
@@ -124,18 +124,21 @@ namespace Calendar.Api.Services
                 var serieFilter = Builders<UserCalendar>.Filter.Eq(x => x.Id, new ObjectId(calendarId));
                 var arrayFilters = new List<ArrayFilterDefinition<UserCalendar>>
                 {
-                    new BsonDocumentArrayFilterDefinition<UserCalendar>(new BsonDocument("$and", 
-                    new BsonArray
-                    {
-                        new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", eventToUpdate.SeriesId),
-                        new BsonDocument($"element.{nameof(CalendarEvent.Id)}", new BsonDocument("$ne", eventToUpdate.Id))
-                    }))
+                    new BsonDocumentArrayFilterDefinition<UserCalendar>(new BsonDocument("$and",
+                        new BsonArray
+                        {
+                            new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", eventToUpdate.SeriesId),
+                            new BsonDocument($"element.{nameof(CalendarEvent.Id)}", new BsonDocument("$ne", eventToUpdate.Id))
+                        }))
                 };
 
                 var serieUpdate = Builders<UserCalendar>.Update.Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.LastUpdateDate)}", sharedUtc);
 
-                var updateOptions = new UpdateOptions { ArrayFilters = arrayFilters };
-                
+                var updateOptions = new UpdateOptions
+                {
+                    ArrayFilters = arrayFilters
+                };
+
                 await dbCollection.UpdateOneAsync(serieFilter, serieUpdate, updateOptions);
             }
 
@@ -159,7 +162,7 @@ namespace Calendar.Api.Services
             calendarEvent.ValidateSeriesId();
 
             var calendar = await dbCollection.AsQueryable().FirstOrDefaultAsync(x => x.Id == new ObjectId(calendarId));
-            
+
             if (calendar == null) throw new KeyNotFoundException("Calendar was not found.");
 
             var oldSeriesEvents = calendar.Events.Where(x => x.SeriesId == calendarEvent.SeriesId).ToList();
@@ -167,7 +170,8 @@ namespace Calendar.Api.Services
             if (oldSeriesEvents.IsNullOrEmpty()) throw new KeyNotFoundException("Series was not found.");
 
             // If LastUpdateDate not the same, a conflict is occured.
-            if (oldSeriesEvents!.Max(x => x.LastUpdateDate).TrimMilliseconds() != calendarEvent.LastUpdateDate.TrimMilliseconds()) throw new ConflictException<IEnumerable<CalendarEvent>>(oldSeriesEvents);
+            if (oldSeriesEvents!.Max(x => x.LastUpdateDate).TrimMilliseconds() != calendarEvent.LastUpdateDate.TrimMilliseconds())
+                throw new ConflictException<IEnumerable<CalendarEvent>>(oldSeriesEvents);
 
 
             FilterDefinition<UserCalendar> filter;
@@ -175,7 +179,7 @@ namespace Calendar.Api.Services
             List<CalendarEvent>? eventsToUpdate = null;
 
             var isModified = false;
-            
+
 
             // delete all old events if the repeat changed or EndSeriesDate changed
             var firstEvent = oldSeriesEvents.First();
@@ -184,7 +188,7 @@ namespace Calendar.Api.Services
                 firstEvent.EndSeries != calendarEvent.EndSeries ||
                 firstEvent.Duration != calendarEvent.Duration ||
                 firstEvent.Start != calendarEvent.Start
-                )
+               )
             {
                 calendarEvent.ValidateSeriesTimes();
                 calendarEvent.CreatedDate = oldSeriesEvents.First().CreatedDate;
@@ -200,7 +204,7 @@ namespace Calendar.Api.Services
                 var result = await dbCollection.UpdateOneAsync(filter, update);
                 isModified = result.ModifiedCount > 0;
             }
-            
+
             else
             {
                 var sharedUtc = DateTimeOffset.UtcNow;
@@ -208,10 +212,10 @@ namespace Calendar.Api.Services
                 var arrayFilters = new List<ArrayFilterDefinition<UserCalendar>>
                 {
                     new BsonDocumentArrayFilterDefinition<UserCalendar>(new BsonDocument("$and",
-                    new BsonArray
-                    {
-                        new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", oldSeriesEvents.First().SeriesId)
-                    }))
+                        new BsonArray
+                        {
+                            new BsonDocument($"element.{nameof(CalendarEvent.SeriesId)}", oldSeriesEvents.First().SeriesId)
+                        }))
                 };
 
                 var serieUpdate = Builders<UserCalendar>.Update
@@ -221,7 +225,10 @@ namespace Calendar.Api.Services
                     .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.Description)}", calendarEvent.Description)
                     .Set($"{nameof(UserCalendar.Events)}.$[element].{nameof(CalendarEvent.Instructors)}", calendarEvent.Instructors);
 
-                var updateOptions = new UpdateOptions { ArrayFilters = arrayFilters };
+                var updateOptions = new UpdateOptions
+                {
+                    ArrayFilters = arrayFilters
+                };
 
                 var result = await dbCollection.UpdateOneAsync(serieFilter, serieUpdate, updateOptions);
                 isModified = result.ModifiedCount > 0;
@@ -237,8 +244,6 @@ namespace Calendar.Api.Services
                 throw new Exception("Problem with updating series");
             }
 
-
-            
 
         }
 
@@ -294,7 +299,7 @@ namespace Calendar.Api.Services
             var shardUtcNow = DateTimeOffset.UtcNow;
             var endEvent = firstEvent.Start + firstEvent.Duration;
             var seriesId = firstEvent.SeriesId ?? ObjectId.GenerateNewId();
-            if(firstEvent.StartSeries == null) throw new NullReferenceException(nameof(firstEvent.StartSeries));
+            if (firstEvent.StartSeries == null) throw new NullReferenceException(nameof(firstEvent.StartSeries));
             var seriesStart = firstEvent.StartSeries.Value;
             seriesStart = new DateTimeOffset(seriesStart.Year, seriesStart.Month, seriesStart.Day, firstEvent.Start.Hour, firstEvent.Start.Minute, 0, TimeSpan.Zero);
             // Need this seriesEnd Date which contains the event also on the day of series end.
