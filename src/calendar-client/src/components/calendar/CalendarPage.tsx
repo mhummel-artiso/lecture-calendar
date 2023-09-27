@@ -1,6 +1,6 @@
 import { Fab, Grid } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { EditEventCallback, EventDialog } from '../eventDialog/EventDialog'
 import { useAccount } from '../../hooks/useAccount'
 import moment, { Moment } from 'moment'
@@ -136,5 +136,3 @@ export const CalendarPage = () => {
         </>
     )
 }
-
-export type { CalendarViewType }

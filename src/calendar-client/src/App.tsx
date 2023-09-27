@@ -21,9 +21,6 @@ function App() {
         autoSignOut: true,
         autoSignIn: false,
         authority: envConfig.getAuthorityUrl(),
-        onSignIn: (user) => {
-            console.log('onSignIn', user)
-        },
         automaticSilentRenew: true,
         clientId: 'calendar-client',
         scope: '',
@@ -35,6 +32,7 @@ function App() {
     return (
         <ErrorBoundary FallbackComponent={ErrorPage}>
             <AuthProvider {...oidcConfig}>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
                 <QueryClientProvider client={queryClient}>
                     <LocalizationProvider
                         dateAdapter={AdapterMoment}
