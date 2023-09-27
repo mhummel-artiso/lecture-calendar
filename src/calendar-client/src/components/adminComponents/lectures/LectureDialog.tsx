@@ -7,10 +7,11 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Lecture } from '../../../models/lecture'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 
+// Dialog to add / edit lectures
 export const LectureDialog: FC<
     DialogComponentProps<Lecture, Lecture, Lecture>
 > = ({
@@ -24,6 +25,7 @@ export const LectureDialog: FC<
     const [shortKey, setShortKey] = useState<string>('')
     const [description, setDescription] = useState<string>('')
 
+    // Initialize form fields with current lecture data if available
     useEffect(() => {
         setTitle(currentLecture?.title ?? '')
         setShortKey(currentLecture?.shortKey ?? '')

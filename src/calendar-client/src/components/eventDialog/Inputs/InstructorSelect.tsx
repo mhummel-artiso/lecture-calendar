@@ -6,6 +6,7 @@ import { Instructor } from '../../../models/instructor'
 import { getInstructors } from '../../../services/KeyCloakService'
 import { useAccount } from '../../../hooks/useAccount'
 
+// Dropdown to select instructors when adding/editing an event
 export const InstructorSelect: FC<DialogSelectInterfaces<Instructor[]>> = ({
     value,
     onChange,

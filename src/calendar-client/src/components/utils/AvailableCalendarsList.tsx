@@ -12,19 +12,20 @@ import React, { FC, useEffect, useState } from 'react'
 import { Calendar } from '../../models/calendar'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { getCalendars } from '../../services/CalendarService'
+import { getAssignedCalendars } from '../../services/CalendarService'
 
 interface Props {
     disablePadding?: boolean
 }
 
+// Calendars that show in menu
 export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
     const navigate = useNavigate()
     const [calendars, setCalendars] = useState<Calendar[]>([])
 
     const { isLoading, data } = useQuery({
         queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryFn: getAssignedCalendars,
         useErrorBoundary: true,
     })
     useEffect(() => {
@@ -36,14 +37,13 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
         </Box>
     ) : (
         <List>
-            {/*Display text if no calendars available*/}
             {!calendars ||
                 (data?.length == 0 && (
                     <ListItem disablePadding={disablePadding}>
                         <ListItemText primary={'Kein Kalender verfügbar'} />
                     </ListItem>
                 ))}
-            {/* Display option if more than one calendar is visible */}
+            {/* Option to show all calendars together, useful for lecturers */}
             {calendars && calendars.length > 1 && (
                 <ListItem disablePadding={disablePadding}>
                     <ListItemButton
@@ -60,7 +60,6 @@ export const AvailableCalendarsList: FC<Props> = ({ disablePadding }) => {
                     </ListItemButton>
                 </ListItem>
             )}
-            {/* List the available calendars */}
             {calendars.map((calendar, index) => (
                 <ListItem key={index} disablePadding={disablePadding}>
                     <ListItemButton

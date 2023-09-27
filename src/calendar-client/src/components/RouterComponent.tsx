@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import { NavBar } from './navigation/NavBar'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { HelloPage } from './pages/HelloPage'
-import { CalendarPage } from './Calendar/CalendarPage'
+import { CalendarPage } from './calendar/CalendarPage'
 import { AdminPage } from './adminComponents/AdminPageContainer'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useAccount } from '../hooks/useAccount'
@@ -34,7 +34,7 @@ export const RouterComponent: FC = () => {
                                 element={<CalendarPage />}
                             />
 
-                            {/* Only for administrator.*/}
+                            {/* Only for administrator*/}
                             {canEdit && (
                                 <Route
                                     path="/administration"

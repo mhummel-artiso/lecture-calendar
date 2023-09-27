@@ -38,7 +38,6 @@ export const NavBar = () => {
         signOut().then(() => navigate('/'))
     }
 
-    // const isEditor = true
     return (
         <AppBar position="sticky">
             <Toolbar>

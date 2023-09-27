@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { getCalendars } from '../../../services/CalendarService'
+import { getAssignedCalendars } from '../../../services/CalendarService'
 import { Autocomplete, CircularProgress, TextField } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { DialogSelectInterfaces } from '../DialogSelectInterfaces'
 import { useAccount } from '../../../hooks/useAccount'
 import { Calendar } from '../../../models/calendar'
 
+// Dropdown to select calendar when adding/editing an event
 export const CalendarSelect: FC<DialogSelectInterfaces<string>> = ({
     value,
     onChange,
@@ -14,17 +15,20 @@ export const CalendarSelect: FC<DialogSelectInterfaces<string>> = ({
 }) => {
     const { canEdit } = useAccount()
     const [selectedValue, setSelectedValue] = useState<Calendar | null>(null)
+
     const { data, isLoading } = useQuery({
         queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryFn: getAssignedCalendars,
         useErrorBoundary: true,
         enabled: canEdit,
     })
+
     useEffect(() => {
         if (data) {
             setSelectedValue(data.find((item) => item.id === value) ?? null)
         }
     }, [data, value])
+
     return (
         <Autocomplete
             disabled={disabled}

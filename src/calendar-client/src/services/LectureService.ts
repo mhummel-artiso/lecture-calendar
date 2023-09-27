@@ -12,15 +12,16 @@ export const addLecture = async (lecture: Lecture): Promise<Lecture> => {
     )
     return Promise.resolve(response.data)
 }
-export const getLectures = async (): Promise<Lecture[]> => {
-    const response = await axiosInstance.get<Lecture[]>(lectureEndPointName())
-    return Promise.resolve(response.data)
-}
 
 export const getLecture = async (lectureId: string): Promise<Lecture> => {
     const response = await axiosInstance.get<Lecture>(
         lectureEndPointName(lectureId)
     )
+    return Promise.resolve(response.data)
+}
+
+export const getLectures = async (): Promise<Lecture[]> => {
+    const response = await axiosInstance.get<Lecture[]>(lectureEndPointName())
     return Promise.resolve(response.data)
 }
 

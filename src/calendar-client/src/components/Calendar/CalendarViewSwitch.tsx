@@ -8,6 +8,7 @@ interface Props {
 }
 
 export const CalendarViewSwitch: React.FC<Props> = ({ value, onChange }) => {
+    // Handle the view change when the toggle button is clicked
     const handleViewChange = (
         event: React.MouseEvent<HTMLElement>,
         newAlignment: CalendarViewType | null

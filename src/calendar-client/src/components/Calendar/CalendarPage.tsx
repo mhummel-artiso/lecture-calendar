@@ -1,6 +1,6 @@
 import { Fab, Grid } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { EditEventCallback, EventDialog } from '../eventDialog/EventDialog'
 import { useAccount } from '../../hooks/useAccount'
 import moment, { Moment } from 'moment'
@@ -19,6 +19,7 @@ import { CalendarViewSwitch } from './CalendarViewSwitch'
 import { CalendarScheduler } from './CalendarScheduler'
 import { CalendarViewType } from '../../services/DateService'
 
+// Component that shows the whole calendar page
 export const CalendarPage = () => {
     const { canEdit } = useAccount()
     const { calendarName } = useParams()
@@ -28,20 +29,20 @@ export const CalendarPage = () => {
     const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
         null
     )
-    const [claendarId, setCalendarId] = useState<string>('')
+    const [calendarId, setCalendarId] = useState<string>('')
 
     const addEventMutation = useMutation({
         mutationFn: async (event: CreateCalendarEvent) => {
             return await addEvent(event.calendarId, event)
         },
         onSuccess: async (_) => {
+            // Invalidate the events query after adding new event
             await queryClient.invalidateQueries({
                 queryKey: ['events', calendarName, calendarView],
             })
         },
     })
 
-    // { mutate: mutateEdit, data: mutateEditResponse, error: mutateEditError, isError }
     const eventEditMutation = useMutation({
         mutationFn: async (e: EditEventCallback) => {
             if (e.event) {
@@ -55,11 +56,13 @@ export const CalendarPage = () => {
             }
         },
         onSuccess: async (_) => {
+            // Invalidate the events query after editing event
             await queryClient.invalidateQueries({
                 queryKey: ['events', calendarName, calendarView],
             })
         },
         onError: async (error: AxiosError) => {
+            // Handle conflict error
             if (error.status === 409) {
                 await queryClient.invalidateQueries({
                     queryKey: ['events', calendarName, calendarView],
@@ -83,7 +86,7 @@ export const CalendarPage = () => {
             </Grid>
             <Grid sx={{ position: 'relative', flexGrow: 1 }}>
                 <CalendarScheduler
-                    calendarId={claendarId}
+                    calendarId={calendarId}
                     onCalendarIdChanged={setCalendarId}
                     currentDate={currentDate}
                     onEventSelected={(event) => {
@@ -115,7 +118,7 @@ export const CalendarPage = () => {
                         setSelectedEvent(null)
                     }}
                     currentValue={selectedEvent}
-                    calendarId={claendarId}
+                    calendarId={calendarId}
                     onDialogAdd={addEventMutation.mutate}
                     onDialogEdit={eventEditMutation.mutate}
                     onDeletedEvent={async (event: CalendarEvent) => {
@@ -133,3 +136,5 @@ export const CalendarPage = () => {
         </>
     )
 }
+
+export type { CalendarViewType }

@@ -41,6 +41,7 @@ interface Props {
     onCalendarIdChanged: (id: string) => void
 }
 
+// Scheduler component in calendar
 export const CalendarScheduler: React.FC<Props> = (porps) => {
     const { showBoundary } = useErrorBoundary()
     const { currentDate, calendarView, onEventSelected, onCalendarIdChanged } =
@@ -51,6 +52,8 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
     const { calendarName } = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+
+    // Get events from calendar by state or by calendarname
     const getEvents = async () => {
         const state = location.state as Calendar[] | undefined | null
         if (state) {
@@ -85,6 +88,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         }
         return []
     }
+
     const { data: events } = useQuery({
         queryKey: [
             'events',
@@ -96,7 +100,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
         useErrorBoundary: true,
     })
 
-    // Invalidates events when parameters change
+    // Invalidates events query when parameters change
     useEffect(() => {
         queryClient
             .invalidateQueries({
@@ -110,6 +114,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
             .catch(showBoundary)
     }, [calendarName, location.state, calendarView, currentDate])
 
+    // Convert CalendarEvent to Appointmentmodel to show in scheduler
     const getAppointment = (c: CalendarEvent) => {
         const title: string =
             c.lecture?.shortKey && (c.lecture?.shortKey.length ?? 0) > 0
@@ -123,6 +128,7 @@ export const CalendarScheduler: React.FC<Props> = (porps) => {
             location: c.location,
             event: c,
         }
+        // Handle repeating events in AppointmentModel
         if (c.repeat > 0) {
             switch (c.repeat) {
                 case 1:

@@ -35,7 +35,6 @@ function App() {
     return (
         <ErrorBoundary FallbackComponent={ErrorPage}>
             <AuthProvider {...oidcConfig}>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
                 <QueryClientProvider client={queryClient}>
                     <LocalizationProvider
                         dateAdapter={AdapterMoment}

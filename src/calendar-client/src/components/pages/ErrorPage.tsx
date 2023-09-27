@@ -6,7 +6,7 @@ import { AxiosError } from 'axios'
 import {
     AxiosErrorInformation,
     ErrorInformation,
-} from '../ErrorContent/AxiosErrorInformation'
+} from '../errorContent/AxiosErrorInformation'
 
 export const ErrorPage: FC<FallbackProps> = ({
     error: err,

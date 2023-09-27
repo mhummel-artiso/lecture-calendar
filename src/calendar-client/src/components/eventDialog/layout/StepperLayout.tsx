@@ -17,6 +17,7 @@ interface StepperLayoutProps {
     onCancel: () => void
 }
 
+// Stepper Layout, opens if user cannot edit event
 export const StepperLayout: FC<StepperLayoutProps> = ({
     steps,
     onSubmit,

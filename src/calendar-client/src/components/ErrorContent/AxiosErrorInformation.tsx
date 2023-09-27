@@ -7,21 +7,25 @@ interface Props {
 }
 
 export const AxiosErrorInformation: FC<Props> = ({ error }) => {
+    // Determine the dialog title based on the error
     const getDialogTitle = () => {
         let text = ''
         if (error === null) {
-            text = 'Kein fehler :)'
+            text = 'Kein Fehler :)'
         } else if (error.response?.status == 409) {
-            text = 'Konflikt beim übernehmen von Daten'
+            text = 'Konflikt beim Übernehmen von Daten'
         } else {
             text = error?.response?.statusText ?? 'Unbekannter Fehler'
         }
         return <Typography variant="h2">{text}</Typography>
     }
+
+    // Determine the dialog content based on the error
     const getDialogContent = () => {
         if (error === null) {
-            return <Typography>Keine fehler :)</Typography>
+            return <Typography>Keine Fehler :)</Typography>
         }
+        // Conflict error when editing event
         if (error.response?.status == 409) {
             return (
                 <Typography>
@@ -40,6 +44,7 @@ export const AxiosErrorInformation: FC<Props> = ({ error }) => {
         </>
     )
 }
+
 export const ErrorInformation = ({ error }: { error: Error }) => {
     const getError = () => {
         return error?.stack

@@ -23,6 +23,7 @@ interface AccordionLayoutProps {
     canUpdate: boolean
 }
 
+// Accordion Layout, opens if user can edit an event
 export const AccordionLayout: FC<AccordionLayoutProps> = ({
     sections,
     onUpdate,

@@ -29,7 +29,7 @@ export const formatCurrentDateView = (
         case 'day':
             return currentDate.format('dddd, DD. MMMM YYYY')
         case 'week': {
-            const firstDayOfWeek = currentDate.clone().startOf('week') //.weekday(1)
+            const firstDayOfWeek = currentDate.clone().startOf('week')
             const lastDayOfWeek = currentDate.clone().weekday(6)
             return `${firstDayOfWeek.format('DD.MM')} - ${lastDayOfWeek.format(
                 'DD.MM.YYYY'
