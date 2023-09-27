@@ -43,6 +43,7 @@ namespace Calendar.Api.Services
                 case ViewType.day:
                     start = new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, new TimeSpan());
                     end = date.AddDays(1);
+                    
                     break;
                 case ViewType.week:
                     start = date.AddDays(-(int)date.DayOfWeek);
@@ -56,7 +57,7 @@ namespace Calendar.Api.Services
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewType), viewType, null);
             }
-
+            logger.LogDebug($"start: {start} to end: {end}");
             return result.Events.Where(x => x.Start >= start && (x.Start + x.Duration) <= end);
         }
         public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)
