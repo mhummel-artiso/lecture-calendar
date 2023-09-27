@@ -79,7 +79,7 @@ services:
 
 # databases
   mongodb:
-    image: mongo:6.0
+    image: mongo
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
