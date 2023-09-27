@@ -112,7 +112,3 @@ mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PA
   - `VITE_OIDC_REDIRECT_URL` : The redirect ulr for the OIDC server (`""`) [**Required**]
 
 ### Client
-
-### Build errors
-TODO replace this line in package.json
-`"build": "tsc && vite build",`

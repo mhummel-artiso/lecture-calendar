@@ -25,7 +25,6 @@ export const NavBar = () => {
 
     const displayText = () => {
         let displayName = 'Kalender'
-        // TODO: Check if user is authorized
         if (location.pathname.startsWith('/administration')) {
             displayName = 'Übersicht'
         } else if (location.pathname.startsWith('/calendar/')) {
