@@ -106,15 +106,14 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "keycloak"
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 5
   postgressdb-keycloak:
     healthcheck:
       test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM authentication_flow LIMIT 1"]
-      
       interval: 10s
       timeout: 10s
       retries: 5
@@ -205,6 +204,7 @@ services:
     labels:
       logging: "promtail"
       logging_jobname: "postgres-grafana-exporter"
+
   postgressdb-keycloak-exporter:
     environment:
       TZ: ${TIMEZONE}
