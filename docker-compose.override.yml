@@ -69,7 +69,6 @@ services:
     volumes:
       - mongodb-data:/data/db
       - ./config/mongodb/data:/backup_data/
-      #- ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
   
   # add new client https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak#set_up_a_client
   # while import errors  https://howtodoinjava.com/devops/keycloak-script-upload-is-disabled/
@@ -78,6 +77,7 @@ services:
       - "--verbose"
       - "start-dev" 
       - "--features=token-exchange"
+      - "--spi-sticky-session-encoder-infinispan-should-attach-route=false"
     environment:
       TZ: ${TIMEZONE}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
@@ -95,17 +95,11 @@ services:
       KC_DB_URL_DATABASE: keycloak
       KC_DB_SCHEMA: public
       KC_HTTP_ENABLED: true
-      # KC_LOG_LEVEL: INFO,org.infinispan:DEBUG,org.jgroups:DEBUG
-      # KC_HOSTNAME: ${KEYCLOAK_HOST}
       KC_OTEL: true
     labels:
       logging: "promtail"
       logging_jobname: "keycloak"
-    # healthcheck:
-    #   test: ["CMD", "curl", "--fail", "-s","http://0.0.0.0:8080/auth/health/ready" ] #, "|", "jq", "'select((.status == \"UP\") or (.checks[].status == \"UP\"))'"]
-    #   interval: 30s
-    #   timeout: 30s
-    #   retries: 5
+
   postgressdb-keycloak:
     healthcheck:
       test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM authentication_flow LIMIT 1"]
@@ -180,9 +174,6 @@ services:
     volumes:
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /var/run/docker.sock:/var/run/docker.sock
-    # command:
-    #  - '--web.external-url=/prometheus/'
-    #  - '--web.route-prefix=/prometheus/'
 
   mongodb-exporter:
     command: --mongodb.uri=mongodb://root:${MASTER_PW}@mongodb:27017
