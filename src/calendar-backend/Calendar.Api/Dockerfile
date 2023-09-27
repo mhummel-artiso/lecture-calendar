@@ -6,7 +6,7 @@ COPY ["Calendar.Api/Calendar.Api.csproj", "Calendar.Api/"]
 RUN dotnet restore "Calendar.Api/Calendar.Api.csproj"
 COPY . .
 WORKDIR "/src/Calendar.Api"
-RUN dotnet publish "Calendar.Api.csproj" -c Release --ucr -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Calendar.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 WORKDIR /app
