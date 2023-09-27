@@ -1,6 +1,7 @@
 # Lecture Calendar
 
 - [Lecture Calendar](#lecture-calendar)
+  - [Project Description](#project-description)
   - [Logins](#logins)
   - [Urls](#urls)
   - [Start System](#start-system)
@@ -10,6 +11,33 @@
     - [Environment variables](#environment-variables)
   - [Client](#client)
     - [Build variables](#build-variables)
+
+## Project Description
+
+Currently, there is no unified system at DHBW Heidenheim for communicating lecture schedules to students.
+In the past, lecture schedules were often provided in the form of PDFs, iCalendar files, and similar methods.
+However, this often led to problems and misunderstandings, as the information was shared and updated on various platforms.
+The aim of this project is therefore to develop a web-based lecture calendar that can be used by both DHBW students, as well as lecturers and university administrative staff.
+
+The lecture calendar should have the following functional requirements:
+
+- Web-based lecture calendar for courses
+- Different views in the calendar
+- Display of multiple courses for lecturers
+- Correct display of events in different time zones
+- Management of courses, lectures, and events
+- Ability to create series of events
+- User and rights management
+
+The lecture calendar should have the following non-functional requirements:
+
+- Scalability
+- Fault tolerance
+- Availability
+- Maintainability
+- Low bandwidth usage
+- Extensibility
+- Usability
 
 ## Logins
 
