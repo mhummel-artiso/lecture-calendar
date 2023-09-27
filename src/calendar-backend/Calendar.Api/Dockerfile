@@ -12,6 +12,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-RUN apk add --no-cache curl
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Calendar.Api.dll"]

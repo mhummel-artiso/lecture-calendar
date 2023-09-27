@@ -16,14 +16,10 @@ services:
     networks:
       - frontend
     depends_on:
-      calendarapi:
-        condition: service_healthy
-      grafana:
-        condition: service_healthy
-      client:
-        condition: service_started
-      keycloak:
-        condition: service_started
+      - calendarapi
+      - grafana
+      - client
+      - keycloak
 
 # calendar api
   calendarapi:

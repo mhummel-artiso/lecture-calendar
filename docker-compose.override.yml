@@ -27,11 +27,6 @@ services:
       API_KEYCLOAK_BASE_URL: ${API_KEYCLOAK_BASE_URL}
       API_KEYCLOAK_REST_PASSWORD: ${MASTER_PW}
       TZ: ${TIMEZONE}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/v1/api/health"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
     labels:
       logging: "promtail"
       logging_jobname: "calendar-api"
