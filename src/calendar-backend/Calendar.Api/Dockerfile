@@ -11,10 +11,10 @@ RUN dotnet build "Calendar.Api.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "Calendar.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-RUN apt-get update && apt-get install -y curl
+RUN apk add --no-cache curl
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Calendar.Api.dll"]
