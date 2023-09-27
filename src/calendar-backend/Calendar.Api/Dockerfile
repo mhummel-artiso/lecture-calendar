@@ -18,7 +18,6 @@ RUN dotnet publish "Calendar.Api.csproj" -c Release -o /app/publish /p:UseAppHos
 
 FROM base AS final
 WORKDIR /app
-RUN apt-get update
-RUN apt-get install -y iputils-ping netcat
+RUN apt-get update && apt-get install -y curl
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Calendar.Api.dll"]

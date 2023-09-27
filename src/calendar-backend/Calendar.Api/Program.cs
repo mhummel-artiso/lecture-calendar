@@ -5,7 +5,6 @@ using Calendar.Api.Initializations;
 using Calendar.Api.Models;
 using Calendar.Api.Services;
 using Calendar.Api.Services.Interfaces;
-using Calendar.PostgreSQL.Db;
 using FS.Keycloak.RestApiClient.Client;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
@@ -45,8 +44,7 @@ try
     configuration.AddEnvironmentVariables(prefix: "API_");
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
-    builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
-    // builder.Services.Configure<JwtEnvironmentConfiguration>(configuration);
+    // builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
     builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
@@ -111,9 +109,9 @@ try
     builder.Services.AddKeycloakAuthentication(configuration);
 
     // TODO configure correctly
+    var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
     builder.Services.AddAuthorization(options =>
     {
-        var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
         ArgumentNullException.ThrowIfNull(oidcConfig);
         var roleViewer = oidcConfig.OIDC_ROLE_VIEWER;
         var roleEditor = oidcConfig.OIDC_ROLE_EDITOR;
@@ -134,7 +132,6 @@ try
 
     builder.Services
         .AddSystemMetrics()
-        .AddSingleton<IKeyGenerator, KeyGenerator>()
         .AddScoped<ICalendarService, CalendarService>()
         .AddScoped<ILectureService, LectureService>()
         .AddScoped<IEventService, EventService>()
@@ -167,7 +164,9 @@ try
     var keycloakRestConfig = configuration.Get<KeycloakRestEnvironmentConfiguration>()?.Validate();
     if (keycloakRestConfig != null)
     {
-        builder.Services.AddSingleton(new KeycloakHttpClient(keycloakRestConfig!.KEYCLOAK_BASE_URL, keycloakRestConfig!.KEYCLOAK_REST_USER,
+        builder.Services.AddSingleton(new KeycloakHttpClient(
+            keycloakRestConfig!.KEYCLOAK_BASE_URL,
+            keycloakRestConfig!.KEYCLOAK_REST_USER,
             keycloakRestConfig!.KEYCLOAK_REST_PASSWORD));
     }
 
@@ -179,9 +178,14 @@ try
 
     var app = builder.Build();
 
+    mongoConfig?.LogTrace(app.Logger);
+    swaggerConfig?.LogTrace(app.Logger);
+    oidcConfig?.LogTrace(app.Logger);
+    keycloakRestConfig?.LogTrace(app.Logger);
+
     #region Swagger
 
-    if (swaggerConfig.USE_SWAGGER)
+    if (swaggerConfig?.USE_SWAGGER == true)
     {
         // https://www.camiloterevinto.com/post/oauth-pkce-flow-for-asp-net-core-with-swagger
         app.UseSwagger()
@@ -222,7 +226,10 @@ try
 
     #region Access controll
 
-    app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    app.UseCors(c => c
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
     app.UseAuthentication();
     app.UseAuthorization();
 
@@ -236,15 +243,18 @@ try
 
     #region Health check
 
-    app.MapHealthChecks("/health");
-    app.UseHealthChecksPrometheusExporter("/metrics");
-    app.UseMetricServer();
-    app.UseHttpMetrics();
+    app.MapHealthChecks("v1/api/health");
+    app.UseHealthChecksPrometheusExporter("/metrics")
+        .UseHttpMetrics()
+        .UseMetricServer();
+
     #endregion
 
     #region Test endpoint
 
-    var debugConf = configuration.Get<DebugEnvironmentConfiguration>()?.Validate();
+    var debugConf = configuration
+        .Get<DebugEnvironmentConfiguration>()?.Validate()
+        .LogTrace(app.Logger);
     ArgumentNullException.ThrowIfNull(debugConf);
     if (debugConf.DEBUG_TEST_ENDPOINT_ENABLED)
     {
@@ -260,6 +270,7 @@ try
     app.Run();
 
     #endregion
+
 }
 catch (ArgumentException ex)
 {

@@ -1,5 +1,5 @@
 import { AuthProvider, AuthProviderProps } from 'oidc-react'
-import { EnvConfig, useEnvironment } from './hooks/useEnvironment'
+import { useEnvironment } from './hooks/useEnvironment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -15,17 +15,21 @@ import { ErrorBoundary } from 'react-error-boundary'
 function App() {
     moment.locale('de')
     const envConfig = useEnvironment()
-
+    console.log('envConfig', envConfig)
     const oidcConfig: AuthProviderProps = {
         loadUserInfo: true,
         autoSignOut: true,
         autoSignIn: false,
         authority: envConfig.getAuthorityUrl(),
+        onSignIn: (user) => {
+            console.log('onSignIn', user)
+        },
         automaticSilentRenew: true,
         clientId: 'calendar-client',
         scope: '',
         clientSecret: envConfig.OIDC_CLIENT_SECRET,
         redirectUri: envConfig.OIDC_REDIRECT_URL,
+        silentRedirectUri: envConfig.OIDC_REDIRECT_URL,
         postLogoutRedirectUri: envConfig.OIDC_REDIRECT_URL,
     }
     return (

@@ -56,9 +56,9 @@ export const LectureDialog: FC<
                 <Stack>
                     <TextField
                         margin="dense"
-                        id="kursname"
+                        id="lecturename"
                         type="text"
-                        label="Kurs Name"
+                        label="Vorlesungsname"
                         value={title}
                         required
                         onChange={(e) => setTitle(e.target.value)}
@@ -66,7 +66,7 @@ export const LectureDialog: FC<
                     <TextField
                         margin="dense"
                         id="shortKey"
-                        label="Kurs Kürzel"
+                        label="Vorlesungskürzel"
                         type="text"
                         value={shortKey}
                         onChange={(e) => setShortKey(e.target.value)}
@@ -74,9 +74,9 @@ export const LectureDialog: FC<
                     <TextField
                         multiline
                         margin="dense"
-                        id="kursdescription"
+                        id="lecturedescription"
                         type="text"
-                        label="Kurs beschreibung"
+                        label="Vorlesungsbeschreibung"
                         minRows={2}
                         maxRows={4}
                         value={description}

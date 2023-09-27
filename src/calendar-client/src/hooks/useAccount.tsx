@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useAuth, User } from 'oidc-react'
 import { axiosInstance } from '../utils/axiosInstance'
-import { UserProfile } from 'oidc-client-ts'
 import { queryClient } from '../utils/queryClient'
 import { useErrorBoundary } from 'react-error-boundary'
 
@@ -31,7 +30,10 @@ export const useAccount = () => {
         axiosInstance.defaults.headers['Authorization'] = userData
             ? 'Bearer ' + userData.access_token
             : ''
-
+        console.log(
+            'axiosInstance.defaults.headers[Authorization]',
+            axiosInstance.defaults.headers['Authorization']
+        )
         if (userData) {
             queryClient.clear()
         }

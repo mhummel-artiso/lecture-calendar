@@ -1,6 +1,6 @@
-﻿namespace Calendar.Api.Utilities.ExtensionMethods
+﻿namespace Calendar.Api.Extensions
 {
-    public static class DateTimeOffsetExtionMethods
+    public static class DateTimeOffsetExtensions
     {
         public static DateTimeOffset TrimMilliseconds(this DateTimeOffset dt)
         {

@@ -11,10 +11,9 @@ import {
 import { deleteEvent, deleteEventSeries } from '../../services/CalendarService'
 import { DialogComponentProps } from '../../models/dialogComponentProps'
 import { EditEventSeriesDialogContent } from './content/EditEventSeriesDialogContent'
-import { useAccount } from '../../hooks/useAccount'
 import {
-    PassedDialogValues,
     AddOrEditEventDialogContent,
+    PassedDialogValues,
 } from './content/AddOrEditEventDialogContent'
 
 export interface EditEventCallback {

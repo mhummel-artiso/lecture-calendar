@@ -26,4 +26,13 @@ public class SwaggerEnvironmentConfiguration : IEnvironmentConfiguration<Swagger
             .CheckEnvironmentUri(SWAGGER_OIDC_TOKEN_URL, true);
         return this;
     }
+
+    public SwaggerEnvironmentConfiguration LogTrace(ILogger logger)
+    {
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+        }
+        return this;
+    }
 }

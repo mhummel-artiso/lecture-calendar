@@ -1,4 +1,4 @@
-﻿namespace Calendar.Mongo.Db.Models;
+﻿namespace Calendar.Mongo.Db.Interfaces;
 
 public class ICalendar
 {

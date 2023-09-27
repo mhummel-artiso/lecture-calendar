@@ -7,7 +7,7 @@ import {
     WeekView,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import { AppointmentModel, ViewState } from '@devexpress/dx-react-scheduler'
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import React, { useEffect } from 'react'
 import moment, { Moment } from 'moment/moment'
 import { useQuery } from '@tanstack/react-query'

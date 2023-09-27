@@ -2,6 +2,7 @@
 
 namespace Calendar.Api.Configurations
 {
+    [Obsolete]
     public class PostgreSqlEnvironmentConfiguration : IEnvironmentConfiguration<PostgreSqlEnvironmentConfiguration>
     {
         public string? POSTGRESQL_HOST { get; set; } = null;
@@ -25,6 +26,15 @@ namespace Calendar.Api.Configurations
                 .CheckEnvironment(POSTGRESQL_DATABASE)
                 .CheckEnvironment(POSTGRESQL_USER_NAME)
                 .CheckEnvironment(POSTGRESQL_USER_PASSWORD);
+            return this;
+        }
+
+        public PostgreSqlEnvironmentConfiguration LogTrace(ILogger logger)
+        {
+            foreach (var property in GetType().GetProperties())
+            {
+                logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+            }
             return this;
         }
     }

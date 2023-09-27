@@ -3,6 +3,7 @@ using Calendar.Api.DTOs;
 using Calendar.Api.Services.Interfaces;
 using FS.Keycloak.RestApiClient.Api;
 using FS.Keycloak.RestApiClient.Client;
+using FS.Keycloak.RestApiClient.Model;
 using Microsoft.Extensions.Options;
 
 namespace Calendar.Api.Services;
@@ -10,67 +11,108 @@ namespace Calendar.Api.Services;
 public class KeycloakService : IKeycloakService
 {
     private readonly KeycloakHttpClient httpClient;
+    private readonly ILogger<KeycloakService> logger;
     private readonly string realm;
     private readonly string calendarsGroupName;
     private readonly string instructorGroupName;
 
-    public KeycloakService(KeycloakHttpClient httpClient, IOptions<KeycloakRestEnvironmentConfiguration> options)
+    public KeycloakService(KeycloakHttpClient httpClient, IOptions<KeycloakRestEnvironmentConfiguration> options, ILogger<KeycloakService> logger)
     {
         this.httpClient = httpClient;
+        this.logger = logger;
         realm = options.Value.KEYCLOAK_REALM;
         calendarsGroupName = options.Value.KEYCLOAK_CALENDARS_GROUP_NAME;
         instructorGroupName = options.Value.KEYCLOAK_INSTRUCTOR_GROUP_NAME;
+        logger.LogError("Initializer '{Service}' with realm: '{Realm}'", nameof(KeycloakService), realm);
     }
 
     public async Task<IEnumerable<string>?> GetAssignedCalendarsByUserAsync(string userId)
     {
-        using var userApi = ApiClientFactory.Create<UserApi>(httpClient);
-        var assignedGroupsFromUser = await userApi.GetUsersGroupsByIdAsync(realm, userId);
-
-        if (assignedGroupsFromUser == null) return null;
-
-        return assignedGroupsFromUser
-            .Where(x => x.Path.StartsWith($"/{calendarsGroupName}/"))
-            .Select(x => x.Name);
+        try
+        {
+            using var userApi = ApiClientFactory.Create<UserApi>(httpClient);
+            var assignedGroupsFromUser = await userApi.GetUsersGroupsByIdAsync(realm, userId);
+            if (assignedGroupsFromUser != null)
+                return assignedGroupsFromUser
+                    .Where(x => x.Path.StartsWith($"/{calendarsGroupName}/"))
+                    .Select(x => x.Name);
+            logger.LogInformation("No assigned groups for user found");
+            return null;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Fail to get groups from '{Realm}' by id '{UserId}'", realm, userId);
+            throw;
+        }
     }
 
     public async Task<IEnumerable<InstructorDTO>?> GetInstructorsAsync()
     {
-        using var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient);
-
-        var groups = await groupsApi.GetGroupsAsync(realm);
-
-        if (groups == null) return null;
-
-        var instructorGroup = groups.FirstOrDefault(x => x.Name.Equals(instructorGroupName));
-
-        if (instructorGroup == null) return null;
-
-        using var groupApi = ApiClientFactory.Create<GroupApi>(httpClient);
-        var groupMembers = await groupApi.GetGroupsMembersByIdAsync(realm, instructorGroup.Id);
-
-        return groupMembers?.Select(user => new InstructorDTO()
+        try
         {
-            Id = user.Id, Name = $"{user.FirstName} {user.LastName}"
-        });
+            GroupRepresentation? instructorGroup = null;
+            using (var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient))
+            {
+
+                var groups = await groupsApi.GetGroupsAsync(realm);
+                if (groups == null)
+                {
+                    logger.LogInformation("no groups found in {Realm}", realm);
+                    return null;
+                }
+                instructorGroup = groups.FirstOrDefault(x => x.Name.Equals(instructorGroupName));
+            }
+            if (instructorGroup == null)
+            {
+                logger.LogInformation("No group found with name {Name}", instructorGroupName);
+                return null;
+            }
+            using (var groupApi = ApiClientFactory.Create<GroupApi>(httpClient))
+            {
+                var groupMembers = await groupApi.GetGroupsMembersByIdAsync(realm, instructorGroup.Id);
+
+                return groupMembers?.Select(user => new InstructorDTO()
+                {
+                    Id = user.Id, Name = $"{user.FirstName} {user.LastName}"
+                });
+            }
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Fail to get Instructors from {Realm}", realm);
+            throw;
+        }
     }
 
     public async Task<IEnumerable<UserCalendarKeycloakDTO>?> GetAllCalendarsAsync()
     {
-        using var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient);
-        var groups = await groupsApi.GetGroupsAsync(realm);
-
-        if (groups == null) return null;
-
-        var semesterGroup = groups.FirstOrDefault(x => x.Name.Equals(calendarsGroupName));
-
-        if (semesterGroup == null) return null;
-
-        return semesterGroup.SubGroups.Select(group => new UserCalendarKeycloakDTO()
+        try
         {
-            KeycloakGroupId = group.Id, Name = group.Name
-        });
+            using var groupsApi = ApiClientFactory.Create<GroupsApi>(httpClient);
+            var groups = await groupsApi.GetGroupsAsync(realm);
 
+            if (groups == null)
+            {
+                logger.LogInformation("no groups found in {Realm}", realm);
+                return null;
+            }
+
+            var semesterGroup = groups.FirstOrDefault(x => x.Name.Equals(calendarsGroupName));
+
+            if (semesterGroup != null)
+                return semesterGroup.SubGroups.Select(group => new UserCalendarKeycloakDTO()
+                {
+                    KeycloakGroupId = group.Id, Name = group.Name
+                });
+            logger.LogInformation("No group found with name {Name}", calendarsGroupName);
+            return null;
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Fail to get all calendars");
+            throw;
+        }
     }
 
 

@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { TextFieldViewType } from '../EventDialog'
 import {
     Accordion,
     AccordionDetails,

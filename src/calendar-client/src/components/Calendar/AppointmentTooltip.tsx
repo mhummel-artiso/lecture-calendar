@@ -1,21 +1,11 @@
 import React from 'react'
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
 import { CalendarEvent } from '../../models/calendarEvent'
-import {
-    Avatar,
-    Chip,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Typography,
-} from '@mui/material'
-import RemoveIcon from '@mui/icons-material/Remove'
+import { Avatar, Chip, Grid, Typography } from '@mui/material'
 
 export const AppointmentTooltipContent: React.FC<
     AppointmentTooltip.ContentProps
-> = ({ children, appointmentData, ...restProps }) => {
+> = ({ appointmentData, ...restProps }) => {
     const event = appointmentData?.event as CalendarEvent
     return (
         <AppointmentTooltip.Content
@@ -72,7 +62,7 @@ export const AppointmentTooltipContent: React.FC<
 
 export const AppointmentTooltipHeader: React.FC<
     AppointmentTooltip.HeaderProps
-> = ({ children, appointmentData, ...restProps }) => {
+> = ({ appointmentData, ...restProps }) => {
     const event = appointmentData?.event as CalendarEvent
     return (
         <AppointmentTooltip.Header

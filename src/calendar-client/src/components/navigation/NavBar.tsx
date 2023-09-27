@@ -1,6 +1,5 @@
 import {
     AppBar,
-    Avatar,
     Button,
     Drawer,
     IconButton,

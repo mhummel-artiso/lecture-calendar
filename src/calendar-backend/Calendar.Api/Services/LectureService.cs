@@ -1,6 +1,6 @@
 ﻿using Calendar.Api.Exceptions;
+using Calendar.Api.Extensions;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Utilities.ExtensionMethods;
 using Calendar.Mongo.Db.Models;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;

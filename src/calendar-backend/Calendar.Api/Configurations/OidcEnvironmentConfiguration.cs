@@ -17,4 +17,12 @@ public class OidcEnvironmentConfiguration : IEnvironmentConfiguration<OidcEnviro
             .CheckEnvironment(OIDC_ROLE_VIEWER);
         return this;
     }
+    public OidcEnvironmentConfiguration LogTrace(ILogger logger)
+    {
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
+        }
+        return this;
+    }
 }

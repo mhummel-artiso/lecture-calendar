@@ -1,7 +1,7 @@
 ﻿using Calendar.Api.Exceptions;
+using Calendar.Api.Extensions;
 using Calendar.Api.Models;
 using Calendar.Api.Services.Interfaces;
-using Calendar.Api.Utilities.ExtensionMethods;
 using Calendar.Api.Validation;
 using Calendar.Mongo.Db.Models;
 using Microsoft.IdentityModel.Tokens;

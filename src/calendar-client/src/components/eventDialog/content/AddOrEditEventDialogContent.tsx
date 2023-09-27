@@ -7,23 +7,20 @@ import {
     Typography,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { DateTimePicker, TimePicker } from '@mui/x-date-pickers'
+import { TimePicker } from '@mui/x-date-pickers'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
-import { CalendarSelect } from '../selects/CalendarSelect'
-import { LectureSelect } from '../selects/LectureSelect'
-import { InstructorSelect } from '../selects/InstructorSelect'
+import { CalendarSelect } from '../Inputs/CalendarSelect'
+import { LectureSelect } from '../Inputs/LectureSelect'
+import { InstructorSelect } from '../Inputs/InstructorSelect'
 import { LayoutDisplayItem } from '../DialogSelectInterfaces'
 import { AccordionLayout } from '../layout/AccordionLayout'
 import { StepperLayout } from '../layout/StepperLayout'
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useAccount } from '../../../hooks/useAccount'
-import React from 'react'
 import { Moment } from 'moment/moment'
 import moment from 'moment'
 import { Instructor } from '../../../models/instructor'
 import { CalendarEvent } from '../../../models/calendarEvent'
-import { Calendar } from '../../../models/calendar'
-import { Lecture } from '../../../models/lecture'
 
 const serialList = [
     { value: 0, label: 'Nicht wiederholen' },
@@ -96,7 +93,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
             setSerieEnd(moment(currentValue.endSeries ?? moment()))
             setSerieStart(moment(currentValue.startSeries ?? moment()))
             setSerie(currentValue.repeat)
-            setSelectedLectureId(currentValue.lecture?.id!)
+            setSelectedLectureId(currentValue.lecture?.id ?? '')
             setSelectedInstructors(currentValue.instructors)
         }
     }, [currentValue, calendarId])
@@ -153,7 +150,21 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                     value={startDate}
                     onChange={(value) => {
                         setStartDate(value!)
-                        setEndDate(value!)
+                        if (value) {
+                            setEndDate((prev) => {
+                                if (prev) {
+                                    return moment()
+                                        .year(value.year())
+                                        .month(value.month())
+                                        .day(value.day())
+                                        .hour(prev?.hour())
+                                        .minute(prev?.minute())
+                                        .second(prev?.second())
+                                } else {
+                                    return value
+                                }
+                            })
+                        }
                     }}
                     label="Tag"
                 />
@@ -232,6 +243,27 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         )
     }
 
+    const optionalFields = (disabled: boolean) => {
+        return (
+            <Stack spacing={2} sx={{ margin: 1 }}>
+                <TextField
+                    disabled={disabled}
+                    multiline
+                    margin="dense"
+                    type="text"
+                    label="Zusätzlicher Kommentar"
+                    maxRows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <InstructorSelect
+                    value={selectedInstructors}
+                    onChange={setSelectedInstructors}
+                />
+            </Stack>
+        )
+    }
+
     const validateRequiredFields = (): boolean => {
         return (
             (selectedCalendarId?.length ?? 0) > 0 &&
@@ -263,27 +295,6 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
                 minSerieEndDate <= serieEnd
         }
         return startDate && !!endDate && endDate > startDate && isValidSerie
-    }
-
-    const optionalFields = (disabled: boolean) => {
-        return (
-            <Stack spacing={2} sx={{ margin: 1 }}>
-                <TextField
-                    disabled={disabled}
-                    multiline
-                    margin="dense"
-                    type="text"
-                    label="Zusätzlicher Kommentar"
-                    maxRows={4}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <InstructorSelect
-                    value={selectedInstructors}
-                    onChange={setSelectedInstructors}
-                />
-            </Stack>
-        )
     }
 
     const layoutElement: LayoutDisplayItem[] = [

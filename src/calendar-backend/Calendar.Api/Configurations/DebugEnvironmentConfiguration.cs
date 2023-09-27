@@ -20,9 +20,17 @@ public class DebugEnvironmentConfiguration : IEnvironmentConfiguration<DebugEnvi
                 case AuthPolicies.VIEWER:
                 case AuthPolicies.EDITOR_VIEWER:
                     return this;
-                default: 
+                default:
                     throw new EnvironmentConfigurationException(nameof(DEBUG_TEST_ENDPOINT_POLICY), DEBUG_TEST_ENDPOINT_POLICY);
             }
+        }
+        return this;
+    }
+    public DebugEnvironmentConfiguration LogTrace(ILogger logger)
+    {
+        foreach (var property in GetType().GetProperties())
+        {
+            logger.LogTrace("{PropName}={PropValue}",property.Name,property.GetValue(this));
         }
         return this;
     }

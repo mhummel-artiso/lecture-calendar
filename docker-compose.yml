@@ -1,125 +1,116 @@
 # start container: docker compose up -d --build
 # stop container: docker compose down
 
-# Set environments, label and command in docker-compose.override.yml
+# Set environments, labels, volumes, healthchecks and commands in docker-compose.override.yml
 
-version: "3.9"
+version: "3"
 
 services:
+# loadbalancer
+  nginx:
+    container_name: loadbalancer
+    image: nginx:latest
+    restart: ${RESTART_POLICY}
+    ports:
+      - 80:80
+    networks:
+      - frontend
+    depends_on:
+      - calendarapi
+      - grafana
+      - client
+      - keycloak
+
 # calendar api
-  calendar-api:
+  calendarapi:
     build:
       context: src/calendar-backend
       dockerfile: Calendar.Api/Dockerfile
     depends_on:
       mongodb:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
       grafana:
-        condition: service_started
-    restart: on-failure:5
+        condition: service_healthy
+    restart: ${RESTART_POLICY}
     networks:
       - backend-api
       - backend-keycloak
       - backend-monitoring
       - frontend
-    ports:
-      - 4000:80
+    deploy:
+      mode: replicated
+      replicas: 3
 
 # calendar client
   client:
     build: 
       context: ./src/calendar-client
       dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=http://localhost:4000
-        - VITE_OIDC_CLIENT_SECRET=Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA
-        - VITE_OIDC_AUTHORITY=http://localhost:8080/realms/Calendar
-        - VITE_OIDC_REDIRECT_URL=http://localhost:3000
-    restart: always
+    restart: ${RESTART_POLICY}
     networks:
       - frontend
-    ports:
-      - 80:80
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    deploy:
+      mode: replicated
+      replicas: 3
 
 # keycloak authentication
   keycloak:
     build:
       context: ./config/keycloak
       dockerfile: Dockerfile
-    restart: always
+    image: lecture-calendar-keycloak
+    restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-keycloak:
         condition: service_healthy
-      mongodb:
-        condition: service_started
     networks:
       - frontend
       - backend-keycloak
       - backend-monitoring
-    ports:
-      - 8080:8080
+    deploy:
+      mode: replicated
+      replicas: 3
 
 # databases
   mongodb:
     image: mongo
-    restart: always
+    restart: ${RESTART_POLICY}
     networks:
       - backend-api
-      - backend-monitoring
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb-data:/data/db
-      - ./config/mongodb/init:/docker-entrypoint-initdb.d/:ro
 
   postgressdb-keycloak:
-      image: "postgres:alpine3.18"
-      restart: always
-      networks:
-        - backend-keycloak
-      volumes:
-        - postgress-data:/var/lib/postgresql/data
-        - ./config/postgres/initKeyCloak.sql:/docker-entrypoint-initdb.d/init.sql:wr
+    image: "postgres:alpine3.18"
+    restart: ${RESTART_POLICY}
+    networks:
+      - backend-keycloak
 
   postgressdb-grafana:
     image: postgres:alpine3.18
-    restart: always
+    restart: ${RESTART_POLICY}
     networks:
       - backend-monitoring
-    volumes:
-      - grafana-data:/var/lib/postgresql/data
-      - ./config/postgres/initGrafana.sql:/docker-entrypoint-initdb.d/init.sql:wr
 
 # monitoring
   grafana:
     image: grafana/grafana-oss
-    restart: always
+    restart: ${RESTART_POLICY}
     depends_on:
       promtail:
         condition: service_started
-      prometheus:
-        condition: service_started
       postgressdb-grafana:
         condition: service_healthy
-    ports:
-      - "5700:3000"
-    volumes:
-      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-      - ./config/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml:ro
     networks:
       - frontend
       - backend-monitoring
-  
+    deploy:
+      mode: replicated
+      replicas: 3
+
   prometheus:
     image: prom/prometheus
-    restart: always
+    restart: ${RESTART_POLICY}
     depends_on:
       mongodb-exporter:
         condition: service_started
@@ -129,63 +120,56 @@ services:
         condition: service_started
       keycloak:
         condition: service_healthy
+      grafana:
+        condition: service_healthy
     networks:
       - backend-monitoring
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - /var/run/docker.sock:/var/run/docker.sock
+
 # DB exporter
   mongodb-exporter:
     image: percona/mongodb_exporter:0.39
-    restart: always
+    restart: ${RESTART_POLICY}
     depends_on:
       mongodb:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-monitoring
       - backend-api
-    ports:
-      - 9216:9216
+
   postgressdb-grafana-exporter:
     image: prometheuscommunity/postgres-exporter
+    restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-grafana:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-monitoring
+
   postgressdb-keycloak-exporter:
     image: prometheuscommunity/postgres-exporter
+    restart: ${RESTART_POLICY}
     depends_on:
       postgressdb-keycloak:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend-keycloak
       - backend-monitoring
+
 # logging
   loki:
     image: grafana/loki
-    restart: always
+    restart: ${RESTART_POLICY}
     networks:
       - backend-monitoring
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yml:ro
-  
+
   promtail:
     image: grafana/promtail
-    restart: always
+    restart: ${RESTART_POLICY}
     depends_on:
       - loki
     networks:
       - backend-monitoring
-    volumes:
-      - ./config/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    
+
 volumes:
   mongodb-data:
     driver: local
@@ -199,4 +183,3 @@ networks:
   backend-monitoring:
   backend-keycloak:
   frontend:
-# dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx

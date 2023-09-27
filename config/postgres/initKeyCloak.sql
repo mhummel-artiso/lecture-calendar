@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.3
--- Dumped by pg_dump version 15.3
+-- Dumped from database version 16.0
+-- Dumped by pg_dump version 16.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -722,6 +722,21 @@ CREATE TABLE public.idp_mapper_config (
 
 
 ALTER TABLE public.idp_mapper_config OWNER TO postgres;
+
+--
+-- Name: jgroupsping; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.jgroupsping (
+    own_addr character varying(200) NOT NULL,
+    bind_addr character varying(200) NOT NULL,
+    created timestamp without time zone NOT NULL,
+    cluster_name character varying(200) NOT NULL,
+    ping_data bytea
+);
+
+
+ALTER TABLE public.jgroupsping OWNER TO postgres;
 
 --
 -- Name: keycloak_group; Type: TABLE; Schema: public; Owner: postgres
@@ -1650,11 +1665,11 @@ e0670881-cb89-4f1a-9b84-4d54e5efbeb1	t	f	Calendar-realm	0	f	\N	\N	t	\N	f	e09f66b
 93709245-2824-46cb-a48c-32cc8a45d4cc	t	f	account-console	0	t	\N	/realms/Calendar/account/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
 f576fa8c-c2b5-4121-9936-0bbd993aa559	t	f	admin-cli	0	t	\N	\N	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
 d9a8b9bf-ff5c-46f7-895a-f06aaae0a1dc	t	f	broker	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	t	calendar-client	0	f	Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA		f	http://localhost:3000	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Calendar Client	t	client-secret	http://localhost:3000		\N	t	t	t	t
 0df0a01c-66ef-4e56-bcd6-53211c3965b5	t	f	realm-management	0	f	\N	\N	t	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_realm-management}	f	client-secret	\N	\N	\N	t	f	f	f
 a39f7d32-3924-49d0-8904-bd9e4409411c	t	f	security-admin-console	0	t	\N	/admin/Calendar/console/	f	\N	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
 77d24d30-2ec1-47f9-a758-0826b164cacd	t	t	calendar-api-swagger	0	f	hiTq3F2ALbOiray4ZH4Kq0ON3GVTkHjR		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Swagger Calendar Api	t	client-secret	http://localhost:4000		\N	t	f	t	t
-cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	t	calendar-api	0	f	vTtq8mz0OKiUGLaQWpkNZdpdjLhYPsZ5		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	${client_calendar-api}	t	client-secret	http://localhost:4000		\N	t	f	t	t
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	t	t	calendar-client	0	f	Wo9T9nS0ebJbUpVso6wpOGgVluQaqajA		f	http://localhost	f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	Calendar Client	t	client-secret	http://localhost		\N	t	t	t	t
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	t	t	calendar-api	0	f	vTtq8mz0OKiUGLaQWpkNZdpdjLhYPsZ5		f		f	d4932c90-8454-4b23-b96a-05444067272e	openid-connect	-1	t	f	${client_calendar-api}	t	client-secret	http://calendarapi		\N	t	f	t	t
 \.
 
 
@@ -2042,7 +2057,6 @@ ce7313f0-9fa2-4948-966d-19f366995acb	rsa-generated	d4932c90-8454-4b23-b96a-05444
 e5bb2e79-8516-478d-825d-aa5f5ef659e2	hmac-generated	d4932c90-8454-4b23-b96a-05444067272e	hmac-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 74129383-7d0c-44f8-8856-ee6b803d53da	rsa-enc-generated	d4932c90-8454-4b23-b96a-05444067272e	rsa-enc-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 c17c7650-8b61-4f77-aa5d-380ed6772d57	aes-generated	d4932c90-8454-4b23-b96a-05444067272e	aes-generated	org.keycloak.keys.KeyProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
-1e438998-04ce-499c-8d36-57925f51c79d	\N	d4932c90-8454-4b23-b96a-05444067272e	declarative-user-profile	org.keycloak.userprofile.UserProfileProvider	d4932c90-8454-4b23-b96a-05444067272e	\N
 \.
 
 
@@ -2216,12 +2230,10 @@ f8287ef9-36e5-4a8c-a160-a4f30f694375	3ec382b3-405c-4704-acc7-49bb89aa04f3
 
 COPY public.credential (id, salt, type, user_id, created_date, user_label, secret_data, credential_data, priority) FROM stdin;
 a31c952d-7584-4312-8b58-2567be716838	\N	password	f94b920e-9c5c-474c-904e-b75f2181f5e2	1690440868536	\N	{"value":"CpcKrFaxTGOtBb0ZSRRPFOQ43UrFlKWVpMNbxcFclWM=","salt":"a78m7ZAs4/3n7unbyKUDXA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-d9ec84db-c10e-4faa-abf4-dc6e8d7dd9e1	\N	password	45171f94-33bb-439c-8765-7a69d0d6d79e	1690441322767	My password	{"value":"aQRKPEVNMI5YqNTFswYVo3ZuoTpe5g/G0y6yNXKtqMM=","salt":"NTD7tZQXNXFt5kv4buO0oA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-1979473c-c882-42d9-8788-6550cd533db3	\N	password	e735b777-a13e-4f04-81ee-92edc3068449	1690441357417	My password	{"value":"aOMSe9dERr6Us9wWYrc8rYrl8D0g+/Wu06tV9rm1Rgs=","salt":"SvDAZIdWEXbcarFv/CTrjw==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-5e66fa19-e277-4259-a2e2-e61defa5d805	\N	password	4f95e562-3f21-416c-aba8-98d10d65a744	1690441421886	My password	{"value":"FzUp5JO6dTQ8xQXQKFR8iVl79CEDMyJGDHcKTlrqAOk=","salt":"DSy6/NBJ7KNKv+k2t5Aj4Q==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-4224abee-0e6f-4232-a1d2-ff6b07817d97	\N	password	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	1690442387505	My password	{"value":"qLxY+ftkXgwN4i1gNjxlb8RnyvG8OapeYY/qHNMLLVA=","salt":"vzZSECaacFpn/eKr8tyaVA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-0b62d654-d21a-420d-80d1-6298677ce766	\N	password	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b	1690444976465	My password	{"value":"zKm2mDPn0+/PibVaqXr2Y2NhEMP/X4On0F4Mw6hr+64=","salt":"5VYXap7HPIN9dPPyJ5yL4A==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 846574d2-ed85-4153-915d-7a3c987f5c1a	\N	password	3d13b017-9494-4164-9a3a-9d4d6c534614	1690810677136	My password	{"value":"/PEh29Qs2VF3BSYbaY+lGXuD1mi8dK0tTPC+siqqNgU=","salt":"8YGBDHCy9y/NtIYefo9mMw==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+1979473c-c882-42d9-8788-6550cd533db3	\N	password	e735b777-a13e-4f04-81ee-92edc3068449	1694683875776	\N	{"value":"jkJYHBwF2hBgHbTgfFOZV/P6j+Rg+43mq4nxWsgBBAU=","salt":"RynIMWYnKdal9Ad9e6aF7Q==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+5e66fa19-e277-4259-a2e2-e61defa5d805	\N	password	4f95e562-3f21-416c-aba8-98d10d65a744	1694683891576	\N	{"value":"kItoiOQdj6/OPG9tJbywWo57WMNfTK+pUsyAre/b3EM=","salt":"gxUPfESNAWJBfc4EoQyKuA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+d9ec84db-c10e-4faa-abf4-dc6e8d7dd9e1	\N	password	45171f94-33bb-439c-8765-7a69d0d6d79e	1694683906365	\N	{"value":"WZtb1aqdk4HY9qM87yvxIVzphgBjxc0i/5ZshdjuuiQ=","salt":"s1C3TDbLiDknY1NNDpK1/g==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 \.
 
 
@@ -3105,7 +3117,7 @@ f9e1b117-22de-4107-ad0f-585be5351262	String	jsonType.label
 
 COPY public.realm (id, access_code_lifespan, user_action_lifespan, access_token_lifespan, account_theme, admin_theme, email_theme, enabled, events_enabled, events_expiration, login_theme, name, not_before, password_policy, registration_allowed, remember_me, reset_password_allowed, social, ssl_required, sso_idle_timeout, sso_max_lifespan, update_profile_on_soc_login, verify_email, master_admin_client, login_lifespan, internationalization_enabled, default_locale, reg_email_as_username, admin_events_enabled, admin_events_details_enabled, edit_username_allowed, otp_policy_counter, otp_policy_window, otp_policy_period, otp_policy_digits, otp_policy_alg, otp_policy_type, browser_flow, registration_flow, direct_grant_flow, reset_credentials_flow, client_auth_flow, offline_session_idle_timeout, revoke_refresh_token, access_token_life_implicit, login_with_email_allowed, duplicate_emails_allowed, docker_auth_flow, refresh_token_max_reuse, allow_user_managed_access, sso_max_lifespan_remember_me, sso_idle_timeout_remember_me, default_role) FROM stdin;
 e09f66b1-fa27-4fd8-affd-235a04a06fba	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	40c35b4b-faec-4a96-befb-88e1049653c3	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	77c26107-84ae-477d-8004-89012c00284a	c80bafd1-ab88-4e34-ab7b-d6937e394379	887b916f-5a63-4603-b399-494d45e0afe4	4d1bc370-774d-4188-93c4-b8d47c5099d1	c5b5ea41-299e-4d15-a047-6f5838f3e5bf	2592000	f	900	t	f	c2b0981c-d5ee-42c3-9d8b-8502f2aee29e	0	f	0	0	95cc1bb4-86dc-4f85-a3d1-80dabefb577b
-d4932c90-8454-4b23-b96a-05444067272e	60	300	18000	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	54000	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	1	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
+d4932c90-8454-4b23-b96a-05444067272e	60	300	600	\N	\N	\N	t	t	0	\N	Calendar	0	\N	t	t	f	f	EXTERNAL	1800	36000	f	f	e0670881-cb89-4f1a-9b84-4d54e5efbeb1	1800	t	en	f	t	t	f	0	1	30	6	HmacSHA1	totp	e556ad24-ce3f-408e-a10c-a6a0e8f3acbe	78fc9289-68c1-42b9-a828-494b48283703	0b41f0c0-1c71-412f-b3af-f7b18989f434	c19d67f3-76dc-4c23-93fa-f5acd01b4bdc	2ea22dda-5c83-4b26-a9a8-d6a9092ef53f	2592000	t	54000	t	f	a98fa067-75b2-470e-a373-b2d2d0473575	5	f	0	0	f8287ef9-36e5-4a8c-a160-a4f30f694375
 \.
 
 
@@ -3136,6 +3148,26 @@ displayNameHtml	e09f66b1-fa27-4fd8-affd-235a04a06fba	<div class="kc-logo-text"><
 defaultSignatureAlgorithm	e09f66b1-fa27-4fd8-affd-235a04a06fba	RS256
 offlineSessionMaxLifespanEnabled	e09f66b1-fa27-4fd8-affd-235a04a06fba	false
 offlineSessionMaxLifespan	e09f66b1-fa27-4fd8-affd-235a04a06fba	5184000
+realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
+clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
+clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
+oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
+oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
+cibaBackchannelTokenDeliveryMode	d4932c90-8454-4b23-b96a-05444067272e	poll
+cibaExpiresIn	d4932c90-8454-4b23-b96a-05444067272e	120
+cibaInterval	d4932c90-8454-4b23-b96a-05444067272e	5
+cibaAuthRequestedUserHint	d4932c90-8454-4b23-b96a-05444067272e	login_hint
+parRequestUriLifespan	d4932c90-8454-4b23-b96a-05444067272e	60
+actionTokenGeneratedByUserLifespan-execute-actions	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-verify-email	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-reset-credentials	d4932c90-8454-4b23-b96a-05444067272e	
+actionTokenGeneratedByUserLifespan-idp-verify-account-via-email	d4932c90-8454-4b23-b96a-05444067272e	
+frontendUrl	d4932c90-8454-4b23-b96a-05444067272e	
+acr.loa.map	d4932c90-8454-4b23-b96a-05444067272e	{}
+adminEventsExpiration	d4932c90-8454-4b23-b96a-05444067272e	
+shortVerificationUri	d4932c90-8454-4b23-b96a-05444067272e	
 displayName	d4932c90-8454-4b23-b96a-05444067272e	Calendar realm
 displayNameHtml	d4932c90-8454-4b23-b96a-05444067272e	<div class="kc-logo-text"><span>Lecture Calendar</span></div>
 bruteForceProtected	d4932c90-8454-4b23-b96a-05444067272e	false
@@ -3152,20 +3184,13 @@ defaultSignatureAlgorithm	d4932c90-8454-4b23-b96a-05444067272e	RS256
 offlineSessionMaxLifespanEnabled	d4932c90-8454-4b23-b96a-05444067272e	false
 offlineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	5184000
 webAuthnPolicyRpEntityName	d4932c90-8454-4b23-b96a-05444067272e	keycloak
-realmReusableOtpCode	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicySignatureAlgorithms	d4932c90-8454-4b23-b96a-05444067272e	ES256
 webAuthnPolicyRpId	d4932c90-8454-4b23-b96a-05444067272e	
 webAuthnPolicyAttestationConveyancePreference	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyAuthenticatorAttachment	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyRequireResidentKey	d4932c90-8454-4b23-b96a-05444067272e	not specified
-clientSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionIdleTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-clientOfflineSessionMaxLifespan	d4932c90-8454-4b23-b96a-05444067272e	0
 webAuthnPolicyUserVerificationRequirement	d4932c90-8454-4b23-b96a-05444067272e	not specified
 webAuthnPolicyCreateTimeout	d4932c90-8454-4b23-b96a-05444067272e	0
-oauth2DeviceCodeLifespan	d4932c90-8454-4b23-b96a-05444067272e	600
-oauth2DevicePollingInterval	d4932c90-8454-4b23-b96a-05444067272e	5
 webAuthnPolicyAvoidSameAuthenticatorRegister	d4932c90-8454-4b23-b96a-05444067272e	false
 webAuthnPolicyRpEntityNamePasswordless	d4932c90-8454-4b23-b96a-05444067272e	keycloak
 webAuthnPolicySignatureAlgorithmsPasswordless	d4932c90-8454-4b23-b96a-05444067272e	ES256
@@ -3184,19 +3209,6 @@ _browser_header.referrerPolicy	d4932c90-8454-4b23-b96a-05444067272e	no-referrer
 _browser_header.xRobotsTag	d4932c90-8454-4b23-b96a-05444067272e	none
 _browser_header.xFrameOptions	d4932c90-8454-4b23-b96a-05444067272e	SAMEORIGIN
 _browser_header.contentSecurityPolicy	d4932c90-8454-4b23-b96a-05444067272e	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
-cibaBackchannelTokenDeliveryMode	d4932c90-8454-4b23-b96a-05444067272e	poll
-cibaExpiresIn	d4932c90-8454-4b23-b96a-05444067272e	120
-cibaInterval	d4932c90-8454-4b23-b96a-05444067272e	5
-cibaAuthRequestedUserHint	d4932c90-8454-4b23-b96a-05444067272e	login_hint
-parRequestUriLifespan	d4932c90-8454-4b23-b96a-05444067272e	60
-actionTokenGeneratedByUserLifespan-execute-actions	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-verify-email	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-reset-credentials	d4932c90-8454-4b23-b96a-05444067272e	
-actionTokenGeneratedByUserLifespan-idp-verify-account-via-email	d4932c90-8454-4b23-b96a-05444067272e	
-frontendUrl	d4932c90-8454-4b23-b96a-05444067272e	
-acr.loa.map	d4932c90-8454-4b23-b96a-05444067272e	{}
-adminEventsExpiration	d4932c90-8454-4b23-b96a-05444067272e	
-shortVerificationUri	d4932c90-8454-4b23-b96a-05444067272e	
 _browser_header.xXSSProtection	d4932c90-8454-4b23-b96a-05444067272e	1; mode=block
 _browser_header.strictTransportSecurity	d4932c90-8454-4b23-b96a-05444067272e	max-age=31536000; includeSubDomains
 \.
@@ -3379,13 +3391,12 @@ b32b8e24-6c0c-415c-92de-6602b7e4d1a8	/realms/master/account/*
 b18471e0-3804-4b98-b391-bf56dd4dc923	/admin/master/console/*
 6eae40bd-bf2a-4118-9659-5673c2ca655e	/realms/Calendar/account/*
 93709245-2824-46cb-a48c-32cc8a45d4cc	/realms/Calendar/account/*
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	/*
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	/admin/Calendar/console/*
-cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	
-cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
 77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger
 77d24d30-2ec1-47f9-a758-0826b164cacd	/swagger/index.html
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	/*
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	
 \.
 
 
@@ -3564,8 +3575,6 @@ f94b920e-9c5c-474c-904e-b75f2181f5e2	\N	284227a0-f8dd-4ef8-900d-fd2436883724	f	t
 e735b777-a13e-4f04-81ee-92edc3068449	dozent@test.com	dozent@test.com	t	t	\N	Dozent		d4932c90-8454-4b23-b96a-05444067272e	dozent	1690441246760	\N	0
 45171f94-33bb-439c-8765-7a69d0d6d79e	student@test.test	student@test.test	t	t	\N	Test	Student	d4932c90-8454-4b23-b96a-05444067272e	student1	1690441299386	\N	0
 4f95e562-3f21-416c-aba8-98d10d65a744	ske@test.test	ske@test.test	t	t	\N	Sekreteriat		d4932c90-8454-4b23-b96a-05444067272e	sekreteriat	1690441399786	\N	0
-ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	student2@test.test	student2@test.test	t	t	\N	Student	1	d4932c90-8454-4b23-b96a-05444067272e	student2	1690442280867	\N	0
-6fe6034a-5015-4bf6-b0cb-d8314f38ac0b	\N	1306dfcd-fc65-4371-ba69-65e870321228	f	t	\N	Admin	Admin	d4932c90-8454-4b23-b96a-05444067272e	admin	1690444964015	\N	0
 2826dab2-8cc4-482d-9e20-f3309ea1e19a	\N	3f298ce7-4f1d-4750-bd59-b47d84b88488	f	t	\N	\N	\N	d4932c90-8454-4b23-b96a-05444067272e	service-account-calendar-api	1690810018508	cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	0
 3d13b017-9494-4164-9a3a-9d4d6c534614	\N	0002ba22-00df-4e97-b3a8-465d94b98206	t	t	\N	Dev	dev	d4932c90-8454-4b23-b96a-05444067272e	dev	1690810616537	\N	0
 \.
@@ -3611,7 +3620,6 @@ COPY public.user_group_membership (group_id, user_id) FROM stdin;
 a12bd244-8ddf-4220-a9f1-b530891a5ec9	e735b777-a13e-4f04-81ee-92edc3068449
 269072d2-19a8-4ea8-a367-fc85b6af1c53	45171f94-33bb-439c-8765-7a69d0d6d79e
 19bb2450-039d-4780-a347-f686e9af8769	4f95e562-3f21-416c-aba8-98d10d65a744
-269072d2-19a8-4ea8-a367-fc85b6af1c53	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6
 a12bd244-8ddf-4220-a9f1-b530891a5ec9	3d13b017-9494-4164-9a3a-9d4d6c534614
 19bb2450-039d-4780-a347-f686e9af8769	3d13b017-9494-4164-9a3a-9d4d6c534614
 269072d2-19a8-4ea8-a367-fc85b6af1c53	3d13b017-9494-4164-9a3a-9d4d6c534614
@@ -3620,6 +3628,10 @@ b91f647f-a655-458a-9965-9386e8125f85	e735b777-a13e-4f04-81ee-92edc3068449
 c9811517-c13b-4937-8c90-806418330de2	3d13b017-9494-4164-9a3a-9d4d6c534614
 c9811517-c13b-4937-8c90-806418330de2	e735b777-a13e-4f04-81ee-92edc3068449
 b91f647f-a655-458a-9965-9386e8125f85	3d13b017-9494-4164-9a3a-9d4d6c534614
+623a8856-4bb3-4103-94a1-7ed974a1a14a	4f95e562-3f21-416c-aba8-98d10d65a744
+b91f647f-a655-458a-9965-9386e8125f85	4f95e562-3f21-416c-aba8-98d10d65a744
+269072d2-19a8-4ea8-a367-fc85b6af1c53	4f95e562-3f21-416c-aba8-98d10d65a744
+c9811517-c13b-4937-8c90-806418330de2	4f95e562-3f21-416c-aba8-98d10d65a744
 \.
 
 
@@ -3628,10 +3640,6 @@ b91f647f-a655-458a-9965-9386e8125f85	3d13b017-9494-4164-9a3a-9d4d6c534614
 --
 
 COPY public.user_required_action (user_id, required_action) FROM stdin;
-45171f94-33bb-439c-8765-7a69d0d6d79e	UPDATE_PASSWORD
-e735b777-a13e-4f04-81ee-92edc3068449	UPDATE_PASSWORD
-4f95e562-3f21-416c-aba8-98d10d65a744	UPDATE_PASSWORD
-ceb1ed29-4339-4fbd-bab7-ad1ac16429b6	UPDATE_PASSWORD
 \.
 
 
@@ -3653,9 +3661,6 @@ c275580f-3be2-4fd9-bc16-c9070fa3ce9d	243110e7-5530-4610-b040-51a5f543423d
 f8287ef9-36e5-4a8c-a160-a4f30f694375	e735b777-a13e-4f04-81ee-92edc3068449
 f8287ef9-36e5-4a8c-a160-a4f30f694375	45171f94-33bb-439c-8765-7a69d0d6d79e
 f8287ef9-36e5-4a8c-a160-a4f30f694375	4f95e562-3f21-416c-aba8-98d10d65a744
-f8287ef9-36e5-4a8c-a160-a4f30f694375	ceb1ed29-4339-4fbd-bab7-ad1ac16429b6
-f8287ef9-36e5-4a8c-a160-a4f30f694375	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b
-569bdab3-c50b-4188-a27e-fb1a4c685a1f	6fe6034a-5015-4bf6-b0cb-d8314f38ac0b
 f8287ef9-36e5-4a8c-a160-a4f30f694375	2826dab2-8cc4-482d-9e20-f3309ea1e19a
 ccdbd4ff-553d-44af-8b5d-a634908f4d9b	2826dab2-8cc4-482d-9e20-f3309ea1e19a
 f8287ef9-36e5-4a8c-a160-a4f30f694375	3d13b017-9494-4164-9a3a-9d4d6c534614
@@ -3692,10 +3697,10 @@ COPY public.username_login_failure (realm_id, username, failed_login_not_before,
 
 COPY public.web_origins (client_id, value) FROM stdin;
 b18471e0-3804-4b98-b391-bf56dd4dc923	+
-43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost:3000
 a39f7d32-3924-49d0-8904-bd9e4409411c	+
-cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://localhost:4000
 77d24d30-2ec1-47f9-a758-0826b164cacd	http://localhost:4000
+43022b0a-4e08-4d60-ad6c-8a872d5e2f59	http://localhost
+cbb7d230-1ef8-4158-86a9-8ee950ecd6ae	http://calendarapi
 \.
 
 
@@ -4401,6 +4406,14 @@ ALTER TABLE ONLY public.client_scope_attributes
 
 ALTER TABLE ONLY public.client_scope
     ADD CONSTRAINT pk_cli_template PRIMARY KEY (id);
+
+
+--
+-- Name: jgroupsping pk_jgroupsping; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jgroupsping
+    ADD CONSTRAINT pk_jgroupsping PRIMARY KEY (own_addr, cluster_name);
 
 
 --
