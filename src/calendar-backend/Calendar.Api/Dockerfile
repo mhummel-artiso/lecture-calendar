@@ -6,15 +6,12 @@ COPY ["Calendar.Api/Calendar.Api.csproj", "Calendar.Api/"]
 RUN dotnet restore "Calendar.Api/Calendar.Api.csproj"
 COPY . .
 WORKDIR "/src/Calendar.Api"
-RUN dotnet build "Calendar.Api.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "Calendar.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Calendar.Api.csproj" -c Release --ucr -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 RUN apk add --no-cache curl
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Calendar.Api.dll"]

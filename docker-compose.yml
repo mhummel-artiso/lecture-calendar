@@ -16,10 +16,14 @@ services:
     networks:
       - frontend
     depends_on:
-      - calendarapi
-      - grafana
-      - client
-      - keycloak
+      calendarapi:
+        condition: service_healthy
+      grafana:
+        condition: service_healthy
+      client:
+        condition: service_started
+      keycloak:
+        condition: service_started
 
 # calendar api
   calendarapi:
@@ -75,7 +79,7 @@ services:
 
 # databases
   mongodb:
-    image: mongo
+    image: mongo:6.0
     restart: ${RESTART_POLICY}
     networks:
       - backend-api
