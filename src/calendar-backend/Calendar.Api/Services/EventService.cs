@@ -41,23 +41,24 @@ namespace Calendar.Api.Services
             switch (viewType)
             {
                 case ViewType.day:
-                    start = new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, new TimeSpan());
-                    end = date.AddDays(1);
-                    
+                    start = new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, new TimeSpan(2,0,0));
+                    end = start.AddDays(1);
                     break;
                 case ViewType.week:
-                    start = date.AddDays(-(int)date.DayOfWeek);
-                    end = start.AddDays(7).AddTicks(-1);
+                    start = date.AddDays(-(int)date.DayOfWeek + 1);
+                    end = start.AddDays(7);
                     break;
                 case ViewType.month:
                     start = date.AddDays((-date.Day) + 1);
                     // why ticks -1 see: https://stackoverflow.com/questions/24245523/getting-the-first-and-last-day-of-a-month-using-a-given-datetime-object
-                    end = start.AddMonths(1).AddTicks(-1);
+                    end = start.AddMonths(1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewType), viewType, null);
             }
-            logger.LogDebug($"start: {start} to end: {end}");
+            end = end.AddTicks(-1);
+            logger.LogDebug("GetEventsAsync Found calendar: {Name}; Count: {Count}",result.Name,result.Events.Count);
+            logger.LogDebug("GetEventsAsync date: {date}, start: {start} to end: {end}",date,start,end);  
             return result.Events.Where(x => x.Start >= start && (x.Start + x.Duration) <= end);
         }
         public async Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId)

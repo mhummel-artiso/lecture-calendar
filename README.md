@@ -18,8 +18,8 @@
 | Username | Password | Gruppen | Kommentar |
 | --- | --- | --- | --- |
 | admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
-| admin  | **74RuqICjDPQEFREmhIFaqRf6H** | `Verwaltung` | Grafana Admin |
-| User  | **User** | `Verwaltung` | Grafana User |
+| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |  | Grafana Admin |
+| User  | **User** |  | Grafana User |
 | dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
 | sekreteriat | **sekreteriat** | `Verwaltung`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
 | dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
@@ -36,7 +36,7 @@
 | api | http://localhost/v1/api |
 | api-swagger | http://localhost/swagger/ |
 
-## Docker container
+## Start System
 
 To start the complete app run:
 ```sh
@@ -51,7 +51,7 @@ path to configs:
 ./config/<container-name>/
 ```
 
-> In the [docker-compose.yml](./docker-compose.yml) the containers are defined and in the [docker-compose.override.yml](./docker-compose.override.yml) the containers be configured
+> In the [docker-compose.yml](./docker-compose.yml) the containers are defined and in the [docker-compose.override.yml](./docker-compose.override.yml) the containers are configured.
 
 ### Database Dump
 
@@ -68,11 +68,11 @@ To create a dump of the **mongodb** database run in the **mongodb** container:
 mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase=admin --gzip --archive=/backup_data/lecture-calendar.gz
 ```
 
-## Apps
 
-### Api
 
-#### Environment variables
+## Api
+
+### Environment variables
 
 - `ASPNETCORE_ENVIRONMENT` : The asp.net core environment (`Production`) [*Optional*]
 - Mongo
@@ -84,7 +84,7 @@ mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PA
   - `API_OIDC_ROLE_VIEWER` : The role for the viewer (`"calendar-viewer"`) [*Optional*]
 - Swagger
   - `API_SWAGGER_OIDC_URL` : The url to the OIDC service (`""`) [**Required**]
-  - `API_SWAGGER_REDIRECT_URL` : The redirect ulr for the OIDC server (`""`) [**Required**]
+  - `API_SWAGGER_REDIRECT_URL` : The redirect URL for the OIDC server (`""`) [**Required**]
   - `API_SWAGGER_CLIENT_SECRET` : The secret for the swagger client (`""`) [**Required**]
   - `API_SWAGGER_CLIENT_ID` : The client id for the swagger client (`"calendar-api-swagger"`) [*Optional*]
   - `API_SWAGGER_AUTHORIZATION_URL` : Path to authentication on OIDC server (`"/protocol/openid-connect/auth"`) [*Optional*]
@@ -101,14 +101,14 @@ mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PA
   - `KEYCLOAK_CALENDARS_GROUP_NAME` : Groupname for Calendars [*Optional*] (default: "Semesters")
   - `KEYCLOAK_INSTRUCTOR_GROUP_NAME` : Instructorgroupname [*Optional*] (default: "Instructors")
 
-(OIDC: open id connect)
+## Client
 
-#### Build variables
-- Api
+
+
+### Build variables
+- API
   - `VITE_API_URL` : The url to the api (`""`) [**Required**]
 - OIDC
   - `VITE_OIDC_AUTHORITY` : The url to the OIDC service (`""`) [**Required**]
   - `VITE_OIDC_CLIENT_SECRET` : The secret for the swagger client (`""`) [**Required**]
   - `VITE_OIDC_REDIRECT_URL` : The redirect ulr for the OIDC server (`""`) [**Required**]
-
-### Client
