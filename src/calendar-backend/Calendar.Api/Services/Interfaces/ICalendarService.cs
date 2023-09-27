@@ -5,7 +5,7 @@ namespace Calendar.Api.Services.Interfaces;
 public interface ICalendarService
 {
     /// <summary>
-    /// Get calendars from database searched by names
+    /// Get calendars filtered by names
     /// </summary>
     /// <param name="names">names of calendars which are searched for</param>
     /// <param name="includeEvents">if calendars should contains events</param>
@@ -13,7 +13,7 @@ public interface ICalendarService
     Task<IEnumerable<UserCalendar>> GetCalendarsByNamesAsync(IEnumerable<string> names, bool includeEvents = false);
 
     /// <summary>
-    /// Get a calendar from database
+    /// Get a calendar
     /// </summary>
     /// <param name="calendarId">calendar ID</param>
     /// <param name="includeEvents">return calendar with or without events</param>
@@ -21,7 +21,7 @@ public interface ICalendarService
     Task<UserCalendar?> GetCalendarByIdAsync(string calendarId,bool includeEvents = false);
 
     /// <summary>
-    /// Add a new calendar to database
+    /// Add a new calendar
     /// </summary>
     /// <param name="calendar">calendar to add</param>
     /// <returns><see cref="UserCalendar"/></returns>
@@ -44,7 +44,7 @@ public interface ICalendarService
     Task<bool> DeleteCalendarByIdAsync(string calendarId);
 
     /// <summary>
-    /// Get all calendar form database without there events
+    /// Get all calendar without there events
     /// </summary>
     /// <returns>A collection of<see cref="UserCalendar"/></returns>
     Task<IEnumerable<UserCalendar>> GetCalendars();

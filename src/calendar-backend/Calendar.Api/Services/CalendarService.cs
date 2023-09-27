@@ -52,7 +52,7 @@ public class CalendarService : ICalendarService
         await dbCollection.InsertOneAsync(calendar);
         return calendar;
     }
-    
+
     public async Task<UserCalendar?> UpdateCalendarAsync(string calendarId, UserCalendar updateCalendar)
     {
         var updates = new UpdateDefinitionBuilder<UserCalendar>()
@@ -66,12 +66,13 @@ public class CalendarService : ICalendarService
                 .FirstOrDefaultAsync()
             : null;
     }
+
     public async Task<bool> DeleteCalendarByIdAsync(string calendarId)
     {
         var result = await dbCollection.DeleteOneAsync(x => x.Id == new ObjectId(calendarId));
         return result.DeletedCount == 1;
     }
-    
+
     public async Task<IEnumerable<UserCalendar>> GetCalendars()
     {
         return await dbCollection

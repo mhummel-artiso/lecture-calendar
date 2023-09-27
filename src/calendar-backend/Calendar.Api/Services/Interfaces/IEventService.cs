@@ -7,7 +7,7 @@ namespace Calendar.Api.Services.Interfaces
     public interface IEventService
     {
         /// <summary>
-        /// Get event
+        /// Get a event from a calendar 
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="eventId">event id</param>
@@ -17,7 +17,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<CalendarEvent> GetEventAsync(string calendarId, string eventId);
 
         /// <summary>
-        /// Get events from calendar from specific day, week or month
+        /// Get events from calendar from specific date and from day, week or month
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="viewType">should it a day, week or month</param>
@@ -35,7 +35,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<IEnumerable<CalendarEvent>> GetAllEventsFromCalendarAsync(string calendarId);
 
         /// <summary>
-        /// Add a new event or series
+        /// Add a new event or series on a calendar
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="calendarEvent">event to create event/series</param>
@@ -45,7 +45,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<IEnumerable<CalendarEvent>?> AddEventAsync(string calendarId, CalendarEvent calendarEvent);
 
         /// <summary>
-        /// Update a specific event
+        /// Update a specific event on a calendar
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="calendarEvent">event to update</param>
@@ -58,7 +58,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<CalendarEvent> UpdateEventAsync(string calendarId, CalendarEvent calendarEvent);
 
         /// <summary>
-        /// Update a event series
+        /// Update a event series on a calendar
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="calendarEvent">event to update</param>
@@ -71,7 +71,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<IEnumerable<CalendarEvent>> UpdateEventSeriesAsync(string calendarId, CalendarEvent calendarEvent);
 
         /// <summary>
-        /// Delete a event
+        /// Delete a event on a calendar
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="eventId">event id</param>
@@ -80,7 +80,7 @@ namespace Calendar.Api.Services.Interfaces
         Task<bool> DeleteEventByIdAsync(string calendarId, string eventId);
 
         /// <summary>
-        /// Delete series (all events)
+        /// Delete series (all events) on a calendar
         /// </summary>
         /// <param name="calendarId">calendar id</param>
         /// <param name="seriesId">series id</param>
