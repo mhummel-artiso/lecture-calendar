@@ -39,35 +39,13 @@ The lecture calendar should have the following non-functional requirements:
 - Extensibility
 - Usability
 
-## Logins
-
-| Username | Password | Gruppen | Kommentar |
-| --- | --- | --- | --- |
-| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
-| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |  | Grafana Admin |
-| User  | **User** |  | Grafana User |
-| dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
-| sekreteriat | **sekreteriat** | `Verwaltung`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
-| dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
-| student1  | **student1** | `TINF2021AI` |
-
-
-## Urls
-
-| Container | Url |
-| --- | --- |
-| Client | http://localhost/ |
-| Keycloak | http://localhost/auth/ |
-| Grafana | http://localhost/grafana/ |
-| api | http://localhost/v1/api |
-| api-swagger | http://localhost/swagger/ |
-
 ## Start System
 
 To start the complete app run:
 ```sh
 docker compose up -d --build
 ```
+You can then access the application via the URL and authorize using one of the logins.
 
 ### Configurations
 
@@ -94,7 +72,32 @@ To create a dump of the **mongodb** database run in the **mongodb** container:
 mongodump --db=lecture-calendar --username=root --password=$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase=admin --gzip --archive=/backup_data/lecture-calendar.gz
 ```
 
-## Api
+
+## URLs
+
+| Container | Url |
+| --- | --- |
+| Client | http://localhost/ |
+| Keycloak | http://localhost/auth/ |
+| Grafana | http://localhost/grafana/ |
+| api | http://localhost/v1/api |
+| api-swagger | http://localhost/swagger/ |
+
+
+## Logins
+
+| Username | Password | Gruppen | Kommentar |
+| --- | --- | --- | --- |
+| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |   | Keycloak Admin |
+| admin  | **74RuqICjDPQEFREmhIFaqRf6H** |  | Grafana Admin |
+| User  | **User** |  | Grafana User |
+| dev | **dev** | `Verwaltung`, `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` | Development User |
+| sekreteriat | **sekreteriat** | `Verwaltung`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| dozent  | **dozent** | `Instructors`, `TINF2022AI`, `TINF2021AI`, `TINF2020AI` |
+| student1  | **student1** | `TINF2021AI` |
+
+
+## API
 
 ### Environment variables
 
