@@ -3,6 +3,7 @@ import { AppointmentTooltip } from '@devexpress/dx-react-scheduler-material-ui'
 import { CalendarEvent } from '../../models/calendarEvent'
 import { Avatar, Chip, Grid, Typography } from '@mui/material'
 
+// Custom Appointment Tooltip
 export const AppointmentTooltipContent: React.FC<
     AppointmentTooltip.ContentProps
 > = ({ appointmentData, ...restProps }) => {

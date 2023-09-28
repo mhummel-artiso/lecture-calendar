@@ -4,9 +4,9 @@ import { axiosInstance } from '../utils/axiosInstance'
 import { queryClient } from '../utils/queryClient'
 import { useErrorBoundary } from 'react-error-boundary'
 
+// Determines if user has editing permissions
 const _canEdit = (user: User | null | undefined): boolean => {
     if (user?.profile?.realm_access) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const realm_access = user.profile.realm_access as [claim: string]
         const roles = (realm_access[0]['roles'] as string[]) ?? []
         const index = roles.findIndex((x) => x === 'calendar-editor')
@@ -27,18 +27,16 @@ export const useAccount = () => {
     } = useAuth()
 
     useEffect(() => {
+        // Set authorization header for Axios requests when user data is available
         axiosInstance.defaults.headers['Authorization'] = userData
             ? 'Bearer ' + userData.access_token
             : ''
-        console.log(
-            'axiosInstance.defaults.headers[Authorization]',
-            axiosInstance.defaults.headers['Authorization']
-        )
         if (userData) {
             queryClient.clear()
         }
     }, [userData])
 
+    // Handle user sign out
     const _signOut = async () => {
         const idToken = userData?.id_token
         if (idToken) {

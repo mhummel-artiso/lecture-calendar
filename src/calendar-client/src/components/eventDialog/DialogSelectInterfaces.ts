@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface DialogSelectInterfaces<T> {
-    value: T | undefined | null
+    value: T | undefined
     onChange: (value: T | null) => void
     readonlyValue?: string
     disabled?: boolean

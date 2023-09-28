@@ -11,9 +11,9 @@ remote_write:
     send_exemplars: false
     follow_redirects: true
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
+# The scrape configurations containing endpoints to scrape:
 scrape_configs:
+  # Here it's Prometheus itself.
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
     static_configs:
@@ -64,6 +64,7 @@ scrape_configs:
       - targets: ['promtail:9080']
   
   # https://docs.docker.com/config/daemon/prometheus/
+  # optional: add docker metrics
   # - job_name: 'docker'
   #        # metrics_path defaults to '/metrics'
   #        # scheme defaults to 'http'.

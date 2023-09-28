@@ -1,8 +1,8 @@
 import { Box, Container } from '@mui/material'
 import { CalendarList } from './calendar/CalendarList'
 import { LectureList } from './lectures/LectureList'
-import React from 'react'
 
+// Component to manage calendars and lectures, admin only
 export const AdminPage = () => {
     return (
         <Container>

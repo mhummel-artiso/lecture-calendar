@@ -17,6 +17,7 @@ interface props {
     handleClose: () => void
 }
 
+// Dropdown of calendars that shows in menu
 export const DrawerContent = ({ handleClose }: props) => {
     const navigate = useNavigate()
     const { canEdit } = useAccount()
@@ -24,6 +25,7 @@ export const DrawerContent = ({ handleClose }: props) => {
     return (
         <Box role="presentation" onClick={handleClose} sx={{ width: '400px' }}>
             <List>
+                {/* Show administration page if user can edit data  */}
                 {canEdit && (
                     <>
                         <ListItem key="1" disablePadding>

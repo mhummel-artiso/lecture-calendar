@@ -13,7 +13,7 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material'
-import React, { FC, useState } from 'react'
+import { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -40,12 +40,14 @@ export const LectureList: FC = () => {
         }
     }
 
+    // Query the list of lectures and manage loading state
     const { isLoading, data, refetch } = useQuery({
         queryKey: ['lectures'],
         queryFn: getLectures,
         useErrorBoundary: true,
     })
 
+    // Define mutations for adding, editing, and deleting lectures
     const addLectureMutation = useMutation({
         mutationFn: async (lecture: Lecture) => {
             return await addLecture(lecture)

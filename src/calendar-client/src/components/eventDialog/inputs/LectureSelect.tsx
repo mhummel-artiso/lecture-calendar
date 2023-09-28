@@ -6,6 +6,7 @@ import { DialogSelectInterfaces } from '../DialogSelectInterfaces'
 import { useAccount } from '../../../hooks/useAccount'
 import { Lecture } from '../../../models/lecture'
 
+// Dropdown to select lecture when adding/editing an event
 export const LectureSelect: FC<DialogSelectInterfaces<string>> = ({
     value,
     onChange,
@@ -31,7 +32,6 @@ export const LectureSelect: FC<DialogSelectInterfaces<string>> = ({
             disablePortal
             value={selectedValue}
             onChange={(_, v) => {
-                // setSelectedValue(v)
                 onChange(v?.id ?? '')
             }}
             options={data ?? []}

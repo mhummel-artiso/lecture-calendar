@@ -12,7 +12,7 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material'
-import React, { FC, useState } from 'react'
+import { FC, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -37,12 +37,14 @@ export const CalendarList: FC = () => {
         setIsOpen((prevState) => !prevState)
     }
 
+    // Query the list of calendars and manage loading state
     const { isLoading, data, refetch } = useQuery({
         queryKey: ['calendarsSettings'],
         queryFn: getAllCalendars,
         useErrorBoundary: true,
     })
 
+    // Define mutations for adding, deleting, and editing calendars
     const deleteCalendarMutation = useMutation({
         mutationFn: async (calendarId: string) => {
             return await deleteCalendar(calendarId)

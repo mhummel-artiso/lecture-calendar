@@ -33,6 +33,8 @@ interface EventDialogComponentProps
 }
 
 export type TextFieldViewType = 'required' | 'time' | 'optional'
+
+// Event Dialog, opens when adding/editing an event
 export const EventDialog: FC<EventDialogComponentProps> = ({
     isDialogOpen,
     onDialogClose,
@@ -62,6 +64,7 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
             ...value,
         }
         if (currentValue) {
+            // Event is a event series
             if (onDialogEdit && editSeries) {
                 const data: UpdateCalendarEventSeries = {
                     ...currentValue,
@@ -75,7 +78,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     eventSeries: data,
                     event: undefined,
                 })
-            } else if (onDialogEdit && !editSeries) {
+            } // Event is not a series
+            else if (onDialogEdit && !editSeries) {
                 const data: UpdateCalendarEvent = {
                     ...currentValue,
                     ...base,
@@ -89,7 +93,8 @@ export const EventDialog: FC<EventDialogComponentProps> = ({
                     eventSeries: undefined,
                 })
             }
-        } else if (onDialogAdd) {
+        } // Event has to be added as new event
+        else if (onDialogAdd) {
             const data: CreateCalendarEvent = {
                 ...base,
                 lectureId: value.lectureId,

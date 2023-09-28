@@ -5,14 +5,14 @@ namespace Calendar.Api.Services.Interfaces;
 public interface IKeycloakService
 {
     /// <summary>
-    /// Get assigned Calendars
+    /// Get assigned Calendars from a user
     /// </summary>
     /// <param name="userId">User ID</param>
     /// <returns>A collection of <see cref="string"/></returns>
     Task<IEnumerable<string>?> GetAssignedCalendarsByUserAsync(string userId);
 
     /// <summary>
-    /// Get instructors from Keycloak
+    /// Get instructors users from Keycloak
     /// </summary>
     /// <returns>A nullable collection of <see cref="InstructorDTO"/></returns>
     Task<IEnumerable<InstructorDTO>?> GetInstructorsAsync();

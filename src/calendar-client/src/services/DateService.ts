@@ -1,6 +1,7 @@
 import { Moment } from 'moment/moment'
 
 export type CalendarViewType = 'month' | 'week' | 'day'
+
 export const getStartDateFromCurrentDate = (
     currentDate: Moment,
     calendarView: CalendarViewType
@@ -8,14 +9,14 @@ export const getStartDateFromCurrentDate = (
     switch (calendarView) {
         case 'day':
             // Current Day
-            return currentDate.clone().format('YYYY-MM-DD')
+            return currentDate.clone().format('')
         case 'week': {
             // First Day of Week
-            return currentDate.clone().weekday(1).format('YYYY-MM-DD')
+            return currentDate.clone().weekday(0).format('')
         }
         case 'month':
             // First Day of Month
-            return currentDate.clone().startOf('month').format('YYYY-MM-DD')
+            return currentDate.clone().startOf('month').format('')
         default:
             return 'Invalid View Type'
     }
@@ -29,7 +30,7 @@ export const formatCurrentDateView = (
         case 'day':
             return currentDate.format('dddd, DD. MMMM YYYY')
         case 'week': {
-            const firstDayOfWeek = currentDate.clone().startOf('week') //.weekday(1)
+            const firstDayOfWeek = currentDate.clone().startOf('week')
             const lastDayOfWeek = currentDate.clone().weekday(6)
             return `${firstDayOfWeek.format('DD.MM')} - ${lastDayOfWeek.format(
                 'DD.MM.YYYY'

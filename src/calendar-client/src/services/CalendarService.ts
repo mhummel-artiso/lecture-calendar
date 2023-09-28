@@ -7,7 +7,7 @@ import {
     UpdateCalendarEventSeries,
 } from '../models/calendarEvent'
 
-// Calendar functions
+//#region Calendar
 const calendarEndPointName = (calendarId: string | null = null) => {
     const path = 'Calendar'
     return calendarId ? path + `/${calendarId}` : path
@@ -21,22 +21,19 @@ export const addCalendar = async (calendar: Calendar): Promise<Calendar> => {
     return Promise.resolve(response.data)
 }
 
-export const getCalendars = async (): Promise<Calendar[]> => {
+export const getAssignedCalendars = async (): Promise<Calendar[]> => {
     const response = await axiosInstance.get<Calendar[]>(calendarEndPointName())
     return Promise.resolve(response.data)
 }
+
+// Get all calendars without the events
 export const getAllCalendars = async (): Promise<Calendar[]> => {
     const response = await axiosInstance.get<Calendar[]>(
         `${calendarEndPointName()}/all`
     )
     return Promise.resolve(response.data)
 }
-export const getCalendar = async (calendarId: string): Promise<Calendar> => {
-    const response = await axiosInstance.get<Calendar>(
-        calendarEndPointName(calendarId)
-    )
-    return Promise.resolve(response.data)
-}
+
 export const getCalendarByName = async (
     calendarName: string
 ): Promise<Calendar> => {
@@ -64,8 +61,9 @@ export const deleteCalendar = async (calendarId: string): Promise<boolean> => {
     )
     return Promise.resolve(response.data)
 }
+//#endregion
 
-// Event calls
+//#region event
 const eventEndPointName = (
     calendarId: string,
     eventId: string | null = null
@@ -85,6 +83,14 @@ export const addEvent = async (
     return Promise.resolve(response.data)
 }
 
+export const getEvent = async (calendarId: string, eventId: string) => {
+    const response = await axiosInstance.get<CalendarEvent[]>(
+        eventEndPointName(calendarId, eventId)
+    )
+    return Promise.resolve(response.data)
+}
+
+// Get all events from calendar
 export const getEvents = async (
     calendarId: string
 ): Promise<CalendarEvent[]> => {
@@ -93,6 +99,8 @@ export const getEvents = async (
     )
     return Promise.resolve(response.data)
 }
+
+// Get events from calendar depending on viewType
 export const getEventsFrom = async (
     calendarId: string,
     startDate: string,
@@ -101,12 +109,6 @@ export const getEventsFrom = async (
     const basePath = eventEndPointName(calendarId)
     const response = await axiosInstance.get<CalendarEvent[]>(
         `${basePath}/${startDate}/${viewType}`
-    )
-    return Promise.resolve(response.data)
-}
-export const getEvent = async (calendarId: string, eventId: string) => {
-    const response = await axiosInstance.get<CalendarEvent[]>(
-        eventEndPointName(calendarId, eventId)
     )
     return Promise.resolve(response.data)
 }
@@ -128,7 +130,9 @@ export const deleteEvent = async (calendarId: string, event: CalendarEvent) => {
     )
     return Promise.resolve(response.data)
 }
+//#endregion
 
+//#region eventSeries
 const seriesEndPointName = (calendarId: string, seriesId: string) => {
     return `Calendar/${calendarId}/series/${seriesId}`
 }
@@ -153,3 +157,4 @@ export const deleteEventSeries = async (
     )
     return Promise.resolve(response.data)
 }
+//#endregion

@@ -40,11 +40,11 @@ try
 
     IdentityModelEventSource.ShowPII = true;
 
+    /* Configuring the application's configuration settings. */
     var configuration = builder.Configuration;
     configuration.AddEnvironmentVariables(prefix: "API_");
     builder.Services.AddOptions();
     builder.Services.Configure<MongoDbEnvironmentConfiguration>(configuration);
-    // builder.Services.Configure<PostgreSqlEnvironmentConfiguration>(configuration);
     builder.Services.Configure<OidcEnvironmentConfiguration>(configuration);
     builder.Services.Configure<SwaggerEnvironmentConfiguration>(configuration);
     builder.Services.Configure<KeycloakRestEnvironmentConfiguration>(configuration);
@@ -53,43 +53,30 @@ try
 
     #region Logger
 
-    builder.Host.UseSerilog((ctx, config) =>
-        config
+    /* Configuring Serilog as the logging provider for the application. */
+    builder.Host
+        .UseSerilog((_, config) => config
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
             .Enrich.WithEnvironmentName()
             .Enrich.WithExceptionDetails()
             .Enrich.WithMachineName()
-    );
+        );
 
     #endregion
 
     #region Mongo db
 
+    // Configure the mongo database client
     var mongoConfig = configuration.Get<MongoDbEnvironmentConfiguration>()?.Validate();
     ArgumentNullException.ThrowIfNull(mongoConfig);
-    builder.Services.AddSingleton<IMongoClient>(x =>
-        new MongoClient(mongoConfig.MONGODB_SERVER));
-    builder.Services.AddScoped<IMongoDatabase>(x =>
-        x.GetRequiredService<IMongoClient>()
-            .GetDatabase(mongoConfig.MONGODB_DB_NAME));
 
-    #endregion
-
-    #region PostgreSQL db
-
-    // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-3.1
-    // builder.Services.AddDbContext<PersistKeyContext>(options =>
-    // {
-    //     var postgresqlConfig = configuration.Get<PostgreSqlEnvironmentConfiguration>()?.Validate();
-    //     ArgumentNullException.ThrowIfNull(postgresqlConfig);
-    //     var str = postgresqlConfig.GetConnectionString();
-    //     options.UseNpgsql(str);
-    // });
-    //
-    // builder.Services
-    //     .AddDataProtection()
-    //     .PersistKeysToDbContext<PersistKeyContext>();
+    builder.Services
+        .AddSingleton<IMongoClient>(x =>
+            new MongoClient(mongoConfig.MONGODB_SERVER))
+        .AddScoped<IMongoDatabase>(x =>
+            x.GetRequiredService<IMongoClient>()
+                .GetDatabase(mongoConfig.MONGODB_DB_NAME));
 
     #endregion
 
@@ -108,11 +95,13 @@ try
 
     builder.Services.AddKeycloakAuthentication(configuration);
 
-    // TODO configure correctly
-    var oidcConfig = configuration.Get<OidcEnvironmentConfiguration>()?.Validate();
+    var oidcConfig = configuration
+        .Get<OidcEnvironmentConfiguration>()?.Validate();
+    /* Configuring authorization policies for different roles in the application using Keycloak as the authentication provider. */
     builder.Services.AddAuthorization(options =>
     {
         ArgumentNullException.ThrowIfNull(oidcConfig);
+        /* Configuring authorization policies for different roles in the application. */
         var roleViewer = oidcConfig.OIDC_ROLE_VIEWER;
         var roleEditor = oidcConfig.OIDC_ROLE_EDITOR;
         options.AddPolicy(AuthPolicies.VIEWER, p =>

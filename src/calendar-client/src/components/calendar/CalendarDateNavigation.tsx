@@ -20,7 +20,7 @@ export const CalendarDateNavigation: React.FC<Props> = ({
     onCurrentDateChanged,
 }) => {
     const handleDataNavigation = (isForward: boolean) => {
-        // adds or remove 1 day or week or month
+        // Adds or removes 1 day or week or month from currentDate, depending on calendarView
         currentDate.add(isForward ? 1 : -1, calendarView)
         onCurrentDateChanged(moment(currentDate))
     }

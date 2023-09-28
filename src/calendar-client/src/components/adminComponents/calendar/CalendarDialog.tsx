@@ -9,16 +9,17 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
-import React, { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Calendar } from '../../../models/calendar'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { Moment } from 'moment/moment'
 import moment from 'moment'
 import { DialogComponentProps } from '../../../models/dialogComponentProps'
 import { useQuery } from '@tanstack/react-query'
-import { getCalendars } from '../../../services/CalendarService'
+import { getAssignedCalendars } from '../../../services/CalendarService'
 import { getCalendarsFromKeycloak } from '../../../services/KeyCloakService'
 
+// Dialog to add / edit calendars
 export const CalendarDialog: FC<
     DialogComponentProps<Calendar, Calendar, Calendar>
 > = ({
@@ -31,6 +32,7 @@ export const CalendarDialog: FC<
     const [name, setName] = useState<string>('')
     const [startDate, setStartDate] = useState<Moment | null>(moment())
 
+    // Initialise the form fields with current calendar data if available 
     useEffect(() => {
         setName(currentCalendar?.name ?? '')
         setStartDate(
@@ -55,6 +57,7 @@ export const CalendarDialog: FC<
         onDialogClose()
     }
 
+    // Query available calendars from Keycloak
     const {
         data: keycloakCalendarsData,
         isLoading: isKeycloakCalendarsLoading,
@@ -66,10 +69,11 @@ export const CalendarDialog: FC<
 
     const { data: calendarsData, isLoading: isCalendarLoading } = useQuery({
         queryKey: ['calendars'],
-        queryFn: getCalendars,
+        queryFn: getAssignedCalendars,
         useErrorBoundary: true,
     })
 
+    // Generate a list of calendars from Keycloak to add to application
     const getPendingCalendars = () => {
         if (keycloakCalendarsData && calendarsData) {
             const calendars = keycloakCalendarsData.filter(

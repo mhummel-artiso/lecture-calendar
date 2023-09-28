@@ -15,15 +15,11 @@ import { ErrorBoundary } from 'react-error-boundary'
 function App() {
     moment.locale('de')
     const envConfig = useEnvironment()
-    console.log('envConfig', envConfig)
     const oidcConfig: AuthProviderProps = {
         loadUserInfo: true,
         autoSignOut: true,
         autoSignIn: false,
         authority: envConfig.getAuthorityUrl(),
-        onSignIn: (user) => {
-            console.log('onSignIn', user)
-        },
         automaticSilentRenew: true,
         clientId: 'calendar-client',
         scope: '',

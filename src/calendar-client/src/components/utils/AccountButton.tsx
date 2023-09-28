@@ -1,14 +1,12 @@
 import { useAccount } from '../../hooks/useAccount'
 import { Avatar, Divider, IconButton, Menu, MenuItem } from '@mui/material'
 import React, { FC } from 'react'
-import { useEnvironment } from '../../hooks/useEnvironment'
 
 interface Props {
     onLogoutClick: () => void
 }
 
 export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
-    const { getAuthorityUrl } = useEnvironment()
     const { userAccount } = useAccount()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -20,11 +18,13 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
         setAnchorEl(null)
     }
 
-    const handelLogoutClick = () => {
+    const handleLogoutClick = () => {
         handleClose()
         onLogoutClick()
     }
-    const handelExternalLinkClick = (url:string) => {
+
+    // Handles redirect to Keycloak or Grafana
+    const handleExternalLinkClick = (url:string) => {
         handleClose()
             window.open("http://localhost/"+url+"/", '_blank')
     }
@@ -50,10 +50,10 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
                 }}
             >
                 <MenuItem disabled>{userAccount?.name ?? ''}</MenuItem>
-                <MenuItem onClick={handelLogoutClick}>Logout</MenuItem>
+                <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
                 <Divider/>
-                <MenuItem onClick={()=>handelExternalLinkClick("auth")}>Keycloak</MenuItem>
-                <MenuItem onClick={()=>handelExternalLinkClick("grafana")}>Grafana</MenuItem>
+                <MenuItem onClick={()=>handleExternalLinkClick("auth")}>Keycloak</MenuItem>
+                <MenuItem onClick={()=>handleExternalLinkClick("grafana")}>Grafana</MenuItem>
             </Menu>
         </>
     )

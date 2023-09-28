@@ -7,6 +7,8 @@ using Calendar.Mongo.Db.Models;
 namespace Calendar.Api.Profiles
 {
 
+    /* The CalendarProfile class is responsible for mapping between different data transfer objects and
+    the UserCalendar entity. */
     public class CalendarProfile : Profile
     {
         public CalendarProfile()

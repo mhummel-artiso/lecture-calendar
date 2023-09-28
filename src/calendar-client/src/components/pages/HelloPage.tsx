@@ -3,9 +3,10 @@ import React from 'react'
 import { Button, Grid, Typography } from '@mui/material'
 import { useAccount } from '../../hooks/useAccount'
 
+// Page that initially shows when opening app
 export const HelloPage = () => {
     const { isLoggedIn, signIn, isLoading } = useAccount()
-    const handelSignIn = () => {
+    const handleSignIn = () => {
         signIn().then()
     }
 
@@ -33,7 +34,7 @@ export const HelloPage = () => {
                 >
                     <Grid item alignContent="center" textAlign="center">
                         <Typography variant="h3">Bitte Anmelden</Typography>
-                        <Button variant={'contained'} onClick={handelSignIn}>
+                        <Button variant={'contained'} onClick={handleSignIn}>
                             Anmelden
                         </Button>
                     </Grid>

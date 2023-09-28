@@ -9,9 +9,9 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { TimePicker } from '@mui/x-date-pickers'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
-import { CalendarSelect } from '../Inputs/CalendarSelect'
-import { LectureSelect } from '../Inputs/LectureSelect'
-import { InstructorSelect } from '../Inputs/InstructorSelect'
+import { CalendarSelect } from '../inputs/CalendarSelect'
+import { LectureSelect } from '../inputs/LectureSelect'
+import { InstructorSelect } from '../inputs/InstructorSelect'
 import { LayoutDisplayItem } from '../DialogSelectInterfaces'
 import { AccordionLayout } from '../layout/AccordionLayout'
 import { StepperLayout } from '../layout/StepperLayout'
@@ -22,6 +22,7 @@ import moment from 'moment'
 import { Instructor } from '../../../models/instructor'
 import { CalendarEvent } from '../../../models/calendarEvent'
 
+// Event repeat options
 const serialList = [
     { value: 0, label: 'Nicht wiederholen' },
     { value: 1, label: 'Täglich wiederholen' },
@@ -52,6 +53,7 @@ interface Props {
     isSeries: boolean
 }
 
+// Dialog opened when an event is added or edited
 export const AddOrEditEventDialogContent: FC<Props> = (props) => {
     const {
         isEdit,
@@ -81,6 +83,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         Instructor[] | null
     >([])
 
+    // Initialize values from the current event being edited if available
     useEffect(() => {
         if (!currentValue) {
             resetValues()
@@ -272,6 +275,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         )
     }
 
+    // Validates Time Fields and checks if SerieEnd is after SerieStart
     const validateTimeFields = (): boolean => {
         let isValidSerie = true
         if (serie !== serialList[0].value) {
@@ -342,6 +346,7 @@ export const AddOrEditEventDialogContent: FC<Props> = (props) => {
         })
     }
 
+    // Determines if the "Add" button can be clicked
     const canClickAdd = () => validateRequiredFields() && validateTimeFields()
 
     return (
