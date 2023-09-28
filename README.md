@@ -2,12 +2,13 @@
 
 - [Lecture Calendar](#lecture-calendar)
   - [Project Description](#project-description)
-  - [Logins](#logins)
-  - [Urls](#urls)
   - [Start System](#start-system)
     - [Configurations](#configurations)
     - [Database Dump](#database-dump)
-  - [Api](#api)
+  - [URLs](#urls)
+  - [Logins](#logins)
+
+  - [API](#api)
     - [Environment variables](#environment-variables)
   - [Client](#client)
     - [Build variables](#build-variables)
