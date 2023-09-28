@@ -26,7 +26,7 @@ export const AccountButton: FC<Props> = ({ onLogoutClick }) => {
     // Handles redirect to Keycloak or Grafana
     const handleExternalLinkClick = (url:string) => {
         handleClose()
-            window.open("http://localhost/"+url+"/", '_blank')
+            window.open("/"+url+"/", '_blank')
     }
     return (
         <>
