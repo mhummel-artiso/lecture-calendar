@@ -121,7 +121,7 @@ services:
 
   postgressdb-grafana:
     healthcheck:
-      test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM library_element LIMIT 1"]
+      test: ["CMD-SHELL", "psql", "-h","localhost","-U", "${POSTGRES_USER}", "-c", "SELECT id FROM migration_log LIMIT 1"]
       interval: 10s
       timeout: 10s
       retries: 5
