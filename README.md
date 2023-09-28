@@ -48,7 +48,7 @@ docker compose up -d --build
 You can then access the application via the Client URL. In order to recreate a realistic process of using the application, you should first log in with a user who is assigned to the "Verwaltung" group (for example "sekretariat") and create calendars, lectures and events. The calendars can then be accessed using a student login (for example "student1", who is in the "TINF2021AI" group and can only see that calendar, if available).
 
 The Auth URL provided below gives you access to the Keycloak dashboard, where the "admin" user can manage users and assign them to groups. In addition, the Grafana URL below gives you access to the Grafana dashboard, where the admin user can check the status of all containers.
-Both Keycloak and Grafa can also be opened as a user in the "Verwaltung" group via the lecture calendar by clicking on the user image at the top right and selecting the desired application.
+Both Keycloak and Grafa can also be opened via the lecture calendar by clicking on the user image at the top right and selecting the desired application.
 
 ### Configurations
 
