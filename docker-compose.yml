@@ -6,7 +6,7 @@
 version: "3"
 
 services:
-# loadbalancer
+# loadbalancer and reverse proxy
   nginx:
     container_name: loadbalancer
     image: nginx:latest
@@ -16,10 +16,14 @@ services:
     networks:
       - frontend
     depends_on:
-      - calendarapi
-      - grafana
-      - client
-      - keycloak
+      calendarapi:
+        condition: service_started
+      grafana:
+        condition: service_healthy
+      client:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
 
 # calendar api
   calendarapi:
